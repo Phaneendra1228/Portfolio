@@ -68,15 +68,20 @@ async function loadProjects() {
       grid.innerHTML = '<p style="text-align:center;color:#ccc;width:100%">Projects coming soon...</p>';
       return;
     }
-    grid.innerHTML = filtered.map(r => `
+    grid.innerHTML = filtered.map(r => {
+      let link = r.html_url;
+      if (r.name.toLowerCase() === 'personalized-entrance-exam-coach') {
+        link = 'https://personalized-entrance-exam-coach-gi7e.onrender.com/';
+      }
+      return `
       <div class="box">
         <span>Web Development</span>
         <i class="fas fa-code"></i>
         <h3>Web Projects</h3>
         <p>${r.description || r.name.replace(/-/g, ' ')}</p>
-        <a href="${r.html_url}" target="_blank" rel="noopener" class="project-link">View Projects</a>
+        <a href="${link}" target="_blank" rel="noopener" class="project-link">View Project</a>
       </div>
-    `).join('');
+    `}).join('');
     if (window.initTilt) window.initTilt();
   } catch(e) {
     grid.innerHTML = '<p style="text-align:center;color:#ccc;width:100%">Could not load projects. <a href="https://github.com/Phaneendra1228" style="color:#f9ca24">Visit GitHub</a></p>';
