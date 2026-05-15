@@ -1,12 +1,3 @@
-// Debounce function for performance optimization
-function debounce(fn, delay) {
-  let timeoutId;
-  return function(...args) {
-    clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => fn(...args), delay);
-  };
-}
-
 // Mobile menu toggle
 const menuBtn = document.querySelector('.menu-btn');
 const menu = document.querySelector('.navbar .menu');
@@ -15,17 +6,13 @@ if (menuBtn) {
     menu.classList.toggle('active');
     const icon = menuBtn.querySelector('i');
     icon.classList.toggle('active');
-  }, { passive: true });
+  });
 }
 // Close menu on link click
 document.querySelectorAll('.navbar .menu a').forEach(a => {
   a.addEventListener('click', () => {
     menu.classList.remove('active');
-    if (menuBtn) {
-      const icon = menuBtn.querySelector('i');
-      icon.classList.remove('active');
-    }
-  }, { passive: true });
+  });
 });
 
 // Theme Toggle Logic
@@ -89,17 +76,15 @@ async function loadProjects() {
     }
     grid.innerHTML = filteredProjects.map(r => {
       let link = r.html_url;
-      let title = r.name.replace(/-/g, ' ');
       if (r.name.toLowerCase() === 'personalized-entrance-exam-coach') {
         link = 'https://personalized-entrance-exam-coach-gi7e.onrender.com/';
-        title = 'LearnFlow';
       }
       return `
       <div class="box">
         <span>Web Development</span>
         <i class="fas fa-code"></i>
-        <h3>${title}</h3>
-        <p>${r.description || title}</p>
+        <h3>Web Projects</h3>
+        <p>${r.description || r.name.replace(/-/g, ' ')}</p>
         <a href="${link}" target="_blank" rel="noopener" class="project-link">View Project</a>
       </div>
     `}).join('');
@@ -112,17 +97,21 @@ async function loadProjects() {
 // Contact form
 const form = document.getElementById('contact-form');
 if (form) {
+  form.setAttribute('action', '');
   form.addEventListener('submit', function(e) {
     e.preventDefault();
+    e.stopPropagation();
     const btn = form.querySelector('button');
     btn.textContent = 'Sending...';
     btn.disabled = true;
     setTimeout(() => {
-      document.getElementById('alert').style.visibility = 'visible';
+      const alertEl = document.getElementById('alert');
+      if (alertEl) alertEl.style.visibility = 'visible';
       form.reset();
       btn.textContent = 'Send message';
       btn.disabled = false;
     }, 1000);
+    return false;
   });
 }
 
@@ -149,15 +138,15 @@ document.querySelectorAll('section').forEach(sec => {
   observer.observe(sec);
 });
 
-// Sticky Navbar Scroll Effect with performance optimization
-window.addEventListener('scroll', debounce(() => {
+// Sticky Navbar Scroll Effect
+window.addEventListener('scroll', () => {
   const nav = document.querySelector('.navbar');
   if (window.scrollY > 50) {
     nav.classList.add('scrolled');
   } else {
     nav.classList.remove('scrolled');
   }
-}, 10), { passive: true });
+});
 
 // Initialize 3D Tilt Effect on Elements
 if (typeof VanillaTilt !== 'undefined') {
@@ -184,12 +173,10 @@ if (typeof VanillaTilt !== 'undefined') {
   };
 }
 
-// Background Parallax Mouse Effect (Optimized for desktop only)
-if (window.innerWidth > 768) {
-  document.addEventListener('mousemove', debounce((e) => {
-    const x = (e.clientX / window.innerWidth - 0.5) * 2;
-    const y = (e.clientY / window.innerHeight - 0.5) * 2;
-    document.body.style.setProperty('--mouse-x', x);
-    document.body.style.setProperty('--mouse-y', y);
-  }, 16), { passive: true });
-}
+// Background Parallax Mouse Effect
+document.addEventListener('mousemove', (e) => {
+  const x = (e.clientX / window.innerWidth - 0.5) * 2;
+  const y = (e.clientY / window.innerHeight - 0.5) * 2;
+  document.body.style.setProperty('--mouse-x', x);
+  document.body.style.setProperty('--mouse-y', y);
+});
