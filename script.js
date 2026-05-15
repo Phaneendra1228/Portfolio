@@ -1,3 +1,12 @@
+// Debounce function for performance optimization
+function debounce(fn, delay) {
+  let timeoutId;
+  return function(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
+}
+
 // Mobile menu toggle
 const menuBtn = document.querySelector('.menu-btn');
 const menu = document.querySelector('.navbar .menu');
@@ -6,13 +15,17 @@ if (menuBtn) {
     menu.classList.toggle('active');
     const icon = menuBtn.querySelector('i');
     icon.classList.toggle('active');
-  });
+  }, { passive: true });
 }
 // Close menu on link click
 document.querySelectorAll('.navbar .menu a').forEach(a => {
   a.addEventListener('click', () => {
     menu.classList.remove('active');
-  });
+    if (menuBtn) {
+      const icon = menuBtn.querySelector('i');
+      icon.classList.remove('active');
+    }
+  }, { passive: true });
 });
 
 // Theme Toggle Logic
@@ -64,21 +77,29 @@ async function loadProjects() {
     const res = await fetch('https://api.github.com/users/Phaneendra1228/repos?sort=pushed&per_page=30');
     const repos = await res.json();
     const filtered = repos.filter(r => !r.fork && !r.archived);
-    if (!filtered.length) {
+    const filteredProjects = filtered.filter(r => {
+      const name = r.name.toLowerCase();
+      const description = (r.description || '').toLowerCase();
+      return !['portfolio', 'personal-portfolio', 'portfolio-website', 'personal-portfolio-website'].includes(name)
+        && !description.includes('portfolio website');
+    });
+    if (!filteredProjects.length) {
       grid.innerHTML = '<p style="text-align:center;color:#ccc;width:100%">Projects coming soon...</p>';
       return;
     }
-    grid.innerHTML = filtered.map(r => {
+    grid.innerHTML = filteredProjects.map(r => {
       let link = r.html_url;
+      let title = r.name.replace(/-/g, ' ');
       if (r.name.toLowerCase() === 'personalized-entrance-exam-coach') {
         link = 'https://personalized-entrance-exam-coach-gi7e.onrender.com/';
+        title = 'LearnFlow';
       }
       return `
       <div class="box">
         <span>Web Development</span>
         <i class="fas fa-code"></i>
-        <h3>Web Projects</h3>
-        <p>${r.description || r.name.replace(/-/g, ' ')}</p>
+        <h3>${title}</h3>
+        <p>${r.description || title}</p>
         <a href="${link}" target="_blank" rel="noopener" class="project-link">View Project</a>
       </div>
     `}).join('');
@@ -86,6 +107,23 @@ async function loadProjects() {
   } catch(e) {
     grid.innerHTML = '<p style="text-align:center;color:#ccc;width:100%">Could not load projects. <a href="https://github.com/Phaneendra1228" style="color:#f9ca24">Visit GitHub</a></p>';
   }
+}
+
+// Contact form
+const form = document.getElementById('contact-form');
+if (form) {
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = form.querySelector('button');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    setTimeout(() => {
+      document.getElementById('alert').style.visibility = 'visible';
+      form.reset();
+      btn.textContent = 'Send message';
+      btn.disabled = false;
+    }, 1000);
+  });
 }
 
 loadProjects();
@@ -111,15 +149,15 @@ document.querySelectorAll('section').forEach(sec => {
   observer.observe(sec);
 });
 
-// Sticky Navbar Scroll Effect
-window.addEventListener('scroll', () => {
+// Sticky Navbar Scroll Effect with performance optimization
+window.addEventListener('scroll', debounce(() => {
   const nav = document.querySelector('.navbar');
   if (window.scrollY > 50) {
     nav.classList.add('scrolled');
   } else {
     nav.classList.remove('scrolled');
   }
-});
+}, 10), { passive: true });
 
 // Initialize 3D Tilt Effect on Elements
 if (typeof VanillaTilt !== 'undefined') {
@@ -146,10 +184,12 @@ if (typeof VanillaTilt !== 'undefined') {
   };
 }
 
-// Background Parallax Mouse Effect
-document.addEventListener('mousemove', (e) => {
-  const x = (e.clientX / window.innerWidth - 0.5) * 2;
-  const y = (e.clientY / window.innerHeight - 0.5) * 2;
-  document.body.style.setProperty('--mouse-x', x);
-  document.body.style.setProperty('--mouse-y', y);
-});
+// Background Parallax Mouse Effect (Optimized for desktop only)
+if (window.innerWidth > 768) {
+  document.addEventListener('mousemove', debounce((e) => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 2;
+    const y = (e.clientY / window.innerHeight - 0.5) * 2;
+    document.body.style.setProperty('--mouse-x', x);
+    document.body.style.setProperty('--mouse-y', y);
+  }, 16), { passive: true });
+}
