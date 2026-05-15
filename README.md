@@ -1,37 +1,35 @@
-# 🌟 Modern Personal Portfolio
+# PHANEENDRA Portfolio Website
 
-Welcome to my personal portfolio website! This project showcases my skills, education, and latest works in a clean, responsive, and interactive design.
-
-![Portfolio Preview](profile.jpg)
+A polished personal portfolio website built to showcase my skills, education, and projects in modern web design.
 
 ## 🚀 Live Demo
-Check out the live site here: [Phaneendra's Portfolio](https://phaneendra1228.github.io/Portfolio/)
+Visit the live site: [https://phaneendra1228.github.io/Portfolio/](https://phaneendra1228.github.io/Portfolio/)
 
-## ✨ Features
-- **Dynamic Theme Switching**: Seamlessly toggle between Dark and Light modes.
-- **Interactive UI**: Powered by VanillaTilt.js for stunning 3D tilt effects on cards and images.
-- **GitHub Integration**: Automatically fetches and displays my latest repositories using the GitHub API.
-- **Fully Responsive**: Optimized for all devices from mobile to desktop.
-- **Animated Typing**: Sleek typewriter effect for my roles and specialties.
-- **Contact Form**: A functional-ready contact section for inquiries.
+## ✨ What this project includes
+- **Responsive landing page** with sections for Home, About, Projects, Education, Skills, and Contact.
+- **Dark / Light theme switcher** for user-preferred viewing.
+- **Animated interactions** including a typewriter intro and scroll reveal effects.
+- **GitHub project feed** that dynamically loads repositories into the "My Works" section.
+- **Contact form** with local submission handling and success feedback.
+- **Mobile-friendly navigation** with a collapsible menu.
 
-## 🛠️ Built With
-- **HTML5**: Semantic structure.
-- **CSS3**: Custom styling with variables, Flexbox, and Grid.
-- **JavaScript (ES6+)**: Core logic and DOM manipulation.
-- **VanillaTilt.js**: For the 3D parallax effects.
-- **FontAwesome**: For beautiful, scalable icons.
+## 🛠️ Technologies used
+- **HTML5** for semantic page structure.
+- **CSS3** for responsive layout, effects, and styling.
+- **JavaScript (ES6)** for logic, API fetching, and interactivity.
+- **VanillaTilt.js** for subtle 3D card effects.
+- **FontAwesome** for iconography.
 
-## 📂 Project Structure
+## 📁 Project structure
 ```text
-├── index.html      # Main structure
-├── style.css       # Design and layout
-├── script.js       # Interactive logic and API fetching
-└── profile.jpg     # Profile image
+├── index.html      # Main website layout
+├── style.css       # Visual styling and responsiveness
+├── script.js       # Interactivity and GitHub integration
+└── profile.jpg     # Profile image used in the hero section
 ```
 
-## 🧑‍💻 About Me
-I'm **Phaneendra**, a passionate CSE student specializing in **AI & ML**. As a full-stack developer, I craft seamless digital experiences with precision and creativity. My code blends logic, design, and intelligence to build smart, adaptive systems.
+## 🧑‍💻 About the author
+I am **Phaneendra**, a Computer Science student focused on full-stack development and AI/ML. This portfolio is designed to highlight my technical skills, growing project work, and professional presence.
 
 ## 📬 Contact
 - **Email**: [Phanee2005@gmail.com](mailto:Phanee2005@gmail.com)
@@ -39,4 +37,4 @@ I'm **Phaneendra**, a passionate CSE student specializing in **AI & ML**. As a f
 - **GitHub**: [@Phaneendra1228](https://github.com/Phaneendra1228)
 
 ---
-*Created with ❤️ by PHANEENDRA*
+*Updated portfolio documentation for a clean, professional presentation.*
