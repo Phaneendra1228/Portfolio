@@ -83,7 +83,7 @@ async function loadProjects() {
       <div class="box">
         <span>Web Development</span>
         <i class="fas fa-code"></i>
-        <h3>Web Projects</h3>
+        <h3>LearnFlow</h3>
         <p>${r.description || r.name.replace(/-/g, ' ')}</p>
         <a href="${link}" target="_blank" rel="noopener" class="project-link">View Project</a>
       </div>
