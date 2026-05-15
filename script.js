@@ -88,23 +88,6 @@ async function loadProjects() {
   }
 }
 
-// Contact form
-const form = document.getElementById('contact-form');
-if (form) {
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const btn = form.querySelector('button');
-    btn.textContent = 'Sending...';
-    btn.disabled = true;
-    setTimeout(() => {
-      document.getElementById('alert').style.visibility = 'visible';
-      form.reset();
-      btn.textContent = 'Send message';
-      btn.disabled = false;
-    }, 1000);
-  });
-}
-
 loadProjects();
 
 // Scroll Reveal Animations
