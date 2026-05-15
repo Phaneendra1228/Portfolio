@@ -88,39 +88,6 @@ async function loadProjects() {
   }
 }
 
-// Contact form submission handler
-const form = document.getElementById('contact-form');
-if (form) {
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
-    const btn = form.querySelector('button');
-    const alertBox = document.getElementById('alert');
-    btn.textContent = 'Sending...';
-    btn.disabled = true;
-    alertBox.style.visibility = 'hidden';
-
-    const formData = new FormData(form);
-    const payload = new URLSearchParams();
-    formData.forEach((value, key) => payload.append(key, value));
-
-    try {
-      await fetch(form.action, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: payload.toString(),
-      });
-    } catch (error) {
-      // Always show success message to the user.
-    }
-
-    alertBox.innerHTML = '<span class="closebtn" onclick="this.parentElement.style.visibility=\'hidden\'">&times;</span>✅ Your message has been sent successfully!';
-    alertBox.style.visibility = 'visible';
-    form.reset();
-    btn.textContent = 'Send message';
-    btn.disabled = false;
-  });
-}
-
 loadProjects();
 
 // Scroll Reveal Animations
