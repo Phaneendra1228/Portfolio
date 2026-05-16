@@ -63,7 +63,7 @@ section .title {
   font-family: 'Outfit', sans-serif;
   font-size: 48px; font-weight: 800; text-align: center; margin-bottom: 35px;
   background: var(--accent-gradient);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
   position: relative; display: block;
 }
 section .title::after {
@@ -100,7 +100,7 @@ section .title::after {
 .home .home-content .text-1 { font-size: 20px; color: var(--accent-color); font-weight: 600; margin-bottom: 15px; letter-spacing: 2px; text-transform: uppercase; }
 .home .home-content .text-2 { font-family: 'Outfit', sans-serif; font-size: 80px; font-weight: 800; line-height: 1.1; margin-bottom: 20px; color: var(--heading-color); letter-spacing: -1px; text-shadow: 0 0 40px rgba(var(--glass-rgb),0.3); }
 .home .home-content .text-3 { font-size: 32px; font-weight: 500; color: var(--text-muted); margin-bottom: 40px; }
-.home .home-content .text-3 span { font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.home .home-content .text-3 span { font-weight: 700; background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 #typewriter::after { content: '|'; animation: blink 1s infinite; color: var(--accent-color); font-weight: 300; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
@@ -151,7 +151,7 @@ section .title::after {
 }
 .about .about-content .right { flex: 1; }
 .about .about-content .right .text { font-family: 'Outfit', sans-serif; font-size: 36px; font-weight: 700; margin-bottom: 25px; }
-.about .about-content .right .text span { background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.about .about-content .right .text span { background: var(--accent-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .about .about-content .right p { font-size: 16px; line-height: 1.8; color: var(--text-muted); margin-bottom: 35px; }
 
 .interest-bg {
