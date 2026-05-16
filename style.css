@@ -542,6 +542,7 @@ body.light-mode .education .box h3 { color: #d97706; }
   .home .max-width { flex-direction: column-reverse; gap: 50px; }
   .home .home-content .text-2 { font-size: 55px; }
   .home .home-content .text-3 { font-size: 24px; }
+  .hero-actions { justify-content: center; }
   .social_icon { justify-content: center; }
   .hero-photo { width: 320px; height: 320px; transform: none; }
   
