@@ -169,9 +169,12 @@ document.querySelectorAll('section').forEach(sec => {
   observer.observe(sec);
 });
 
-// Sticky Navbar & Scroll Up Button Scroll Effect
+// Sticky Navbar & Scroll Up Button & Scroll Progress Scroll Effect
 const scrollUpBtn = document.querySelector('.scroll-up-btn');
+const scrollProgress = document.getElementById('scroll-progress');
+
 window.addEventListener('scroll', () => {
+  // Sticky Navbar
   const nav = document.querySelector('.navbar');
   if (window.scrollY > 50) {
     nav.classList.add('scrolled');
@@ -179,12 +182,21 @@ window.addEventListener('scroll', () => {
     nav.classList.remove('scrolled');
   }
   
+  // Scroll Up Button
   if (scrollUpBtn) {
     if (window.scrollY > 500) {
       scrollUpBtn.classList.add('show');
     } else {
       scrollUpBtn.classList.remove('show');
     }
+  }
+
+  // Scroll Progress Bar
+  if (scrollProgress) {
+    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    scrollProgress.style.width = scrolled + '%';
   }
 });
 
