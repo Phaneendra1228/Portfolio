@@ -78,14 +78,23 @@ async function loadProjects() {
       let link = r.html_url;
       let title = r.name.replace(/-/g, ' ');
       let tag = 'Web Development';
+      let liveLink = r.homepage || '';
 
       if (r.name.toLowerCase() === 'personalized-entrance-exam-coach' || r.name.toLowerCase() === 'learnflow') {
-        link = 'https://learnflow-i17r.onrender.com/login';
+        liveLink = 'https://learnflow-i17r.onrender.com/login';
         title = 'LearnFlow';
       }
       
       if (title.toLowerCase() === 'interview mentor') {
         tag = 'App Development';
+      }
+
+      let buttonsHtml = '';
+      if (liveLink) {
+        buttonsHtml = `<a href="${link}" target="_blank" rel="noopener" class="project-link">GitHub</a>
+                       <a href="${liveLink}" target="_blank" rel="noopener" class="project-link" style="background: var(--accent-gradient); color: #fff; border: none;">Live</a>`;
+      } else {
+        buttonsHtml = `<a href="${link}" target="_blank" rel="noopener" class="project-link">View Project</a>`;
       }
 
       return `
@@ -94,7 +103,9 @@ async function loadProjects() {
         <i class="fas fa-code"></i>
         <h3>${title}</h3>
         <p>${r.description || r.name.replace(/-/g, ' ')}</p>
-        <a href="${link}" target="_blank" rel="noopener" class="project-link">View Project</a>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          ${buttonsHtml}
+        </div>
       </div>
     `}).join('');
     if (window.initTilt) window.initTilt();
