@@ -92,7 +92,7 @@ async function loadProjects() {
       let buttonsHtml = '';
       if (liveLink) {
         buttonsHtml = `<a href="${link}" target="_blank" rel="noopener" class="project-link">GitHub</a>
-                       <a href="${liveLink}" target="_blank" rel="noopener" class="project-link" style="background: var(--accent-gradient); color: #fff; border: none;">Live</a>`;
+                       <a href="${liveLink}" target="_blank" rel="noopener" class="project-link" style="background: var(--accent-gradient); color: #fff; border: none;"><span class="live-dot"></span>Live</a>`;
       } else {
         buttonsHtml = `<a href="${link}" target="_blank" rel="noopener" class="project-link">View Project</a>`;
       }
