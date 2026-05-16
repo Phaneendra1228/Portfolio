@@ -106,21 +106,37 @@ async function loadProjects() {
 // Contact form
 const form = document.getElementById('contact-form');
 if (form) {
-  form.setAttribute('action', '');
-  form.addEventListener('submit', function(e) {
+  form.addEventListener('submit', async function(e) {
     e.preventDefault();
     e.stopPropagation();
     const btn = form.querySelector('button');
     btn.textContent = 'Sending...';
     btn.disabled = true;
-    setTimeout(() => {
-      const alertEl = document.getElementById('alert');
-      if (alertEl) alertEl.style.visibility = 'visible';
-      form.reset();
+    
+    const formData = new FormData(form);
+    
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: formData
+      });
+      
+      if (response.ok) {
+        const alertEl = document.getElementById('alert');
+        if (alertEl) {
+          alertEl.style.visibility = 'visible';
+          alertEl.innerHTML = `<span class="closebtn" onclick="this.parentElement.style.visibility='hidden'">&times;</span>✅ Your message has been sent successfully!`;
+        }
+        form.reset();
+      } else {
+        alert('There was an error sending your message. Please try again.');
+      }
+    } catch (error) {
+      alert('There was an error sending your message. Please try again.');
+    } finally {
       btn.textContent = 'Send message';
       btn.disabled = false;
-    }, 1000);
-    return false;
+    }
   });
 }
 
