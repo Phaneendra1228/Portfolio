@@ -384,11 +384,25 @@ body.light-mode .education .box h3 { color: #d97706; }
   flex: 1;
   min-width: 200px;
 }
+.footer-brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+.footer-logo {
+  width: 45px;
+  height: 45px;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+  transition: transform 0.3s ease;
+}
+.footer-brand:hover .footer-logo {
+  transform: scale(1.1) rotate(-5deg);
+}
 .footer-col h3 {
   font-family: 'Outfit', sans-serif;
   font-size: 20px;
   color: var(--heading-color);
-  margin-bottom: 20px;
   position: relative;
   display: inline-block;
 }
