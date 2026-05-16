@@ -77,13 +77,20 @@ async function loadProjects() {
     grid.innerHTML = filteredProjects.map(r => {
       let link = r.html_url;
       let title = r.name.replace(/-/g, ' ');
+      let tag = 'Web Development';
+
       if (r.name.toLowerCase() === 'personalized-entrance-exam-coach' || r.name.toLowerCase() === 'learnflow') {
         link = 'https://learnflow-i17r.onrender.com/login';
         title = 'LearnFlow';
       }
+      
+      if (title.toLowerCase() === 'interview mentor') {
+        tag = 'App Development';
+      }
+
       return `
       <div class="box">
-        <span>Web Development</span>
+        <span>${tag}</span>
         <i class="fas fa-code"></i>
         <h3>${title}</h3>
         <p>${r.description || r.name.replace(/-/g, ' ')}</p>
