@@ -257,6 +257,47 @@ body.light-mode .education .box h3 { color: #d97706; }
   background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 24px;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   backdrop-filter: blur(10px);
+  position: relative;
+}
+.skills-bg::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--heading-color);
+  color: var(--bg-color);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  letter-spacing: 0.5px;
+}
+.skills-bg::before {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--heading-color) transparent transparent transparent;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+.skills-bg:hover::after, .skills-bg:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
 }
 .skills-bg:hover {
   transform: translateY(-10px) scale(1.05); border-color: var(--accent-color);
