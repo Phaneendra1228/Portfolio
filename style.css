@@ -345,7 +345,7 @@ body.light-mode .education .box h3 { color: #d97706; }
   padding: 18px 24px; border-radius: 16px; color: var(--heading-color); font-family: 'Inter', sans-serif;
   font-size: 15px; transition: all 0.3s; outline: none;
 }
-.contact form textarea { height: 160px; resize: none; margin-bottom: 20px; }
+.contact form textarea { height: 120px; resize: none; margin-bottom: 20px; }
 .contact form input::placeholder, .contact form textarea::placeholder { color: #6b7280; }
 .contact form input:focus, .contact form textarea:focus {
   border-color: var(--accent-color); background: rgba(6, 182, 212, 0.05); box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.1);
@@ -369,7 +369,7 @@ body.light-mode .education .box h3 { color: #d97706; }
 .footer {
   background: var(--card-bg);
   border-top: 1px solid var(--border-color);
-  padding: 60px 0 20px;
+  padding: 40px 0 15px;
   margin-top: 50px;
   backdrop-filter: blur(10px);
 }
@@ -377,12 +377,12 @@ body.light-mode .education .box h3 { color: #d97706; }
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 40px;
-  margin-bottom: 40px;
+  gap: 30px;
+  margin-bottom: 25px;
 }
 .footer-col {
   flex: 1;
-  min-width: 250px;
+  min-width: 200px;
 }
 .footer-col h3 {
   font-family: 'Outfit', sans-serif;
