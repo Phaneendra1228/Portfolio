@@ -76,14 +76,16 @@ async function loadProjects() {
     }
     grid.innerHTML = filteredProjects.map(r => {
       let link = r.html_url;
-      if (r.name.toLowerCase() === 'personalized-entrance-exam-coach') {
-        link = 'https://personalized-entrance-exam-coach-gi7e.onrender.com/';
+      let title = r.name.replace(/-/g, ' ');
+      if (r.name.toLowerCase() === 'personalized-entrance-exam-coach' || r.name.toLowerCase() === 'learnflow') {
+        link = 'https://learnflow-i17r.onrender.com/login';
+        title = 'LearnFlow';
       }
       return `
       <div class="box">
         <span>Web Development</span>
         <i class="fas fa-code"></i>
-        <h3>LearnFlow</h3>
+        <h3>${title}</h3>
         <p>${r.description || r.name.replace(/-/g, ' ')}</p>
         <a href="${link}" target="_blank" rel="noopener" class="project-link">View Project</a>
       </div>
