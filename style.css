@@ -44,7 +44,7 @@ body::before, body::after {
 body::before { top: 5%; left: -10%; width: 600px; height: 600px; background: rgba(6, 182, 212, 0.12); transform: translate(calc(var(--mouse-x, 0) * 30px), calc(var(--mouse-y, 0) * 30px)); }
 body::after { top: 35%; right: -10%; width: 700px; height: 700px; background: rgba(59, 130, 246, 0.12); transform: translate(calc(var(--mouse-x, 0) * -40px), calc(var(--mouse-y, 0) * -40px)); }
 
-section { padding: 80px 0; position: relative; }
+section { padding: 40px 0; position: relative; }
 .max-width { max-width: 1200px; padding: 0 40px; margin: auto; }
 
 /* ===== ANIMATIONS ===== */
@@ -61,7 +61,7 @@ section { padding: 80px 0; position: relative; }
 /* ===== SECTION TITLES ===== */
 section .title {
   font-family: 'Outfit', sans-serif;
-  font-size: 48px; font-weight: 800; text-align: center; margin-bottom: 50px;
+  font-size: 48px; font-weight: 800; text-align: center; margin-bottom: 35px;
   background: var(--accent-gradient);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   position: relative; display: block;
@@ -139,7 +139,7 @@ section .title::after {
 .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 20px; }
 
 /* ===== ABOUT ===== */
-.about .about-content { display: flex; gap: 70px; align-items: center; }
+.about .about-content { display: flex; gap: 40px; align-items: center; }
 .about .about-content .left { flex: 0 0 400px; position: relative; }
 .about .about-content .left::before {
   content: ''; position: absolute; inset: -10px; background: var(--accent-gradient);
@@ -155,7 +155,7 @@ section .title::after {
 .about .about-content .right p { font-size: 16px; line-height: 1.8; color: var(--text-muted); margin-bottom: 35px; }
 
 .interest-bg {
-  display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 40px;
+  display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 30px;
   padding: 25px; background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border-color);
   backdrop-filter: blur(10px);
 }
@@ -250,7 +250,7 @@ body.light-mode .education .box h3 { color: #d97706; }
 }
 
 /* ===== SKILLS ===== */
-.skills .text { text-align: center; color: var(--text-muted); max-width: 600px; margin: 0 auto 50px; line-height: 1.6; font-size: 16px; }
+.skills .text { text-align: center; color: var(--text-muted); max-width: 600px; margin: 0 auto 30px; line-height: 1.6; font-size: 16px; }
 .skills-content { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; max-width: 900px; margin: 0 auto; }
 .skills-bg {
   width: 110px; height: 110px; display: flex; align-items: center; justify-content: center;
@@ -266,7 +266,7 @@ body.light-mode .education .box h3 { color: #d97706; }
 .skills-bg:hover .skills1 { filter: drop-shadow(0 8px 15px rgba(6, 182, 212, 0.5)); }
 
 /* ===== TEAMS / CHECK ME ===== */
-.teams .text { text-align: center; color: var(--text-muted); margin-bottom: 50px; font-size: 16px; }
+.teams .text { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 16px; }
 .check-me { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
 .check-bg {
   width: 180px; padding: 35px 20px; background: var(--card-bg); border: 1px solid var(--border-color);
@@ -282,7 +282,7 @@ body.light-mode .education .box h3 { color: #d97706; }
 .check-bg p { color: var(--heading-color); font-weight: 600; font-size: 15px; letter-spacing: 1px; }
 
 /* ===== CONTACT ===== */
-.contact .contact-content { display: flex; gap: 80px; background: var(--card-bg); padding: 50px; border-radius: 30px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
+.contact .contact-content { display: flex; gap: 40px; background: var(--card-bg); padding: 40px; border-radius: 30px; border: 1px solid var(--border-color); backdrop-filter: blur(10px); }
 .contact .column { flex: 1; }
 .contact .text { font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 700; margin-bottom: 25px; color: var(--heading-color); }
 .contact .right p { color: var(--text-muted); line-height: 1.7; margin-bottom: 40px; font-size: 16px; }
@@ -359,7 +359,7 @@ body.light-mode .footer-name { color: #d97706; }
   .social_icon { justify-content: center; }
   .hero-photo { width: 320px; height: 320px; transform: none; }
   
-  section .title { font-size: 38px; margin-bottom: 50px; }
+  section .title { font-size: 38px; margin-bottom: 30px; }
   .contact form .fields { flex-direction: column; gap: 20px; }
 }
 
