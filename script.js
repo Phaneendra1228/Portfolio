@@ -169,7 +169,8 @@ document.querySelectorAll('section').forEach(sec => {
   observer.observe(sec);
 });
 
-// Sticky Navbar Scroll Effect
+// Sticky Navbar & Scroll Up Button Scroll Effect
+const scrollUpBtn = document.querySelector('.scroll-up-btn');
 window.addEventListener('scroll', () => {
   const nav = document.querySelector('.navbar');
   if (window.scrollY > 50) {
@@ -177,7 +178,22 @@ window.addEventListener('scroll', () => {
   } else {
     nav.classList.remove('scrolled');
   }
+  
+  if (scrollUpBtn) {
+    if (window.scrollY > 500) {
+      scrollUpBtn.classList.add('show');
+    } else {
+      scrollUpBtn.classList.remove('show');
+    }
+  }
 });
+
+// Scroll Up Button Click
+if (scrollUpBtn) {
+  scrollUpBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
 
 // Initialize 3D Tilt Effect on Elements
 if (typeof VanillaTilt !== 'undefined') {

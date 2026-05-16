@@ -397,3 +397,33 @@ body.light-mode .footer-name { color: #d97706; }
 body:not(.light-mode) .navbar.scrolled {
   box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
+
+/* ===== SCROLL UP BUTTON ===== */
+.scroll-up-btn {
+  position: fixed;
+  height: 45px;
+  width: 42px;
+  background: var(--accent-gradient);
+  right: 30px;
+  bottom: 30px;
+  text-align: center;
+  line-height: 45px;
+  color: #fff;
+  z-index: 9999;
+  font-size: 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(6, 182, 212, 0.3);
+}
+.scroll-up-btn.show {
+  opacity: 1;
+  pointer-events: auto;
+  bottom: 40px;
+}
+.scroll-up-btn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-5px);
+}
