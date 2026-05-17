@@ -329,11 +329,14 @@
       <span class="close-modal" id="close-login-modal">&times;</span>
     </div>
     <div class="admin-modal-body">
-      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.5;">Enter password to access administration panel controls.</p>
-      <div class="admin-input-group">
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.5;">Enter email and password to access administration panel controls.</p>
+      <div class="admin-input-group" style="margin-bottom: 15px;">
+        <input type="email" id="admin-email" placeholder="Email">
+      </div>
+      <div class="admin-input-group" style="margin-bottom: 15px;">
         <input type="password" id="admin-password" placeholder="Password">
       </div>
-      <div id="login-error" class="admin-error-msg" style="display: none; color: #ef4444; font-size: 13px; margin: 10px 0; font-weight: 500;">❌ Incorrect password!</div>
+      <div id="login-error" class="admin-error-msg" style="display: none; color: #ef4444; font-size: 13px; margin: 10px 0; font-weight: 500;">❌ Incorrect email or password!</div>
       <button class="admin-btn" id="login-submit-btn">Unlock Controls</button>
     </div>
   </div>
@@ -483,6 +486,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-<script src="script.js?v=24"></script>
+<script src="script.js?v=25"></script>
 </body>
 </html>

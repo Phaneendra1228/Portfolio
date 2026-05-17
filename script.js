@@ -580,6 +580,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeExport = document.getElementById('close-export-modal');
   
   const loginSubmit = document.getElementById('login-submit-btn');
+  const adminEmailInput = document.getElementById('admin-email');
   const adminPasswordInput = document.getElementById('admin-password');
   const loginError = document.getElementById('login-error');
   const logoutBtn = document.getElementById('btn-admin-logout');
@@ -612,8 +613,13 @@ document.addEventListener('DOMContentLoaded', () => {
         openDashboard();
       } else {
         loginModal.classList.add('active');
-        adminPasswordInput.value = '';
-        adminPasswordInput.focus();
+        if (adminEmailInput) {
+          adminEmailInput.value = '';
+          adminEmailInput.focus();
+        }
+        if (adminPasswordInput) {
+          adminPasswordInput.value = '';
+        }
         loginError.style.display = 'none';
       }
     });
@@ -643,6 +649,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (loginSubmit) {
     loginSubmit.addEventListener('click', performLogin);
   }
+  if (adminEmailInput) {
+    adminEmailInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') performLogin();
+    });
+  }
   if (adminPasswordInput) {
     adminPasswordInput.addEventListener('keypress', (e) => {
       if (e.key === 'Enter') performLogin();
@@ -650,7 +661,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function performLogin() {
-    if (adminPasswordInput.value === 'phani@1228') {
+    const emailVal = adminEmailInput ? adminEmailInput.value.trim().toLowerCase() : '';
+    const passVal = adminPasswordInput ? adminPasswordInput.value : '';
+    
+    if (emailVal === 'phanee2005@gmail.com' && passVal === 'phani@1228') {
       sessionStorage.setItem('admin_logged_in', 'true');
       loginModal.classList.remove('active');
       openDashboard();
