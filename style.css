@@ -275,7 +275,7 @@ section .title::after {
   padding: 40px 30px; transition: all 0.4s ease; backdrop-filter: blur(12px); position: relative;
 }
 .services .box:hover {
-  transform: translateY(-10px); border-color: rgba(249, 202, 36, 0.4);
+  border-color: rgba(249, 202, 36, 0.4);
   box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(249, 202, 36, 0.05);
 }
 .services .box > span {

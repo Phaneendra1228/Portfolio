@@ -234,14 +234,7 @@ if (typeof VanillaTilt !== 'undefined') {
 
   
   // A helper function to initialize tilt on dynamically loaded projects
-  window.initTilt = function() {
-    VanillaTilt.init(document.querySelectorAll(".services .box"), {
-      max: 8,
-      speed: 400,
-      glare: true,
-      "max-glare": 0.1
-    });
-  };
+  window.initTilt = function() {};
 }
 
 // Background Parallax Mouse Effect
