@@ -1,3 +1,58 @@
+// ===== DATABASE INITIALIZATION =====
+const defaultProjects = [
+  {
+    title: "LearnFlow",
+    tag: "Web Development",
+    description: "A comprehensive learning management system focused on interactive training, seamless collaboration, and academic growth.",
+    link: "https://learnflow-i17r.onrender.com/login"
+  },
+  {
+    title: "Interview Mentor",
+    tag: "App Development",
+    description: "A desktop-based simulation and coaching platform to help students master coding interviews and behavioral rounds.",
+    link: "https://github.com/Phaneendra1228/Interview-Mentor"
+  },
+  {
+    title: "Personalized Entrance Exam Coach",
+    tag: "Web Development",
+    description: "An intelligent tutoring system that tailors mock exams, revision schedules, and practice questions to student performance.",
+    link: "https://learnflow-i17r.onrender.com/login"
+  }
+];
+
+const defaultCerts = [
+  {
+    title: "Tech Summit, Techknow 2.0",
+    org: "Knowvation Learnings Pvt. Ltd.",
+    badge: "green",
+    date: "7th, 8th, 9th March 2025",
+    pdf: "Knowation Learning Hackathon.pdf",
+    description: "Participated in Techknow 2.0, a 24-Hour Hackathon & Tech Summit organized by Knowvation Learnings Pvt. Ltd.. Collaborated on innovative technology solutions, enhanced problem-solving abilities, and gained valuable experience in teamwork, creativity, and real-time project development in a competitive environment."
+  },
+  {
+    title: "Fresher's CodeStorm 2K25",
+    org: "Narsimha Reddy Engineering College",
+    badge: "yellow",
+    date: "25 April 2025",
+    pdf: "Hackathon Certificate.pdf",
+    description: "Secured Second Prize at CODESTORM 2K25, an 8-hour hackathon conducted by Narsimha Reddy Engineering College. Collaborated with team CTRL FREAKS (CS163) to solve real-time challenges through innovation, teamwork, and quick problem-solving under pressure."
+  },
+  {
+    title: "Avinya Technical Event",
+    org: "Anurag University",
+    badge: "cyan",
+    date: "2025",
+    pdf: "Certificate_Avinya.pdf",
+    description: "Successfully participated in AVINYA 2K25, a 24-Hour National Level Hackathon organized by the Department of Artificial Intelligence at Anurag University. Gained hands-on experience in AI-driven innovation, teamwork, and real-time problem-solving while collaborating on impactful technology solutions in a competitive environment."
+  }
+];
+
+if (!localStorage.getItem('portfolio_initialized')) {
+  localStorage.setItem('custom_projects', JSON.stringify(defaultProjects));
+  localStorage.setItem('custom_certificates', JSON.stringify(defaultCerts));
+  localStorage.setItem('portfolio_initialized', 'true');
+}
+
 // Mobile menu toggle
 const menuBtn = document.querySelector('.menu-btn');
 const menu = document.querySelector('.navbar .menu');
@@ -57,61 +112,38 @@ function typewrite() {
 }
 typewrite();
 
-// Fetch GitHub projects
-async function loadProjects() {
+// Load Projects from Database
+function loadProjects() {
   const grid = document.getElementById('projectsGrid');
-  try {
-    const res = await fetch('https://api.github.com/users/Phaneendra1228/repos?sort=pushed&per_page=30');
-    const repos = await res.json();
-    const filtered = repos.filter(r => !r.fork && !r.archived);
-    const filteredProjects = filtered.filter(r => {
-      const name = r.name.toLowerCase();
-      const description = (r.description || '').toLowerCase();
-      return !['portfolio', 'personal-portfolio', 'portfolio-website', 'personal-portfolio-website'].includes(name)
-        && !description.includes('portfolio website');
-    });
-    if (!filteredProjects.length) {
-      grid.innerHTML = '<p style="text-align:center;color:#ccc;width:100%">Projects coming soon...</p>';
-      return;
+  if (!grid) return;
+  
+  const projects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+  
+  if (!projects.length) {
+    grid.innerHTML = '<p style="text-align:center;color:#ccc;width:100%">Projects coming soon...</p>';
+    return;
+  }
+  
+  grid.innerHTML = projects.map(p => {
+    let buttonsHtml = '';
+    if (p.link.includes('github.com')) {
+      buttonsHtml = `<a href="${p.link}" target="_blank" rel="noopener" class="project-link">View Project</a>`;
+    } else {
+      buttonsHtml = `<a href="${p.link}" target="_blank" rel="noopener" class="project-link" style="background: var(--accent-gradient); color: #fff; border: none;"><span class="live-dot"></span>Live</a>`;
     }
-    grid.innerHTML = filteredProjects.map(r => {
-      let link = r.html_url;
-      let title = r.name.replace(/-/g, ' ');
-      let tag = 'Web Development';
-      let liveLink = r.homepage || '';
-
-      if (r.name.toLowerCase() === 'personalized-entrance-exam-coach' || r.name.toLowerCase() === 'learnflow') {
-        liveLink = 'https://learnflow-i17r.onrender.com/login';
-        title = 'LearnFlow';
-      }
-      
-      if (title.toLowerCase() === 'interview mentor') {
-        tag = 'App Development';
-      }
-
-      let buttonsHtml = '';
-      if (liveLink) {
-        buttonsHtml = `<a href="${link}" target="_blank" rel="noopener" class="project-link">GitHub</a>
-                       <a href="${liveLink}" target="_blank" rel="noopener" class="project-link" style="background: var(--accent-gradient); color: #fff; border: none;"><span class="live-dot"></span>Live</a>`;
-      } else {
-        buttonsHtml = `<a href="${link}" target="_blank" rel="noopener" class="project-link">View Project</a>`;
-      }
-
-      return `
+    
+    return `
       <div class="box">
-        <span>${tag}</span>
+        <span>${p.tag}</span>
         <i class="fas fa-code"></i>
-        <h3>${title}</h3>
-        <p>${r.description || r.name.replace(/-/g, ' ')}</p>
+        <h3>${p.title}</h3>
+        <p>${p.description}</p>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           ${buttonsHtml}
         </div>
       </div>
-    `}).join('');
-    if (window.initTilt) window.initTilt();
-  } catch(e) {
-    grid.innerHTML = '<p style="text-align:center;color:#ccc;width:100%">Could not load projects. <a href="https://github.com/Phaneendra1228" style="color:#f9ca24">Visit GitHub</a></p>';
-  }
+    `;
+  }).join('');
 }
 
 // Contact form
@@ -316,44 +348,76 @@ function cropCanvas(canvas) {
   return tempCanvas;
 }
 
-// PDF Certificate Thumbnail Rendering
-window.addEventListener('load', function() {
-  if (typeof pdfjsLib === 'undefined') {
-    console.warn('PDF.js library not loaded');
+// Load Certificates from Database
+function loadCertificates() {
+  const grid = document.getElementById('certificatesGrid');
+  if (!grid) return;
+  
+  const certs = JSON.parse(localStorage.getItem('custom_certificates')) || [];
+  
+  if (!certs.length) {
+    grid.innerHTML = '<p style="text-align:center;color:#ccc;width:100%">Certificates coming soon...</p>';
     return;
   }
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+  
+  grid.innerHTML = certs.map(c => {
+    return `
+      <a href="${c.pdf}" target="_blank" rel="noopener noreferrer" class="cert-card">
+        <div class="cert-preview">
+          <img class="cert-img" src="" alt="${c.title} Certificate" data-pdf="${c.pdf}">
+        </div>
+        <div class="cert-body">
+          <div class="cert-title-row">
+            <h3>${c.title}</h3>
+            <span class="cert-badge cert-badge--${c.badge}">${c.badge === 'cyan' ? 'Certificate of Participation' : c.badge === 'yellow' ? 'Certificate of Merit' : 'Certificate of Participation'}</span>
+          </div>
+          <p class="cert-org"><i class="fas fa-university"></i> ${c.org}</p>
+          <p class="cert-date"><i class="far fa-calendar-alt"></i> ${c.date}</p>
+          <p class="cert-desc">${c.description}</p>
+        </div>
+      </a>
+    `;
+  }).join('');
+  
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+    document.querySelectorAll('.cert-img').forEach(async (img) => {
+      const pdfUrl = img.dataset.pdf;
+      if (!pdfUrl) return;
+      try {
+        const loadingTask = pdfjsLib.getDocument(pdfUrl);
+        const pdf = await loadingTask.promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 1 });
+        const scale = 600 / viewport.width;
+        const scaledViewport = page.getViewport({ scale });
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = scaledViewport.width;
+        canvas.height = scaledViewport.height;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
+        const croppedCanvas = cropCanvas(canvas);
+        img.src = croppedCanvas.toDataURL('image/png');
+      } catch (err) {
+        console.warn('PDF render failed for:', pdfUrl, err);
+        img.style.display = 'none';
+        const icon = document.createElement('div');
+        icon.innerHTML = '<i class="fas fa-file-pdf" style="font-size:48px;color:var(--accent-color);"></i><span style="font-size:14px;color:var(--text-muted);">Click to view</span>';
+        icon.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;';
+        img.parentElement.insertBefore(icon, img);
+      }
+    });
+  }
+}
 
-  document.querySelectorAll('.cert-img').forEach(async (img) => {
-    const pdfUrl = img.dataset.pdf;
-    if (!pdfUrl) return;
-    try {
-      const loadingTask = pdfjsLib.getDocument(pdfUrl);
-      const pdf = await loadingTask.promise;
-      const page = await pdf.getPage(1);
-      const viewport = page.getViewport({ scale: 1 });
-      const scale = 600 / viewport.width;
-      const scaledViewport = page.getViewport({ scale });
-      
-      const canvas = document.createElement('canvas');
-      canvas.width = scaledViewport.width;
-      canvas.height = scaledViewport.height;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
-      const croppedCanvas = cropCanvas(canvas);
-      img.src = croppedCanvas.toDataURL('image/png');
-    } catch (err) {
-      console.warn('PDF render failed for:', pdfUrl, err);
-      img.style.display = 'none';
-      const icon = document.createElement('div');
-      icon.innerHTML = '<i class="fas fa-file-pdf" style="font-size:48px;color:var(--accent-color);"></i><span style="font-size:14px;color:var(--text-muted);">Click to view</span>';
-      icon.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;';
-      img.parentElement.insertBefore(icon, img);
-    }
-  });
+// Initial Dynamic Load Trigger
+document.addEventListener('DOMContentLoaded', () => {
+  loadProjects();
+  loadCertificates();
 });
 
 // ===== PRELOADER LOGIC & CANVAS CONSTELLATION =====
@@ -481,4 +545,338 @@ window.addEventListener('load', function() {
     }
     checkAndFade();
   }, 3200);
+})();
+
+// ===== ADMIN PANEL LOGIC =====
+(function() {
+  const adminFloatBtn = document.getElementById('admin-float-btn');
+  const loginModal = document.getElementById('admin-login-modal');
+  const dashboardModal = document.getElementById('admin-dashboard-modal');
+  const projFormModal = document.getElementById('project-form-modal');
+  const certFormModal = document.getElementById('cert-form-modal');
+  const exportModal = document.getElementById('export-config-modal');
+  
+  const closeLogin = document.getElementById('close-login-modal');
+  const closeDashboard = document.getElementById('close-dashboard-modal');
+  const closeProjForm = document.getElementById('close-project-form');
+  const closeCertForm = document.getElementById('close-cert-form');
+  const closeExport = document.getElementById('close-export-modal');
+  
+  const loginSubmit = document.getElementById('login-submit-btn');
+  const adminPasswordInput = document.getElementById('admin-password');
+  const loginError = document.getElementById('login-error');
+  const logoutBtn = document.getElementById('btn-admin-logout');
+  
+  // Tab Switching
+  const tabBtnProjects = document.getElementById('tab-btn-projects');
+  const tabBtnCerts = document.getElementById('tab-btn-certs');
+  const tabProjects = document.getElementById('tab-projects');
+  const tabCerts = document.getElementById('tab-certs');
+  
+  // Dashboard lists
+  const adminProjectsList = document.getElementById('admin-projects-list');
+  const adminCertsList = document.getElementById('admin-certs-list');
+  
+  // Form submission and trigger buttons
+  const btnAddProject = document.getElementById('btn-add-project');
+  const btnAddCert = document.getElementById('btn-add-cert');
+  const btnExportConfig = document.getElementById('btn-export-config');
+  const projectForm = document.getElementById('project-form');
+  const certForm = document.getElementById('cert-form');
+  
+  // Export Elements
+  const exportDataJson = document.getElementById('export-data-json');
+  const btnCopyExport = document.getElementById('btn-copy-export');
+
+  // Open modals
+  if (adminFloatBtn) {
+    adminFloatBtn.addEventListener('click', () => {
+      if (sessionStorage.getItem('admin_logged_in') === 'true') {
+        openDashboard();
+      } else {
+        loginModal.classList.add('active');
+        adminPasswordInput.value = '';
+        adminPasswordInput.focus();
+        loginError.style.display = 'none';
+      }
+    });
+  }
+  
+  // Close buttons
+  const modalsList = [
+    { btn: closeLogin, modal: loginModal },
+    { btn: closeDashboard, modal: dashboardModal },
+    { btn: closeProjForm, modal: projFormModal },
+    { btn: closeCertForm, modal: certFormModal },
+    { btn: closeExport, modal: exportModal }
+  ];
+  
+  modalsList.forEach(m => {
+    if (m.btn) {
+      m.btn.addEventListener('click', () => {
+        m.modal.classList.remove('active');
+      });
+    }
+  });
+
+  // Handle Login
+  if (loginSubmit) {
+    loginSubmit.addEventListener('click', performLogin);
+  }
+  if (adminPasswordInput) {
+    adminPasswordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') performLogin();
+    });
+  }
+  
+  function performLogin() {
+    if (adminPasswordInput.value === 'admin') {
+      sessionStorage.setItem('admin_logged_in', 'true');
+      loginModal.classList.remove('active');
+      openDashboard();
+    } else {
+      loginError.style.display = 'block';
+    }
+  }
+  
+  // Tabs management
+  if (tabBtnProjects && tabBtnCerts) {
+    tabBtnProjects.addEventListener('click', () => {
+      tabBtnProjects.classList.add('active');
+      tabBtnCerts.classList.remove('active');
+      tabProjects.classList.add('active');
+      tabCerts.classList.remove('active');
+    });
+    tabBtnCerts.addEventListener('click', () => {
+      tabBtnCerts.classList.add('active');
+      tabBtnProjects.classList.remove('active');
+      tabCerts.classList.add('active');
+      tabProjects.classList.remove('active');
+    });
+  }
+  
+  // Open Dashboard Controls
+  function openDashboard() {
+    renderDashboardLists();
+    dashboardModal.classList.add('active');
+  }
+  
+  // Render Project/Cert lists inside dashboard
+  function renderDashboardLists() {
+    const projects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+    const certs = JSON.parse(localStorage.getItem('custom_certificates')) || [];
+    
+    // Render Projects list
+    if (adminProjectsList) {
+      if (!projects.length) {
+        adminProjectsList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">No projects found.</p>';
+      } else {
+        adminProjectsList.innerHTML = projects.map((p, idx) => `
+          <div class="admin-item">
+            <div class="admin-item-info">
+              <h5>${p.title}</h5>
+              <span>${p.tag}</span>
+            </div>
+            <div class="admin-item-actions">
+              <button class="btn-edit" onclick="editProject(${idx})"><i class="fas fa-edit" style="color: #06b6d4;"></i></button>
+              <button class="btn-del" onclick="deleteProject(${idx})"><i class="fas fa-trash-alt" style="color: #ef4444;"></i></button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+    
+    // Render Certificates list
+    if (adminCertsList) {
+      if (!certs.length) {
+        adminCertsList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">No certificates found.</p>';
+      } else {
+        adminCertsList.innerHTML = certs.map((c, idx) => `
+          <div class="admin-item">
+            <div class="admin-item-info">
+              <h5>${c.title}</h5>
+              <span>${c.org}</span>
+            </div>
+            <div class="admin-item-actions">
+              <button class="btn-edit" onclick="editCertificate(${idx})"><i class="fas fa-edit" style="color: #06b6d4;"></i></button>
+              <button class="btn-del" onclick="deleteCertificate(${idx})"><i class="fas fa-trash-alt" style="color: #ef4444;"></i></button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+  }
+  
+  // Expose CRUD actions globally so onclick handles work
+  window.deleteProject = function(idx) {
+    if (confirm('Are you sure you want to delete this project?')) {
+      const projects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+      projects.splice(idx, 1);
+      localStorage.setItem('custom_projects', JSON.stringify(projects));
+      renderDashboardLists();
+      loadProjects();
+    }
+  };
+  
+  window.deleteCertificate = function(idx) {
+    if (confirm('Are you sure you want to delete this certificate?')) {
+      const certs = JSON.parse(localStorage.getItem('custom_certificates')) || [];
+      certs.splice(idx, 1);
+      localStorage.setItem('custom_certificates', JSON.stringify(certs));
+      renderDashboardLists();
+      loadCertificates();
+    }
+  };
+  
+  // Save Project Form
+  if (projectForm) {
+    projectForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const idx = document.getElementById('project-edit-index').value;
+      const projects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+      
+      const newProj = {
+        title: document.getElementById('form-proj-title').value,
+        tag: document.getElementById('form-proj-category').value,
+        link: document.getElementById('form-proj-link').value,
+        description: document.getElementById('form-proj-desc').value
+      };
+      
+      if (idx !== "") {
+        projects[parseInt(idx)] = newProj;
+      } else {
+        projects.push(newProj);
+      }
+      
+      localStorage.setItem('custom_projects', JSON.stringify(projects));
+      projFormModal.classList.remove('active');
+      renderDashboardLists();
+      loadProjects();
+    });
+  }
+  
+  // Save Certificate Form
+  if (certForm) {
+    certForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const idx = document.getElementById('cert-edit-index').value;
+      const certs = JSON.parse(localStorage.getItem('custom_certificates')) || [];
+      
+      const newCert = {
+        title: document.getElementById('form-cert-title').value,
+        org: document.getElementById('form-cert-org').value,
+        badge: document.getElementById('form-cert-badge-type').value,
+        date: document.getElementById('form-cert-date').value,
+        pdf: document.getElementById('form-cert-pdf').value,
+        description: document.getElementById('form-cert-desc').value
+      };
+      
+      if (idx !== "") {
+        certs[parseInt(idx)] = newCert;
+      } else {
+        certs.push(newCert);
+      }
+      
+      localStorage.setItem('custom_certificates', JSON.stringify(certs));
+      certFormModal.classList.remove('active');
+      renderDashboardLists();
+      loadCertificates();
+    });
+  }
+  
+  // Add Project Trigger
+  if (btnAddProject) {
+    btnAddProject.addEventListener('click', () => {
+      document.getElementById('project-form-title').textContent = "Add Project";
+      document.getElementById('project-edit-index').value = "";
+      document.getElementById('form-proj-title').value = "";
+      document.getElementById('form-proj-category').value = "";
+      document.getElementById('form-proj-link').value = "";
+      document.getElementById('form-proj-desc').value = "";
+      projFormModal.classList.add('active');
+    });
+  }
+  
+  // Add Cert Trigger
+  if (btnAddCert) {
+    btnAddCert.addEventListener('click', () => {
+      document.getElementById('cert-form-title').textContent = "Add Certificate";
+      document.getElementById('cert-edit-index').value = "";
+      document.getElementById('form-cert-title').value = "";
+      document.getElementById('form-cert-org').value = "";
+      document.getElementById('form-cert-badge-type').value = "cyan";
+      document.getElementById('form-cert-date').value = "";
+      document.getElementById('form-cert-pdf').value = "";
+      document.getElementById('form-cert-desc').value = "";
+      certFormModal.classList.add('active');
+    });
+  }
+  
+  // Edit handlers
+  window.editProject = function(idx) {
+    const projects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+    const p = projects[idx];
+    if (p) {
+      document.getElementById('project-form-title').textContent = "Edit Project";
+      document.getElementById('project-edit-index').value = idx;
+      document.getElementById('form-proj-title').value = p.title;
+      document.getElementById('form-proj-category').value = p.tag;
+      document.getElementById('form-proj-link').value = p.link;
+      document.getElementById('form-proj-desc').value = p.description;
+      projFormModal.classList.add('active');
+    }
+  };
+  
+  window.editCertificate = function(idx) {
+    const certs = JSON.parse(localStorage.getItem('custom_certificates')) || [];
+    const c = certs[idx];
+    if (c) {
+      document.getElementById('cert-form-title').textContent = "Edit Certificate";
+      document.getElementById('cert-edit-index').value = idx;
+      document.getElementById('form-cert-title').value = c.title;
+      document.getElementById('form-cert-org').value = c.org;
+      document.getElementById('form-cert-badge-type').value = c.badge;
+      document.getElementById('form-cert-date').value = c.date;
+      document.getElementById('form-cert-pdf').value = c.pdf;
+      document.getElementById('form-cert-desc').value = c.description;
+      certFormModal.classList.add('active');
+    }
+  };
+  
+  // Logout Trigger
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      sessionStorage.removeItem('admin_logged_in');
+      dashboardModal.classList.remove('active');
+    });
+  }
+  
+  // Export Config Trigger
+  if (btnExportConfig) {
+    btnExportConfig.addEventListener('click', () => {
+      const projects = localStorage.getItem('custom_projects');
+      const certs = localStorage.getItem('custom_certificates');
+      
+      const configText = `// Copy and replace the database arrays at the beginning of script.js to make your edits permanent!
+
+const defaultProjects = ${projects};
+
+const defaultCerts = ${certs};`;
+      
+      exportDataJson.value = configText;
+      exportModal.classList.add('active');
+    });
+  }
+  
+  // Copy to clipboard
+  if (btnCopyExport && exportDataJson) {
+    btnCopyExport.addEventListener('click', () => {
+      exportDataJson.select();
+      document.execCommand('copy');
+      btnCopyExport.innerHTML = '<i class="fas fa-check"></i> Copied!';
+      setTimeout(() => {
+        btnCopyExport.innerHTML = '<i class="far fa-copy"></i> Copy Configuration Code';
+      }, 2000);
+    });
+  }
 })();

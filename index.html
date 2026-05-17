@@ -23,7 +23,7 @@
   <meta property="twitter:description" content="Portfolio of J.N.V. Phaneendra – Full Stack Developer & AI/ML undergraduate crafting seamless digital experiences and intelligent systems.">
   <meta property="twitter:image" content="https://phaneendra1228.github.io/Portfolio/preview-logo.png">
 
-  <link rel="stylesheet" href="style.css?v=27">
+  <link rel="stylesheet" href="style.css?v=28">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22%23bae6fd%22/><path d=%22M 30 78 L 70 78 L 62 70 L 38 70 Z%22 fill=%22%231e293b%22/><rect x=%2244%22 y=%2265%22 width=%2212%22 height=%2210%22 fill=%22%23334155%22/><rect x=%2215%22 y=%2220%22 width=%2270%22 height=%2248%22 rx=%224%22 fill=%22%231e293b%22/><rect x=%2218%22 y=%2223%22 width=%2264%22 height=%2242%22 rx=%222%22 fill=%22%2306b6d4%22/><rect x=%2218%22 y=%2223%22 width=%2264%22 height=%226%22 rx=%221%22 fill=%22%23f9ca24%22/><text x=%2250%22 y=%2250%22 font-family=%22sans-serif%22 font-size=%228.5%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22>PHANEENDRA</text></svg>">
 </head>
@@ -191,53 +191,8 @@
 <section class="certificates" id="certificates">
   <div class="max-width">
     <h2 class="title">My Certificates</h2>
-    <div class="cert-grid">
-
-      <a href="Knowation Learning Hackathon.pdf" target="_blank" rel="noopener noreferrer" class="cert-card">
-        <div class="cert-preview">
-          <img class="cert-img" src="" alt="Tech Summit, Techknow 2.0 Certificate" data-pdf="Knowation Learning Hackathon.pdf">
-        </div>
-        <div class="cert-body">
-          <div class="cert-title-row">
-            <h3>Tech Summit, Techknow 2.0</h3>
-            <span class="cert-badge cert-badge--green">Certificate of Participation</span>
-          </div>
-          <p class="cert-org"><i class="fas fa-university"></i> Knowvation Learnings Pvt. Ltd.</p>
-          <p class="cert-date"><i class="far fa-calendar-alt"></i> 7th, 8th, 9th March 2025</p>
-          <p class="cert-desc">Participated in Techknow 2.0, a 24-Hour Hackathon & Tech Summit organized by Knowvation Learnings Pvt. Ltd.. Collaborated on innovative technology solutions, enhanced problem-solving abilities, and gained valuable experience in teamwork, creativity, and real-time project development in a competitive environment.</p>
-        </div>
-      </a>
-
-      <a href="Hackathon Certificate.pdf" target="_blank" rel="noopener noreferrer" class="cert-card">
-        <div class="cert-preview">
-          <img class="cert-img" src="" alt="Fresher's CodeStorm 2K25 Certificate" data-pdf="Hackathon Certificate.pdf">
-        </div>
-        <div class="cert-body">
-          <div class="cert-title-row">
-            <h3>Fresher's CodeStorm 2K25</h3>
-            <span class="cert-badge cert-badge--yellow">Certificate of Merit</span>
-          </div>
-          <p class="cert-org"><i class="fas fa-university"></i> Narsimha Reddy Engineering College</p>
-          <p class="cert-date"><i class="far fa-calendar-alt"></i> 25 April 2025</p>
-          <p class="cert-desc">Secured Second Prize at CODESTORM 2K25, an 8-hour hackathon conducted by Narsimha Reddy Engineering College. Collaborated with team CTRL FREAKS (CS163) to solve real-time challenges through innovation, teamwork, and quick problem-solving under pressure.</p>
-        </div>
-      </a>
-
-      <a href="Certificate_Avinya.pdf" target="_blank" rel="noopener noreferrer" class="cert-card">
-        <div class="cert-preview">
-          <img class="cert-img" src="" alt="Avinya Certificate" data-pdf="Certificate_Avinya.pdf">
-        </div>
-        <div class="cert-body">
-          <div class="cert-title-row">
-            <h3>Avinya Technical Event</h3>
-            <span class="cert-badge cert-badge--cyan">Certificate of Participation</span>
-          </div>
-          <p class="cert-org"><i class="fas fa-university"></i> Anurag University</p>
-          <p class="cert-date"><i class="far fa-calendar-alt"></i> 2025</p>
-          <p class="cert-desc">Successfully participated in AVINYA 2K25, a 24-Hour National Level Hackathon organized by the Department of Artificial Intelligence at Anurag University. Gained hands-on experience in AI-driven innovation, teamwork, and real-time problem-solving while collaborating on impactful technology solutions in a competitive environment.</p>
-        </div>
-      </a>
-
+    <div class="cert-grid" id="certificatesGrid">
+      <!-- Dynamic Certificates loaded from script.js -->
     </div>
   </div>
 </section>
@@ -361,8 +316,169 @@
   <i class="fas fa-angle-up"></i>
 </div>
 
+<!-- Admin Floating Button -->
+<div class="admin-float-btn" id="admin-float-btn">
+  <i class="fas fa-cog"></i> Admin
+</div>
+
+<!-- Admin Login Modal -->
+<div class="admin-modal" id="admin-login-modal">
+  <div class="admin-modal-content">
+    <div class="admin-modal-header">
+      <h3>Admin Authentication</h3>
+      <span class="close-modal" id="close-login-modal">&times;</span>
+    </div>
+    <div class="admin-modal-body">
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px; line-height: 1.5;">Enter password to access administration panel controls.</p>
+      <div class="admin-input-group">
+        <input type="password" id="admin-password" placeholder="Password (default: admin)">
+      </div>
+      <div id="login-error" class="admin-error-msg" style="display: none; color: #ef4444; font-size: 13px; margin: 10px 0; font-weight: 500;">❌ Incorrect password!</div>
+      <button class="admin-btn" id="login-submit-btn">Unlock Controls</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Dashboard Modal -->
+<div class="admin-modal" id="admin-dashboard-modal">
+  <div class="admin-modal-content dashboard-content">
+    <div class="admin-modal-header">
+      <h3><i class="fas fa-sliders-h"></i> Admin Controls</h3>
+      <span class="close-modal" id="close-dashboard-modal">&times;</span>
+    </div>
+    <div class="admin-modal-body">
+      <div class="admin-tabs">
+        <button class="tab-btn active" data-tab="tab-projects" id="tab-btn-projects">Projects</button>
+        <button class="tab-btn" data-tab="tab-certs" id="tab-btn-certs">Certificates</button>
+      </div>
+      
+      <!-- Projects Tab -->
+      <div class="tab-content active" id="tab-projects">
+        <div class="tab-header">
+          <h4>Manage Projects</h4>
+          <button class="admin-btn-sm" id="btn-add-project"><i class="fas fa-plus"></i> Add Project</button>
+        </div>
+        <div class="admin-list" id="admin-projects-list">
+          <!-- Dynamic Projects list -->
+        </div>
+      </div>
+      
+      <!-- Certificates Tab -->
+      <div class="tab-content" id="tab-certs">
+        <div class="tab-header">
+          <h4>Manage Certificates</h4>
+          <button class="admin-btn-sm" id="btn-add-cert"><i class="fas fa-plus"></i> Add Certificate</button>
+        </div>
+        <div class="admin-list" id="admin-certs-list">
+          <!-- Dynamic Certs list -->
+        </div>
+      </div>
+      
+      <div class="dashboard-footer" style="display: flex; gap: 15px; margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+        <button class="admin-btn btn-secondary" id="btn-export-config" style="background: rgba(6, 182, 212, 0.1); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.3);"><i class="fas fa-file-export"></i> Export Config</button>
+        <button class="admin-btn btn-danger" id="btn-admin-logout" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);"><i class="fas fa-lock"></i> Lock Controls</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Project Form Modal -->
+<div class="admin-modal" id="project-form-modal">
+  <div class="admin-modal-content form-content">
+    <div class="admin-modal-header">
+      <h3 id="project-form-title">Add Project</h3>
+      <span class="close-modal" id="close-project-form">&times;</span>
+    </div>
+    <div class="admin-modal-body">
+      <form id="project-form">
+        <input type="hidden" id="project-edit-index">
+        <div class="form-group">
+          <label>Project Title</label>
+          <input type="text" id="form-proj-title" placeholder="e.g. LearnFlow" required>
+        </div>
+        <div class="form-group">
+          <label>Category/Tag</label>
+          <input type="text" id="form-proj-category" placeholder="e.g. Web Development" required>
+        </div>
+        <div class="form-group">
+          <label>Live URL / GitHub URL</label>
+          <input type="url" id="form-proj-link" placeholder="e.g. https://learnflow-i17r.onrender.com/login" required>
+        </div>
+        <div class="form-group">
+          <label>Project Description</label>
+          <textarea id="form-proj-desc" rows="4" placeholder="Details about project..." required></textarea>
+        </div>
+        <button type="submit" class="admin-btn" id="btn-save-project">Save Project</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Certificate Form Modal -->
+<div class="admin-modal" id="cert-form-modal">
+  <div class="admin-modal-content form-content">
+    <div class="admin-modal-header">
+      <h3 id="cert-form-title">Add Certificate</h3>
+      <span class="close-modal" id="close-cert-form">&times;</span>
+    </div>
+    <div class="admin-modal-body">
+      <form id="cert-form">
+        <input type="hidden" id="cert-edit-index">
+        <div class="form-group">
+          <label>Certificate Title</label>
+          <input type="text" id="form-cert-title" placeholder="e.g. Certificate of Merit" required>
+        </div>
+        <div class="form-group">
+          <label>Organizing Body</label>
+          <input type="text" id="form-cert-org" placeholder="e.g. Narsimha Reddy Engineering College" required>
+        </div>
+        <div class="form-group">
+          <label>Badge Style</label>
+          <select id="form-cert-badge-type" style="width: 100%; padding: 12px; background: rgba(30,41,59,0.5); border: 1px solid var(--border-color); color: #fff; border-radius: 10px; outline: none; margin-bottom: 15px;">
+            <option value="cyan">Certificate of Participation (Cyan)</option>
+            <option value="yellow">Certificate of Merit (Yellow)</option>
+            <option value="green">Certificate of Participation (Green)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="text" id="form-cert-date" placeholder="e.g. 25 April 2025" required>
+        </div>
+        <div class="form-group">
+          <label>PDF Filename / URL</label>
+          <input type="text" id="form-cert-pdf" placeholder="e.g. Certificate_Avinya.pdf" required>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="form-cert-desc" rows="4" placeholder="Details about this achievement..." required></textarea>
+        </div>
+        <button type="submit" class="admin-btn" id="btn-save-cert">Save Certificate</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Export Config Modal -->
+<div class="admin-modal" id="export-config-modal">
+  <div class="admin-modal-content dashboard-content" style="max-width: 650px;">
+    <div class="admin-modal-header">
+      <h3><i class="fas fa-file-export"></i> Export HTML Configuration</h3>
+      <span class="close-modal" id="close-export-modal">&times;</span>
+    </div>
+    <div class="admin-modal-body">
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px; line-height: 1.5;">To make your custom edits **permanent** for everyone globally (so they load without localStorage), simply copy the updated HTML configurations below and paste them into your project files, or send them to us to push to GitHub!</p>
+      
+      <div class="form-group">
+        <label>Updated Data Configuration (Copy the block below)</label>
+        <textarea id="export-data-json" rows="12" readonly style="width: 100%; font-family: monospace; font-size: 12px; padding: 15px; background: #0c0f1d; border: 1px solid var(--border-color); border-radius: 12px; color: #06b6d4; outline: none; resize: none; margin-bottom: 15px;"></textarea>
+      </div>
+      <button class="admin-btn" id="btn-copy-export"><i class="far fa-copy"></i> Copy Configuration Code</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-<script src="script.js?v=20"></script>
+<script src="script.js?v=21"></script>
 </body>
 </html>
