@@ -737,6 +737,20 @@ body.light-mode .cert-date {
 }
 
 @media (max-width: 768px) {
+  /* Disable heavy background glow animations and translations on mobile to prevent GPU composition lag */
+  body::before, body::after {
+    animation: none !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+  
+  /* Disable intensive real-time backdrop blur filtering on large content boxes for mobile Safari/Chrome */
+  .contact .contact-content,
+  .footer {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
   .menu-btn { display: block; z-index: 1000; }
   .navbar .menu {
     position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;

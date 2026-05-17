@@ -309,20 +309,22 @@ if (scrollUpBtn) {
 // A helper function to initialize tilt on dynamically loaded projects
 window.initTilt = function() {};
 
-// Background Parallax Mouse Effect (Optimized with requestAnimationFrame ticking lock)
+// Background Parallax Mouse Effect (Optimized with requestAnimationFrame ticking lock & only runs on desktop)
 let mouseTicking = false;
-document.addEventListener('mousemove', (e) => {
-  if (!mouseTicking) {
-    window.requestAnimationFrame(() => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
-      document.body.style.setProperty('--mouse-x', x);
-      document.body.style.setProperty('--mouse-y', y);
-      mouseTicking = false;
-    });
-    mouseTicking = true;
-  }
-}, { passive: true });
+if (window.innerWidth >= 768) {
+  document.addEventListener('mousemove', (e) => {
+    if (!mouseTicking) {
+      window.requestAnimationFrame(() => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 2;
+        const y = (e.clientY / window.innerHeight - 0.5) * 2;
+        document.body.style.setProperty('--mouse-x', x);
+        document.body.style.setProperty('--mouse-y', y);
+        mouseTicking = false;
+      });
+      mouseTicking = true;
+    }
+  }, { passive: true });
+}
 
 // Helper to crop white margins from the generated certificate thumbnail canvas
 function cropCanvas(canvas) {
