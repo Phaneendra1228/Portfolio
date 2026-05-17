@@ -226,11 +226,7 @@ if (typeof VanillaTilt !== 'undefined') {
     glare: true,
     "max-glare": 0.2
   });
-  VanillaTilt.init(document.querySelectorAll(".check-bg"), {
-    max: 15,
-    speed: 400,
-    scale: 1.05
-  });
+
 
   
   // A helper function to initialize tilt on dynamically loaded projects

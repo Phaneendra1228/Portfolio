@@ -557,7 +557,7 @@ body.light-mode .cert-date {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .check-bg:hover {
-  background: var(--accent-gradient); border-color: transparent; transform: translateY(-10px);
+  background: var(--accent-gradient); border-color: transparent;
   box-shadow: 0 20px 40px rgba(249, 202, 36, 0.3);
 }
 .check-bg i { font-size: 60px; color: var(--text-main); transition: all 0.3s; }
