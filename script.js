@@ -257,6 +257,93 @@ document.addEventListener('mousemove', (e) => {
   document.body.style.setProperty('--mouse-y', y);
 });
 
+// Helper to crop white margins from the generated certificate thumbnail canvas
+function cropCanvas(canvas) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width;
+  const h = canvas.height;
+  const imgData = ctx.getImageData(0, 0, w, h);
+  const data = imgData.data;
+  
+  let top = 0, bottom = h - 1, left = 0, right = w - 1;
+  
+  // Find top bound (scanning for non-white pixels)
+  outerLoop1: for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const idx = (y * w + x) * 4;
+      const r = data[idx];
+      const g = data[idx + 1];
+      const b = data[idx + 2];
+      // Pixel is not white (with safe threshold 240)
+      if (r < 240 || g < 240 || b < 240) {
+        top = y;
+        break outerLoop1;
+      }
+    }
+  }
+  
+  // Find bottom bound
+  outerLoop2: for (let y = h - 1; y >= 0; y--) {
+    for (let x = 0; x < w; x++) {
+      const idx = (y * w + x) * 4;
+      const r = data[idx];
+      const g = data[idx + 1];
+      const b = data[idx + 2];
+      if (r < 240 || g < 240 || b < 240) {
+        bottom = y;
+        break outerLoop2;
+      }
+    }
+  }
+  
+  // Find left bound
+  outerLoop3: for (let x = 0; x < w; x++) {
+    for (let y = 0; y < h; y++) {
+      const idx = (y * w + x) * 4;
+      const r = data[idx];
+      const g = data[idx + 1];
+      const b = data[idx + 2];
+      if (r < 240 || g < 240 || b < 240) {
+        left = x;
+        break outerLoop3;
+      }
+    }
+  }
+  
+  // Find right bound
+  outerLoop4: for (let x = w - 1; x >= 0; x--) {
+    for (let y = 0; y < h; y++) {
+      const idx = (y * w + x) * 4;
+      const r = data[idx];
+      const g = data[idx + 1];
+      const b = data[idx + 2];
+      if (r < 240 || g < 240 || b < 240) {
+        right = x;
+        break outerLoop4;
+      }
+    }
+  }
+  
+  // Apply a small padding so it doesn't crop exactly to the pixel edge
+  const padding = 10;
+  left = Math.max(0, left - padding);
+  top = Math.max(0, top - padding);
+  right = Math.min(w - 1, right + padding);
+  bottom = Math.min(h - 1, bottom + padding);
+  
+  const cropWidth = right - left + 1;
+  const cropHeight = bottom - top + 1;
+  
+  if (cropWidth <= 0 || cropHeight <= 0) return canvas;
+  
+  const tempCanvas = document.createElement('canvas');
+  tempCanvas.width = cropWidth;
+  tempCanvas.height = cropHeight;
+  const tempCtx = tempCanvas.getContext('2d');
+  tempCtx.drawImage(canvas, left, top, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight);
+  return tempCanvas;
+}
+
 // PDF Certificate Thumbnail Rendering
 window.addEventListener('load', function() {
   if (typeof pdfjsLib === 'undefined') {
@@ -284,7 +371,8 @@ window.addEventListener('load', function() {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       
       await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
-      img.src = canvas.toDataURL('image/png');
+      const croppedCanvas = cropCanvas(canvas);
+      img.src = croppedCanvas.toDataURL('image/png');
     } catch (err) {
       console.warn('PDF render failed for:', pdfUrl, err);
       img.style.display = 'none';
