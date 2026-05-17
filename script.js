@@ -252,7 +252,7 @@ const observer = new IntersectionObserver((entries, observer) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('active');
-      // observer.unobserve(entry.target); // Optional: stop observing once revealed
+      observer.unobserve(entry.target); // Stop observing once revealed to free up CPU/GPU
     }
   });
 }, observerOptions);
@@ -262,36 +262,50 @@ document.querySelectorAll('section').forEach(sec => {
   observer.observe(sec);
 });
 
-// Sticky Navbar & Scroll Up Button & Scroll Progress Scroll Effect
+// Sticky Navbar & Scroll Up Button & Scroll Progress Scroll Effect (Optimized with requestAnimationFrame & DOM Cache)
+const nav = document.querySelector('.navbar');
 const scrollUpBtn = document.querySelector('.scroll-up-btn');
 const scrollProgress = document.getElementById('scroll-progress');
 
-window.addEventListener('scroll', () => {
-  // Sticky Navbar
-  const nav = document.querySelector('.navbar');
-  if (window.scrollY > 50) {
-    nav.classList.add('scrolled');
-  } else {
-    nav.classList.remove('scrolled');
-  }
-  
-  // Scroll Up Button
-  if (scrollUpBtn) {
-    if (window.scrollY > 500) {
-      scrollUpBtn.classList.add('show');
-    } else {
-      scrollUpBtn.classList.remove('show');
-    }
-  }
+let scrollTicking = false;
 
-  // Scroll Progress Bar
-  if (scrollProgress) {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    scrollProgress.style.width = scrolled + '%';
+window.addEventListener('scroll', () => {
+  if (!scrollTicking) {
+    window.requestAnimationFrame(() => {
+      const scrollY = window.scrollY;
+
+      // Sticky Navbar
+      if (nav) {
+        if (scrollY > 50) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      }
+      
+      // Scroll Up Button
+      if (scrollUpBtn) {
+        if (scrollY > 500) {
+          scrollUpBtn.classList.add('show');
+        } else {
+          scrollUpBtn.classList.remove('show');
+        }
+      }
+
+      // Scroll Progress Bar
+      if (scrollProgress) {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = height > 0 ? (winScroll / height) * 100 : 0;
+        scrollProgress.style.width = scrolled + '%';
+      }
+      
+      scrollTicking = false;
+    });
+    
+    scrollTicking = true;
   }
-});
+}, { passive: true });
 
 // Scroll Up Button Click
 if (scrollUpBtn) {
@@ -303,13 +317,20 @@ if (scrollUpBtn) {
 // A helper function to initialize tilt on dynamically loaded projects
 window.initTilt = function() {};
 
-// Background Parallax Mouse Effect
+// Background Parallax Mouse Effect (Optimized with requestAnimationFrame ticking lock)
+let mouseTicking = false;
 document.addEventListener('mousemove', (e) => {
-  const x = (e.clientX / window.innerWidth - 0.5) * 2;
-  const y = (e.clientY / window.innerHeight - 0.5) * 2;
-  document.body.style.setProperty('--mouse-x', x);
-  document.body.style.setProperty('--mouse-y', y);
-});
+  if (!mouseTicking) {
+    window.requestAnimationFrame(() => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+      document.body.style.setProperty('--mouse-x', x);
+      document.body.style.setProperty('--mouse-y', y);
+      mouseTicking = false;
+    });
+    mouseTicking = true;
+  }
+}, { passive: true });
 
 // Helper to crop white margins from the generated certificate thumbnail canvas
 function cropCanvas(canvas) {
