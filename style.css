@@ -531,6 +531,21 @@ body.light-mode .education .box h3 { color: #d97706; }
   color: #f9ca24;
   border: 1px solid rgba(249, 202, 36, 0.3);
 }
+body.light-mode .cert-badge--green {
+  background: rgba(4, 120, 87, 0.1);
+  color: #047857;
+  border-color: rgba(4, 120, 87, 0.25);
+}
+body.light-mode .cert-badge--cyan {
+  background: rgba(14, 116, 144, 0.1);
+  color: #0e7490;
+  border-color: rgba(14, 116, 144, 0.25);
+}
+body.light-mode .cert-badge--yellow {
+  background: rgba(180, 83, 9, 0.1);
+  color: #b45309;
+  border-color: rgba(180, 83, 9, 0.25);
+}
 .cert-org {
   font-size: 14px;
   color: var(--text-muted);
