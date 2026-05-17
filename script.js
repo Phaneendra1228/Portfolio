@@ -218,20 +218,8 @@ if (scrollUpBtn) {
   });
 }
 
-// Initialize 3D Tilt Effect on Elements
-if (typeof VanillaTilt !== 'undefined') {
-  VanillaTilt.init(document.querySelectorAll(".hero-photo"), {
-    max: 10,
-    speed: 400,
-    glare: true,
-    "max-glare": 0.2
-  });
-
-
-  
-  // A helper function to initialize tilt on dynamically loaded projects
-  window.initTilt = function() {};
-}
+// A helper function to initialize tilt on dynamically loaded projects
+window.initTilt = function() {};
 
 // Background Parallax Mouse Effect
 document.addEventListener('mousemove', (e) => {
