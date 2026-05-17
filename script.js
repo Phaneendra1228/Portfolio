@@ -16,13 +16,6 @@ const defaultProjects = [
     description: "A desktop-based simulation and coaching platform to help students master coding interviews and behavioral rounds.",
     link: "https://github.com/Phaneendra1228/Interview-Mentor",
     live: ""
-  },
-  {
-    title: "Personalized Entrance Exam Coach",
-    tag: "Web Development",
-    description: "An intelligent tutoring system that tailors mock exams, revision schedules, and practice questions to student performance.",
-    link: "https://github.com/Phaneendra1228/personalized-entrance-exam-coach",
-    live: "https://learnflow-i17r.onrender.com/login"
   }
 ];
 
@@ -58,15 +51,14 @@ if (!localStorage.getItem('portfolio_initialized')) {
   localStorage.setItem('custom_certificates', JSON.stringify(defaultCerts));
   localStorage.setItem('portfolio_initialized', 'true');
 } else {
-  // Backward compatibility migration for new dual-link schema
-  const customProjectsRaw = localStorage.getItem('custom_projects');
-  if (customProjectsRaw) {
-    try {
-      const parsed = JSON.parse(customProjectsRaw);
-      if (parsed.length > 0 && typeof parsed[0].live === 'undefined') {
-        localStorage.setItem('custom_projects', JSON.stringify(defaultProjects));
-      }
-    } catch(e) {}
+  // Purge unwanted project and handle migrations
+  try {
+    let customProjects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+    // Ensure "Personalized Entrance Exam Coach" is removed permanently on old initializations
+    customProjects = customProjects.filter(p => p.title !== "Personalized Entrance Exam Coach");
+    localStorage.setItem('custom_projects', JSON.stringify(customProjects));
+  } catch(e) {
+    console.warn("Migration failed:", e);
   }
 }
 
