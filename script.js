@@ -231,12 +231,7 @@ if (typeof VanillaTilt !== 'undefined') {
     speed: 400,
     scale: 1.05
   });
-  VanillaTilt.init(document.querySelectorAll(".cert-card"), {
-    max: 8,
-    speed: 400,
-    glare: true,
-    "max-glare": 0.15
-  });
+
   
   // A helper function to initialize tilt on dynamically loaded projects
   window.initTilt = function() {
