@@ -1,4 +1,7 @@
 // ===== DATABASE INITIALIZATION =====
+console.log("🚀 Portfolio Script Loaded: Version 33 (Global DB Active)");
+window.PORTFOLIO_VERSION = 33;
+
 const defaultProjects = [
   {
     title: "LearnFlow",
