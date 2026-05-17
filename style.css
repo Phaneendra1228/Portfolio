@@ -409,7 +409,7 @@ body.light-mode .education .box h3 { color: #d97706; }
   font-weight: 700;
   letter-spacing: 3px;
   text-transform: uppercase;
-  color: #f9ca24;
+  color: var(--accent-color);
   margin-bottom: 12px;
 }
 .cert-heading {
@@ -421,12 +421,8 @@ body.light-mode .education .box h3 { color: #d97706; }
   line-height: 1.1;
 }
 .cert-heading span {
-  color: #f9ca24;
-  -webkit-text-fill-color: #f9ca24;
-}
-body.light-mode .cert-heading span {
-  color: #d97706;
-  -webkit-text-fill-color: #d97706;
+  color: var(--accent-color);
+  -webkit-text-fill-color: var(--accent-color);
 }
 .cert-grid {
   display: grid;
