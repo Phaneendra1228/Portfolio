@@ -777,12 +777,12 @@ document.addEventListener('DOMContentLoaded', () => {
           adminMessagesList.innerHTML = messages.map((m, idx) => `
             <div class="admin-item" style="flex-direction: column; align-items: flex-start; gap: 8px; padding: 15px; margin-bottom: 5px;">
               <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-                <h5 style="color: #f9ca24; font-size: 14px; font-weight: 600; margin: 0;">${escapeHtml(m.name)}</h5>
+                <h5 style="color: var(--accent-color); font-size: 14px; font-weight: 600; margin: 0;">${escapeHtml(m.name)}</h5>
                 <button class="btn-del" onclick="deleteMessage(${idx})" style="background: transparent; border: none; cursor: pointer; padding: 5px; font-size: 14px; color: #ef4444;"><i class="fas fa-trash-alt"></i></button>
               </div>
               <div style="font-size: 12px; color: #06b6d4; font-weight: 500;">Email: <a href="mailto:${escapeHtml(m.email)}" style="color: #06b6d4; text-decoration: underline;">${escapeHtml(m.email)}</a></div>
               <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Subject: ${escapeHtml(m.subject)}</div>
-              <p style="font-size: 13px; color: #fff; line-height: 1.5; margin: 5px 0 0; white-space: pre-wrap; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">${escapeHtml(m.message)}</p>
+              <p style="font-size: 13px; color: var(--text-main); line-height: 1.5; margin: 5px 0 0; white-space: pre-wrap; width: 100%; border-top: 1px solid var(--border-color); padding-top: 8px;">${escapeHtml(m.message)}</p>
               <div style="font-size: 11px; color: var(--text-muted); width: 100%; text-align: right; margin-top: 5px;">${escapeHtml(m.date)}</div>
             </div>
           `).reverse().join('');
@@ -799,12 +799,12 @@ document.addEventListener('DOMContentLoaded', () => {
         adminMessagesList.innerHTML = messages.map((m, idx) => `
           <div class="admin-item" style="flex-direction: column; align-items: flex-start; gap: 8px; padding: 15px; margin-bottom: 5px;">
             <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-              <h5 style="color: #f9ca24; font-size: 14px; font-weight: 600; margin: 0;">${escapeHtml(m.name)} (Offline)</h5>
+              <h5 style="color: var(--accent-color); font-size: 14px; font-weight: 600; margin: 0;">${escapeHtml(m.name)} (Offline)</h5>
               <button class="btn-del" onclick="deleteMessage(${idx})" style="background: transparent; border: none; cursor: pointer; padding: 5px; font-size: 14px; color: #ef4444;"><i class="fas fa-trash-alt"></i></button>
             </div>
             <div style="font-size: 12px; color: #06b6d4; font-weight: 500;">Email: <a href="mailto:${escapeHtml(m.email)}" style="color: #06b6d4; text-decoration: underline;">${escapeHtml(m.email)}</a></div>
             <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Subject: ${escapeHtml(m.subject)}</div>
-            <p style="font-size: 13px; color: #fff; line-height: 1.5; margin: 5px 0 0; white-space: pre-wrap; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">${escapeHtml(m.message)}</p>
+            <p style="font-size: 13px; color: var(--text-main); line-height: 1.5; margin: 5px 0 0; white-space: pre-wrap; width: 100%; border-top: 1px solid var(--border-color); padding-top: 8px;">${escapeHtml(m.message)}</p>
             <div style="font-size: 11px; color: var(--text-muted); width: 100%; text-align: right; margin-top: 5px;">${escapeHtml(m.date)}</div>
           </div>
         `).reverse().join('');
