@@ -201,7 +201,7 @@ if (form) {
 
         // Save globally to database
         try {
-          const dbGet = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages");
+          const dbGet = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages", { cache: 'no-store' });
           const currentMsgs = dbGet.ok ? (await dbGet.json()) : [];
           currentMsgs.push(newMessage);
           await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages", {
@@ -762,7 +762,7 @@ document.addEventListener('DOMContentLoaded', () => {
     `;
     
     try {
-      const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages");
+      const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages", { cache: 'no-store' });
       if (res.ok) {
         const messages = await res.json();
         
@@ -892,7 +892,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         `;
         
-        const dbGet = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages");
+        const dbGet = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages", { cache: 'no-store' });
         const messages = dbGet.ok ? (await dbGet.json()) : (JSON.parse(localStorage.getItem('contact_messages')) || []);
         
         const actualIdx = messages.length - 1 - idx;
