@@ -69,18 +69,35 @@ if (!localStorage.getItem('portfolio_initialized')) {
   }
 }
 
+// Helper to convert Base64 Data URL to binary Blob object for safe browser in-tab preview
+function base64ToBlob(base64, type = "application/pdf") {
+  try {
+    const parts = base64.split(',');
+    const binStr = atob(parts[1] || parts[0]);
+    const len = binStr.length;
+    const arr = new Uint8Array(len);
+    for (let i = 0; i < len; i++) {
+      arr[i] = binStr.charCodeAt(i);
+    }
+    return new Blob([arr], { type });
+  } catch (err) {
+    console.error("Base64 conversion failed:", err);
+    return null;
+  }
+}
+
 // Asynchronously load resume from KVDB with local cache fallback
 async function loadResume() {
   const link = document.getElementById('resume-download-link');
   if (!link) return;
   
+  // Remove any download attribute to prevent browser forcing download
+  link.removeAttribute('download');
+  
   // Set offline cache instantly
   const cachedData = localStorage.getItem('custom_resume_data');
-  const cachedFilename = localStorage.getItem('custom_resume_filename') || 'resume.pdf';
-  
   if (cachedData) {
     link.href = cachedData;
-    link.download = cachedFilename;
   } else {
     link.href = 'resume.pdf';
   }
@@ -93,13 +110,34 @@ async function loadResume() {
         localStorage.setItem('custom_resume_data', payload.data);
         localStorage.setItem('custom_resume_filename', payload.filename || 'resume.pdf');
         link.href = payload.data;
-        link.download = payload.filename || 'resume.pdf';
       }
     }
   } catch (err) {
     console.warn("Failed to load resume from global DB:", err);
   }
 }
+
+// Bind direct in-tab preview for the resume link
+document.addEventListener('DOMContentLoaded', () => {
+  const link = document.getElementById('resume-download-link');
+  if (link) {
+    link.removeAttribute('download');
+    link.addEventListener('click', (e) => {
+      const cachedData = localStorage.getItem('custom_resume_data');
+      if (cachedData && cachedData.startsWith('data:application/pdf;base64,')) {
+        e.preventDefault();
+        const blob = base64ToBlob(cachedData, "application/pdf");
+        if (blob) {
+          const blobUrl = URL.createObjectURL(blob);
+          window.open(blobUrl, '_blank');
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+        } else {
+          window.open(cachedData, '_blank');
+        }
+      }
+    });
+  }
+});
 
 // Mobile menu toggle
 const menuBtn = document.querySelector('.menu-btn');
@@ -1252,7 +1290,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const downloadLink = document.getElementById('resume-download-link');
       if (downloadLink) {
         downloadLink.href = selectedResumeBase64;
-        downloadLink.download = selectedResumeName;
+        downloadLink.removeAttribute('download');
       }
       
       // Save to global DB
