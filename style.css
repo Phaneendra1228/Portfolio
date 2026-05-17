@@ -88,7 +88,6 @@ section { padding: 40px 0; position: relative; }
   background: var(--accent-gradient);
   z-index: 10000;
   width: 0%;
-  transition: width 0.1s;
   box-shadow: 0 0 10px rgba(249, 202, 36, 0.8);
   will-change: width;
 }
@@ -737,11 +736,9 @@ body.light-mode .cert-date {
 }
 
 @media (max-width: 768px) {
-  /* Disable heavy background glow animations and translations on mobile to prevent GPU composition lag */
+  /* Completely hide heavy fixed background spheres on mobile to release GPU rendering memory and paint queues */
   body::before, body::after {
-    animation: none !important;
-    transform: none !important;
-    will-change: auto !important;
+    display: none !important;
   }
   
   /* Disable intensive real-time backdrop blur filtering on large content boxes for mobile Safari/Chrome */
@@ -749,6 +746,23 @@ body.light-mode .cert-date {
   .footer {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+
+  /* Simplify and optimize reveal transitions on mobile to prevent paint jank */
+  .reveal {
+    transform: translateY(20px) !important;
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out !important;
+  }
+  .reveal.active {
+    transform: translateY(0) !important;
+  }
+  
+  .reveal .box-container .box {
+    transform: translateY(15px) !important;
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out, box-shadow 0.4s ease, border-color 0.4s ease !important;
+  }
+  .reveal.active .box-container .box {
+    transform: translateY(0) !important;
   }
 
   .menu-btn { display: block; z-index: 1000; }
