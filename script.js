@@ -682,6 +682,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Close modals when clicking outside the content area
+  document.querySelectorAll('.admin-modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('active');
+        if (modal === dashboardModal) {
+          sessionStorage.removeItem('admin_logged_in');
+        }
+      }
+    });
+  });
+
+  // Automatically logout if the user reloads the page or navigates away
+  window.addEventListener('beforeunload', () => {
+    sessionStorage.removeItem('admin_logged_in');
+  });
+
   // Handle Login
   if (loginSubmit) {
     loginSubmit.addEventListener('click', performLogin);
