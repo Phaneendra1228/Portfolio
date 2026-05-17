@@ -46,11 +46,18 @@ const defaultCerts = [
   }
 ];
 
+const defaultResumeUrl = "resume.pdf";
+
 if (!localStorage.getItem('portfolio_initialized')) {
   localStorage.setItem('custom_projects', JSON.stringify(defaultProjects));
   localStorage.setItem('custom_certificates', JSON.stringify(defaultCerts));
+  localStorage.setItem('custom_resume_url', defaultResumeUrl);
   localStorage.setItem('portfolio_initialized', 'true');
 } else {
+  // Ensure default resume link exists in cache
+  if (!localStorage.getItem('custom_resume_url')) {
+    localStorage.setItem('custom_resume_url', defaultResumeUrl);
+  }
   // Purge unwanted project and handle migrations
   try {
     let customProjects = JSON.parse(localStorage.getItem('custom_projects')) || [];
@@ -59,6 +66,29 @@ if (!localStorage.getItem('portfolio_initialized')) {
     localStorage.setItem('custom_projects', JSON.stringify(customProjects));
   } catch(e) {
     console.warn("Migration failed:", e);
+  }
+}
+
+// Asynchronously load resume link from KVDB with local cache fallback
+async function loadResume() {
+  const link = document.getElementById('resume-download-link');
+  if (!link) return;
+  
+  // Set offline cache instantly
+  const cachedUrl = localStorage.getItem('custom_resume_url') || 'resume.pdf';
+  link.href = cachedUrl;
+  
+  try {
+    const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/resume_url", { cache: 'no-store' });
+    if (res.ok) {
+      const dbUrl = await res.text();
+      if (dbUrl && dbUrl.trim() !== "") {
+        localStorage.setItem('custom_resume_url', dbUrl.trim());
+        link.href = dbUrl.trim();
+      }
+    }
+  } catch (err) {
+    console.warn("Failed to load resume URL from global DB:", err);
   }
 }
 
@@ -483,6 +513,7 @@ function loadCertificates() {
 document.addEventListener('DOMContentLoaded', () => {
   loadProjects();
   loadCertificates();
+  loadResume();
 });
 
 // ===== PRELOADER LOGIC & CANVAS CONSTELLATION =====
@@ -636,9 +667,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tab Switching
   const tabBtnProjects = document.getElementById('tab-btn-projects');
   const tabBtnCerts = document.getElementById('tab-btn-certs');
+  const tabBtnResume = document.getElementById('tab-btn-resume');
   const tabBtnMessages = document.getElementById('tab-btn-messages');
   const tabProjects = document.getElementById('tab-projects');
   const tabCerts = document.getElementById('tab-certs');
+  const tabResume = document.getElementById('tab-resume');
   const tabMessages = document.getElementById('tab-messages');
   
   // Dashboard lists
@@ -653,6 +686,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnExportConfig = document.getElementById('btn-export-config');
   const projectForm = document.getElementById('project-form');
   const certForm = document.getElementById('cert-form');
+  const resumeForm = document.getElementById('admin-resume-form');
+  const resumeInput = document.getElementById('admin-resume-url');
   
   // Export Elements
   const exportDataJson = document.getElementById('export-data-json');
@@ -743,36 +778,55 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // Tabs management
-  if (tabBtnProjects && tabBtnCerts && tabBtnMessages) {
+  if (tabBtnProjects && tabBtnCerts && tabBtnResume && tabBtnMessages) {
     tabBtnProjects.addEventListener('click', () => {
       tabBtnProjects.classList.add('active');
       tabBtnCerts.classList.remove('active');
+      tabBtnResume.classList.remove('active');
       tabBtnMessages.classList.remove('active');
       tabProjects.classList.add('active');
       tabCerts.classList.remove('active');
+      tabResume.classList.remove('active');
       tabMessages.classList.remove('active');
     });
     tabBtnCerts.addEventListener('click', () => {
       tabBtnCerts.classList.add('active');
       tabBtnProjects.classList.remove('active');
+      tabBtnResume.classList.remove('active');
       tabBtnMessages.classList.remove('active');
       tabCerts.classList.add('active');
       tabProjects.classList.remove('active');
+      tabResume.classList.remove('active');
+      tabMessages.classList.remove('active');
+    });
+    tabBtnResume.addEventListener('click', () => {
+      tabBtnResume.classList.add('active');
+      tabBtnProjects.classList.remove('active');
+      tabBtnCerts.classList.remove('active');
+      tabBtnMessages.classList.remove('active');
+      tabResume.classList.add('active');
+      tabProjects.classList.remove('active');
+      tabCerts.classList.remove('active');
       tabMessages.classList.remove('active');
     });
     tabBtnMessages.addEventListener('click', () => {
       tabBtnMessages.classList.add('active');
       tabBtnProjects.classList.remove('active');
       tabBtnCerts.classList.remove('active');
+      tabBtnResume.classList.remove('active');
       tabMessages.classList.add('active');
       tabProjects.classList.remove('active');
       tabCerts.classList.remove('active');
+      tabResume.classList.remove('active');
     });
   }
   
   // Open Dashboard Controls
   function openDashboard() {
     renderDashboardLists();
+    if (resumeInput) {
+      resumeInput.value = localStorage.getItem('custom_resume_url') || 'resume.pdf';
+    }
     dashboardModal.classList.add('active');
   }
   
@@ -1023,6 +1077,45 @@ document.addEventListener('DOMContentLoaded', () => {
       certFormModal.classList.remove('active');
       renderDashboardLists();
       loadCertificates();
+    });
+  }
+
+  // Save Resume Form
+  if (resumeForm && resumeInput) {
+    resumeForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = resumeForm.querySelector('button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      btn.disabled = true;
+      
+      const newUrl = resumeInput.value.trim();
+      
+      // Save locally
+      localStorage.setItem('custom_resume_url', newUrl);
+      
+      // Update download link
+      const downloadLink = document.getElementById('resume-download-link');
+      if (downloadLink) downloadLink.href = newUrl;
+      
+      // Save to global DB
+      try {
+        const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/resume_url", {
+          method: "POST",
+          body: newUrl
+        });
+        if (res.ok) {
+          alert('✅ Resume link updated successfully on all devices!');
+        } else {
+          throw new Error("Sync failed");
+        }
+      } catch (err) {
+        console.warn("Failed to sync resume globally:", err);
+        alert('⚠️ Saved locally, but failed to sync globally (Offline).');
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
     });
   }
   
