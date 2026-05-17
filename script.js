@@ -188,16 +188,31 @@ if (form) {
       });
       
       if (response.ok) {
-        // Save message locally for admin dashboard
+        const newMessage = {
+          name: object.name || 'Anonymous',
+          email: object.email || 'N/A',
+          subject: object.subject || 'No Subject',
+          message: object.message || '',
+          date: new Date().toLocaleString()
+        };
+
+        // Save globally to database
+        try {
+          const dbGet = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages");
+          const currentMsgs = dbGet.ok ? (await dbGet.json()) : [];
+          currentMsgs.push(newMessage);
+          await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages", {
+            method: "POST",
+            body: JSON.stringify(currentMsgs)
+          });
+        } catch (dbErr) {
+          console.warn("Failed to save message globally:", dbErr);
+        }
+
+        // Backup locally
         try {
           const messages = JSON.parse(localStorage.getItem('contact_messages')) || [];
-          messages.push({
-            name: object.name || 'Anonymous',
-            email: object.email || 'N/A',
-            subject: object.subject || 'No Subject',
-            message: object.message || '',
-            date: new Date().toLocaleString()
-          });
+          messages.push(newMessage);
           localStorage.setItem('contact_messages', JSON.stringify(messages));
         } catch (storageErr) {
           console.warn("Failed to store message locally:", storageErr);
@@ -731,11 +746,73 @@ document.addEventListener('DOMContentLoaded', () => {
     return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   }
 
+  // Asynchronously render messages from global database with local fallback
+  async function renderMessagesList() {
+    if (!adminMessagesList) return;
+    
+    // Show spinner loader
+    adminMessagesList.innerHTML = `
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; gap: 15px; color: var(--text-muted); text-align: center;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 26px; color: #f9ca24;"></i>
+        <span style="font-size: 13px; font-family: 'Outfit', sans-serif; letter-spacing: 2px; font-weight: 600; text-transform: uppercase;">Syncing with global database...</span>
+      </div>
+    `;
+    
+    try {
+      const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages");
+      if (res.ok) {
+        const messages = await res.json();
+        
+        // Cache backup locally
+        try {
+          localStorage.setItem('contact_messages', JSON.stringify(messages));
+        } catch (e) {}
+        
+        if (!messages.length) {
+          adminMessagesList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px 0;">No messages received yet.</p>';
+        } else {
+          adminMessagesList.innerHTML = messages.map((m, idx) => `
+            <div class="admin-item" style="flex-direction: column; align-items: flex-start; gap: 8px; padding: 15px; margin-bottom: 5px;">
+              <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+                <h5 style="color: #f9ca24; font-size: 14px; font-weight: 600; margin: 0;">${escapeHtml(m.name)}</h5>
+                <button class="btn-del" onclick="deleteMessage(${idx})" style="background: transparent; border: none; cursor: pointer; padding: 5px; font-size: 14px; color: #ef4444;"><i class="fas fa-trash-alt"></i></button>
+              </div>
+              <div style="font-size: 12px; color: #06b6d4; font-weight: 500;">Email: <a href="mailto:${escapeHtml(m.email)}" style="color: #06b6d4; text-decoration: underline;">${escapeHtml(m.email)}</a></div>
+              <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Subject: ${escapeHtml(m.subject)}</div>
+              <p style="font-size: 13px; color: #fff; line-height: 1.5; margin: 5px 0 0; white-space: pre-wrap; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">${escapeHtml(m.message)}</p>
+              <div style="font-size: 11px; color: var(--text-muted); width: 100%; text-align: right; margin-top: 5px;">${escapeHtml(m.date)}</div>
+            </div>
+          `).reverse().join('');
+        }
+      } else {
+        throw new Error("Bad status");
+      }
+    } catch (err) {
+      console.warn("Global database sync failed, using offline cache:", err);
+      const messages = JSON.parse(localStorage.getItem('contact_messages')) || [];
+      if (!messages.length) {
+        adminMessagesList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px; text-align: center; padding: 20px 0;">No messages received (Offline).</p>';
+      } else {
+        adminMessagesList.innerHTML = messages.map((m, idx) => `
+          <div class="admin-item" style="flex-direction: column; align-items: flex-start; gap: 8px; padding: 15px; margin-bottom: 5px;">
+            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+              <h5 style="color: #f9ca24; font-size: 14px; font-weight: 600; margin: 0;">${escapeHtml(m.name)} (Offline)</h5>
+              <button class="btn-del" onclick="deleteMessage(${idx})" style="background: transparent; border: none; cursor: pointer; padding: 5px; font-size: 14px; color: #ef4444;"><i class="fas fa-trash-alt"></i></button>
+            </div>
+            <div style="font-size: 12px; color: #06b6d4; font-weight: 500;">Email: <a href="mailto:${escapeHtml(m.email)}" style="color: #06b6d4; text-decoration: underline;">${escapeHtml(m.email)}</a></div>
+            <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Subject: ${escapeHtml(m.subject)}</div>
+            <p style="font-size: 13px; color: #fff; line-height: 1.5; margin: 5px 0 0; white-space: pre-wrap; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">${escapeHtml(m.message)}</p>
+            <div style="font-size: 11px; color: var(--text-muted); width: 100%; text-align: right; margin-top: 5px;">${escapeHtml(m.date)}</div>
+          </div>
+        `).reverse().join('');
+      }
+    }
+  }
+
   // Render Project/Cert/Message lists inside dashboard
   function renderDashboardLists() {
     const projects = JSON.parse(localStorage.getItem('custom_projects')) || [];
     const certs = JSON.parse(localStorage.getItem('custom_certificates')) || [];
-    const messages = JSON.parse(localStorage.getItem('contact_messages')) || [];
     
     // Render Projects list
     if (adminProjectsList) {
@@ -777,25 +854,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
-    // Render Messages list
-    if (adminMessagesList) {
-      if (!messages.length) {
-        adminMessagesList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">No messages received yet.</p>';
-      } else {
-        adminMessagesList.innerHTML = messages.map((m, idx) => `
-          <div class="admin-item" style="flex-direction: column; align-items: flex-start; gap: 8px; padding: 15px; margin-bottom: 5px;">
-            <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-              <h5 style="color: #f9ca24; font-size: 14px; font-weight: 600; margin: 0;">${escapeHtml(m.name)}</h5>
-              <button class="btn-del" onclick="deleteMessage(${idx})" style="background: transparent; border: none; cursor: pointer; padding: 5px; font-size: 14px; color: #ef4444;"><i class="fas fa-trash-alt"></i></button>
-            </div>
-            <div style="font-size: 12px; color: #06b6d4; font-weight: 500;">Email: <a href="mailto:${escapeHtml(m.email)}" style="color: #06b6d4; text-decoration: underline;">${escapeHtml(m.email)}</a></div>
-            <div style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Subject: ${escapeHtml(m.subject)}</div>
-            <p style="font-size: 13px; color: #fff; line-height: 1.5; margin: 5px 0 0; white-space: pre-wrap; width: 100%; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">${escapeHtml(m.message)}</p>
-            <div style="font-size: 11px; color: var(--text-muted); width: 100%; text-align: right; margin-top: 5px;">${escapeHtml(m.date)}</div>
-          </div>
-        `).reverse().join('');
-      }
-    }
+    // Trigger async global message fetch and rendering
+    renderMessagesList();
   }
   
   // Expose CRUD actions globally so onclick handles work
@@ -819,25 +879,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  window.deleteMessage = function(idx) {
+  window.deleteMessage = async function(idx) {
     if (confirm('Are you sure you want to delete this message?')) {
-      const messages = JSON.parse(localStorage.getItem('contact_messages')) || [];
-      // Note: Because we render reversed list to show latest first,
-      // the actual index in original array is (messages.length - 1 - idx)
-      const actualIdx = messages.length - 1 - idx;
-      if (actualIdx >= 0 && actualIdx < messages.length) {
-        messages.splice(actualIdx, 1);
-        localStorage.setItem('contact_messages', JSON.stringify(messages));
-        renderDashboardLists();
+      try {
+        adminMessagesList.innerHTML = `
+          <div style="display: flex; align-items: center; justify-content: center; padding: 40px 0; color: var(--text-muted); gap: 10px;">
+            <i class="fas fa-spinner fa-spin" style="font-size: 20px; color: #ef4444;"></i>
+            <span>Deleting message from database...</span>
+          </div>
+        `;
+        
+        const dbGet = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages");
+        const messages = dbGet.ok ? (await dbGet.json()) : (JSON.parse(localStorage.getItem('contact_messages')) || []);
+        
+        const actualIdx = messages.length - 1 - idx;
+        if (actualIdx >= 0 && actualIdx < messages.length) {
+          messages.splice(actualIdx, 1);
+          await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages", {
+            method: "POST",
+            body: JSON.stringify(messages)
+          });
+          localStorage.setItem('contact_messages', JSON.stringify(messages));
+        }
+      } catch (err) {
+        console.warn("Delete message failed globally:", err);
+      } finally {
+        renderMessagesList();
       }
     }
   };
 
   if (btnClearMessages) {
-    btnClearMessages.addEventListener('click', () => {
+    btnClearMessages.addEventListener('click', async () => {
       if (confirm('Are you sure you want to delete ALL received messages? This cannot be undone.')) {
-        localStorage.setItem('contact_messages', JSON.stringify([]));
-        renderDashboardLists();
+        try {
+          adminMessagesList.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center; padding: 40px 0; color: var(--text-muted); gap: 10px;">
+              <i class="fas fa-spinner fa-spin" style="font-size: 20px; color: #ef4444;"></i>
+              <span>Clearing all messages...</span>
+            </div>
+          `;
+          
+          await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/messages", {
+            method: "POST",
+            body: JSON.stringify([])
+          });
+          localStorage.setItem('contact_messages', JSON.stringify([]));
+        } catch (err) {
+          console.warn("Clear messages failed globally:", err);
+        } finally {
+          renderMessagesList();
+        }
       }
     });
   }
