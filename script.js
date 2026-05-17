@@ -647,7 +647,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   function performLogin() {
-    if (adminPasswordInput.value === 'admin') {
+    if (adminPasswordInput.value === 'phani@1228') {
       sessionStorage.setItem('admin_logged_in', 'true');
       loginModal.classList.remove('active');
       openDashboard();
