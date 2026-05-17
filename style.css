@@ -873,7 +873,7 @@ body:not(.light-mode) .navbar.scrolled {
 .admin-float-btn {
   position: fixed;
   bottom: 100px;
-  right: 30px;
+  left: 30px;
   background: rgba(13, 17, 30, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
