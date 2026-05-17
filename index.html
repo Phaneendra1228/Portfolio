@@ -493,8 +493,13 @@
           <input type="text" id="form-cert-date" placeholder="e.g. 25 April 2025" required>
         </div>
         <div class="form-group">
-          <label>PDF Filename / URL</label>
-          <input type="text" id="form-cert-pdf" placeholder="e.g. Certificate_Avinya.pdf" required>
+          <label>Certificate PDF File</label>
+          <div id="cert-upload-zone" style="border: 2px dashed rgba(6, 182, 212, 0.3); padding: 20px; border-radius: 12px; text-align: center; background: rgba(var(--glass-rgb), 0.01); cursor: pointer; transition: all 0.3s; position: relative;">
+            <input type="file" id="form-cert-file" accept=".pdf" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+            <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #06b6d4; margin-bottom: 5px;"></i>
+            <h5 id="cert-upload-text" style="font-size: 13px; color: var(--text-main); margin: 0 0 2px;">Drag & Drop or Click to Upload PDF</h5>
+            <span id="cert-upload-info" style="font-size: 11px; color: var(--text-muted);">Maximum size: 2MB</span>
+          </div>
         </div>
         <div class="form-group">
           <label>Description</label>
@@ -527,6 +532,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-<script src="script.js?v=60"></script>
+<script src="script.js?v=61"></script>
 </body>
 </html>

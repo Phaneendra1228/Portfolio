@@ -695,6 +695,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnExportConfig = document.getElementById('btn-export-config');
   const projectForm = document.getElementById('project-form');
   const certForm = document.getElementById('cert-form');
+  const certFileInput = document.getElementById('form-cert-file');
+  const certUploadText = document.getElementById('cert-upload-text');
+  const certUploadInfo = document.getElementById('cert-upload-info');
+  const certUploadZone = document.getElementById('cert-upload-zone');
   const resumeForm = document.getElementById('admin-resume-form');
   const resumeFileInput = document.getElementById('admin-resume-file');
   const uploadZoneText = document.getElementById('upload-zone-text');
@@ -1081,10 +1085,68 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
+  // Selected certificate file cache variables
+  let selectedCertBase64 = "";
+
+  // Drag-and-drop / select event listeners for Certificate PDF file
+  if (certFileInput) {
+    certFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.type !== "application/pdf") {
+          alert("Please upload a PDF file only!");
+          certFileInput.value = "";
+          return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+          alert("File size exceeds 2MB limit!");
+          certFileInput.value = "";
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          selectedCertBase64 = evt.target.result;
+          if (certUploadText) certUploadText.textContent = file.name;
+          if (certUploadInfo) certUploadInfo.textContent = `Size: ${(file.size / 1024).toFixed(1)} KB (Ready to save)`;
+          if (certUploadZone) {
+            certUploadZone.style.borderColor = "#10b981";
+            certUploadZone.style.background = "rgba(16, 185, 129, 0.05)";
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  if (certUploadZone) {
+    certUploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      certUploadZone.style.borderColor = "#06b6d4";
+      certUploadZone.style.background = "rgba(6, 182, 212, 0.05)";
+    });
+    
+    certUploadZone.addEventListener('dragleave', () => {
+      if (selectedCertBase64) {
+        certUploadZone.style.borderColor = "#10b981";
+        certUploadZone.style.background = "rgba(16, 185, 129, 0.05)";
+      } else {
+        certUploadZone.style.borderColor = "rgba(6, 182, 212, 0.3)";
+        certUploadZone.style.background = "rgba(var(--glass-rgb), 0.01)";
+      }
+    });
+  }
+
   // Save Certificate Form
   if (certForm) {
     certForm.addEventListener('submit', (e) => {
       e.preventDefault();
+      
+      if (!selectedCertBase64) {
+        alert("Please upload a Certificate PDF file!");
+        return;
+      }
+      
       const idx = document.getElementById('cert-edit-index').value;
       const certs = JSON.parse(localStorage.getItem('custom_certificates')) || [];
       
@@ -1093,7 +1155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         org: document.getElementById('form-cert-org').value,
         badge: document.getElementById('form-cert-badge-type').value,
         date: document.getElementById('form-cert-date').value,
-        pdf: document.getElementById('form-cert-pdf').value,
+        pdf: selectedCertBase64,
         description: document.getElementById('form-cert-desc').value
       };
       
@@ -1107,6 +1169,9 @@ document.addEventListener('DOMContentLoaded', () => {
       certFormModal.classList.remove('active');
       renderDashboardLists();
       loadCertificates();
+      
+      // Clear file cache
+      selectedCertBase64 = "";
     });
   }
 
@@ -1244,8 +1309,18 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('form-cert-org').value = "";
       document.getElementById('form-cert-badge-type').value = "cyan";
       document.getElementById('form-cert-date').value = "";
-      document.getElementById('form-cert-pdf').value = "";
       document.getElementById('form-cert-desc').value = "";
+      
+      // Reset upload zone
+      selectedCertBase64 = "";
+      if (certUploadText) certUploadText.textContent = "Drag & Drop or Click to Upload PDF";
+      if (certUploadInfo) certUploadInfo.textContent = "Maximum size: 2MB";
+      if (certUploadZone) {
+        certUploadZone.style.borderColor = "rgba(6, 182, 212, 0.3)";
+        certUploadZone.style.background = "rgba(var(--glass-rgb), 0.01)";
+      }
+      if (certFileInput) certFileInput.value = "";
+      
       certFormModal.classList.add('active');
     });
   }
@@ -1276,8 +1351,20 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('form-cert-org').value = c.org;
       document.getElementById('form-cert-badge-type').value = c.badge;
       document.getElementById('form-cert-date').value = c.date;
-      document.getElementById('form-cert-pdf').value = c.pdf;
       document.getElementById('form-cert-desc').value = c.description;
+      
+      // Set existing PDF payload in cache and style the upload zone
+      selectedCertBase64 = c.pdf || "";
+      if (certUploadText) {
+        certUploadText.textContent = c.title ? `${c.title}.pdf` : "Existing PDF Certificate Loaded";
+      }
+      if (certUploadInfo) certUploadInfo.textContent = "Drag & Drop a new PDF to replace it";
+      if (certUploadZone) {
+        certUploadZone.style.borderColor = "#06b6d4";
+        certUploadZone.style.background = "rgba(6, 182, 212, 0.05)";
+      }
+      if (certFileInput) certFileInput.value = "";
+      
       certFormModal.classList.add('active');
     }
   };
