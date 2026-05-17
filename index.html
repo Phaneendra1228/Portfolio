@@ -402,7 +402,10 @@
                 <span id="upload-file-info" style="font-size: 12px; color: var(--text-muted);">Maximum size: 2MB</span>
               </div>
             </div>
-            <button type="submit" class="admin-btn" style="width: auto; align-self: flex-start; padding: 14px 28px; border-radius: 12px; font-size: 14px;"><i class="fas fa-save"></i> Save & Sync Resume</button>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <button type="submit" class="admin-btn" style="width: auto; padding: 14px 28px; border-radius: 12px; font-size: 14px; margin: 0;"><i class="fas fa-save"></i> Save & Sync Resume</button>
+              <button type="button" class="admin-btn" id="btn-delete-resume" style="width: auto; padding: 14px 28px; border-radius: 12px; font-size: 14px; background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); margin: 0; cursor: pointer;"><i class="fas fa-trash-alt"></i> Delete Resume</button>
+            </div>
           </form>
         </div>
       </div>
@@ -532,6 +535,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-<script src="script.js?v=62"></script>
+<script src="script.js?v=63"></script>
 </body>
 </html>

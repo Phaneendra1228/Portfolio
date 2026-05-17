@@ -98,8 +98,10 @@ async function loadResume() {
   const cachedData = localStorage.getItem('custom_resume_data');
   if (cachedData) {
     link.href = cachedData;
+    link.textContent = "GET MY RESUME";
   } else {
-    link.href = 'resume.pdf';
+    link.href = '#';
+    link.textContent = "Resume Coming Soon";
   }
   
   try {
@@ -110,6 +112,13 @@ async function loadResume() {
         localStorage.setItem('custom_resume_data', payload.data);
         localStorage.setItem('custom_resume_filename', payload.filename || 'resume.pdf');
         link.href = payload.data;
+        link.textContent = "GET MY RESUME";
+      } else {
+        // Deleted globally or empty payload
+        localStorage.removeItem('custom_resume_data');
+        localStorage.removeItem('custom_resume_filename');
+        link.href = '#';
+        link.textContent = "Resume Coming Soon";
       }
     }
   } catch (err) {
@@ -133,6 +142,10 @@ document.addEventListener('DOMContentLoaded', () => {
           setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
         } else {
           window.open(cachedData, '_blank');
+        }
+      } else {
+        if (link.getAttribute('href') === '#') {
+          e.preventDefault();
         }
       }
     });
@@ -742,6 +755,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const uploadZoneText = document.getElementById('upload-zone-text');
   const uploadFileInfo = document.getElementById('upload-file-info');
   const resumeUploadZone = document.getElementById('resume-upload-zone');
+  const btnDeleteResume = document.getElementById('btn-delete-resume');
   
   // Export Elements
   const exportDataJson = document.getElementById('export-data-json');
@@ -1320,6 +1334,60 @@ document.addEventListener('DOMContentLoaded', () => {
       } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
+      }
+    });
+  }
+
+  // Delete Resume Trigger
+  if (btnDeleteResume) {
+    btnDeleteResume.addEventListener('click', async () => {
+      if (!confirm("Are you sure you want to delete your resume? This will permanently remove it from all devices and show 'Resume Coming Soon' on the live website.")) {
+        return;
+      }
+      
+      const originalText = btnDeleteResume.innerHTML;
+      btnDeleteResume.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+      btnDeleteResume.disabled = true;
+      
+      // Delete locally
+      localStorage.removeItem('custom_resume_data');
+      localStorage.removeItem('custom_resume_filename');
+      
+      // Update link on live site
+      const downloadLink = document.getElementById('resume-download-link');
+      if (downloadLink) {
+        downloadLink.href = '#';
+        downloadLink.textContent = "Resume Coming Soon";
+        downloadLink.removeAttribute('download');
+      }
+      
+      // Delete from global DB
+      try {
+        const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/resume_data", {
+          method: "POST",
+          body: JSON.stringify({}) // Empty object indicates deleted
+        });
+        if (res.ok) {
+          alert('✅ Resume deleted and synchronized successfully on all devices!');
+          
+          // Reset file caches
+          selectedResumeBase64 = null;
+          selectedResumeName = "";
+          
+          // Clear input file element
+          if (resumeFileInput) resumeFileInput.value = "";
+          
+          openDashboard(); // refresh filename display
+        } else {
+          throw new Error("Delete sync failed");
+        }
+      } catch (err) {
+        console.warn("Failed to sync resume deletion globally:", err);
+        alert('⚠️ Resume deleted locally, but failed to sync deletion globally (Offline).');
+        openDashboard();
+      } finally {
+        btnDeleteResume.innerHTML = originalText;
+        btnDeleteResume.disabled = false;
       }
     });
   }
