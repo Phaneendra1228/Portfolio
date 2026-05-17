@@ -4,19 +4,22 @@ const defaultProjects = [
     title: "LearnFlow",
     tag: "Web Development",
     description: "A comprehensive learning management system focused on interactive training, seamless collaboration, and academic growth.",
-    link: "https://learnflow-i17r.onrender.com/login"
+    link: "https://github.com/Phaneendra1228/personalized-entrance-exam-coach",
+    live: "https://learnflow-i17r.onrender.com/login"
   },
   {
     title: "Interview Mentor",
     tag: "App Development",
     description: "A desktop-based simulation and coaching platform to help students master coding interviews and behavioral rounds.",
-    link: "https://github.com/Phaneendra1228/Interview-Mentor"
+    link: "https://github.com/Phaneendra1228/Interview-Mentor",
+    live: ""
   },
   {
     title: "Personalized Entrance Exam Coach",
     tag: "Web Development",
     description: "An intelligent tutoring system that tailors mock exams, revision schedules, and practice questions to student performance.",
-    link: "https://learnflow-i17r.onrender.com/login"
+    link: "https://github.com/Phaneendra1228/personalized-entrance-exam-coach",
+    live: "https://learnflow-i17r.onrender.com/login"
   }
 ];
 
@@ -51,6 +54,17 @@ if (!localStorage.getItem('portfolio_initialized')) {
   localStorage.setItem('custom_projects', JSON.stringify(defaultProjects));
   localStorage.setItem('custom_certificates', JSON.stringify(defaultCerts));
   localStorage.setItem('portfolio_initialized', 'true');
+} else {
+  // Backward compatibility migration for new dual-link schema
+  const customProjectsRaw = localStorage.getItem('custom_projects');
+  if (customProjectsRaw) {
+    try {
+      const parsed = JSON.parse(customProjectsRaw);
+      if (parsed.length > 0 && typeof parsed[0].live === 'undefined') {
+        localStorage.setItem('custom_projects', JSON.stringify(defaultProjects));
+      }
+    } catch(e) {}
+  }
 }
 
 // Mobile menu toggle
@@ -126,10 +140,13 @@ function loadProjects() {
   
   grid.innerHTML = projects.map(p => {
     let buttonsHtml = '';
-    if (p.link.includes('github.com')) {
-      buttonsHtml = `<a href="${p.link}" target="_blank" rel="noopener" class="project-link">View Project</a>`;
+    if (p.live) {
+      buttonsHtml = `
+        <a href="${p.link}" target="_blank" rel="noopener" class="project-link">GitHub</a>
+        <a href="${p.live}" target="_blank" rel="noopener" class="project-link" style="background: var(--accent-gradient); color: #fff; border: none;"><span class="live-dot"></span>Live</a>
+      `;
     } else {
-      buttonsHtml = `<a href="${p.link}" target="_blank" rel="noopener" class="project-link" style="background: var(--accent-gradient); color: #fff; border: none;"><span class="live-dot"></span>Live</a>`;
+      buttonsHtml = `<a href="${p.link}" target="_blank" rel="noopener" class="project-link">View Project</a>`;
     }
     
     return `
@@ -739,6 +756,7 @@ document.addEventListener('DOMContentLoaded', () => {
         title: document.getElementById('form-proj-title').value,
         tag: document.getElementById('form-proj-category').value,
         link: document.getElementById('form-proj-link').value,
+        live: document.getElementById('form-proj-live').value,
         description: document.getElementById('form-proj-desc').value
       };
       
@@ -792,6 +810,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('form-proj-title').value = "";
       document.getElementById('form-proj-category').value = "";
       document.getElementById('form-proj-link').value = "";
+      document.getElementById('form-proj-live').value = "";
       document.getElementById('form-proj-desc').value = "";
       projFormModal.classList.add('active');
     });
@@ -822,6 +841,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('form-proj-title').value = p.title;
       document.getElementById('form-proj-category').value = p.tag;
       document.getElementById('form-proj-link').value = p.link;
+      document.getElementById('form-proj-live').value = p.live || "";
       document.getElementById('form-proj-desc').value = p.description;
       projFormModal.classList.add('active');
     }
