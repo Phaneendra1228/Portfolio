@@ -632,6 +632,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (m.btn) {
       m.btn.addEventListener('click', () => {
         m.modal.classList.remove('active');
+        if (m.modal === dashboardModal) {
+          sessionStorage.removeItem('admin_logged_in');
+        }
       });
     }
   });
