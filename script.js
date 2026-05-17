@@ -231,6 +231,12 @@ if (typeof VanillaTilt !== 'undefined') {
     speed: 400,
     scale: 1.05
   });
+  VanillaTilt.init(document.querySelectorAll(".cert-card"), {
+    max: 8,
+    speed: 400,
+    glare: true,
+    "max-glare": 0.15
+  });
   
   // A helper function to initialize tilt on dynamically loaded projects
   window.initTilt = function() {
@@ -249,4 +255,43 @@ document.addEventListener('mousemove', (e) => {
   const y = (e.clientY / window.innerHeight - 0.5) * 2;
   document.body.style.setProperty('--mouse-x', x);
   document.body.style.setProperty('--mouse-y', y);
+});
+
+// PDF Certificate Thumbnail Rendering
+window.addEventListener('load', function() {
+  if (typeof pdfjsLib === 'undefined') {
+    console.warn('PDF.js library not loaded');
+    return;
+  }
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+  document.querySelectorAll('.cert-img').forEach(async (img) => {
+    const pdfUrl = img.dataset.pdf;
+    if (!pdfUrl) return;
+    try {
+      const loadingTask = pdfjsLib.getDocument(pdfUrl);
+      const pdf = await loadingTask.promise;
+      const page = await pdf.getPage(1);
+      const viewport = page.getViewport({ scale: 1 });
+      const scale = 600 / viewport.width;
+      const scaledViewport = page.getViewport({ scale });
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = scaledViewport.width;
+      canvas.height = scaledViewport.height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      await page.render({ canvasContext: ctx, viewport: scaledViewport }).promise;
+      img.src = canvas.toDataURL('image/png');
+    } catch (err) {
+      console.warn('PDF render failed for:', pdfUrl, err);
+      img.style.display = 'none';
+      const icon = document.createElement('div');
+      icon.innerHTML = '<i class="fas fa-file-pdf" style="font-size:48px;color:var(--accent-color);"></i><span style="font-size:14px;color:var(--text-muted);">Click to view</span>';
+      icon.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;';
+      img.parentElement.insertBefore(icon, img);
+    }
+  });
 });
