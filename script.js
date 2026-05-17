@@ -69,26 +69,35 @@ if (!localStorage.getItem('portfolio_initialized')) {
   }
 }
 
-// Asynchronously load resume link from KVDB with local cache fallback
+// Asynchronously load resume from KVDB with local cache fallback
 async function loadResume() {
   const link = document.getElementById('resume-download-link');
   if (!link) return;
   
   // Set offline cache instantly
-  const cachedUrl = localStorage.getItem('custom_resume_url') || 'resume.pdf';
-  link.href = cachedUrl;
+  const cachedData = localStorage.getItem('custom_resume_data');
+  const cachedFilename = localStorage.getItem('custom_resume_filename') || 'resume.pdf';
+  
+  if (cachedData) {
+    link.href = cachedData;
+    link.download = cachedFilename;
+  } else {
+    link.href = 'resume.pdf';
+  }
   
   try {
-    const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/resume_url", { cache: 'no-store' });
+    const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/resume_data", { cache: 'no-store' });
     if (res.ok) {
-      const dbUrl = await res.text();
-      if (dbUrl && dbUrl.trim() !== "") {
-        localStorage.setItem('custom_resume_url', dbUrl.trim());
-        link.href = dbUrl.trim();
+      const payload = await res.json();
+      if (payload && payload.data) {
+        localStorage.setItem('custom_resume_data', payload.data);
+        localStorage.setItem('custom_resume_filename', payload.filename || 'resume.pdf');
+        link.href = payload.data;
+        link.download = payload.filename || 'resume.pdf';
       }
     }
   } catch (err) {
-    console.warn("Failed to load resume URL from global DB:", err);
+    console.warn("Failed to load resume from global DB:", err);
   }
 }
 
@@ -687,7 +696,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const projectForm = document.getElementById('project-form');
   const certForm = document.getElementById('cert-form');
   const resumeForm = document.getElementById('admin-resume-form');
-  const resumeInput = document.getElementById('admin-resume-url');
+  const resumeFileInput = document.getElementById('admin-resume-file');
+  const uploadZoneText = document.getElementById('upload-zone-text');
+  const uploadFileInfo = document.getElementById('upload-file-info');
+  const resumeUploadZone = document.getElementById('resume-upload-zone');
   
   // Export Elements
   const exportDataJson = document.getElementById('export-data-json');
@@ -824,9 +836,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // Open Dashboard Controls
   function openDashboard() {
     renderDashboardLists();
-    if (resumeInput) {
-      resumeInput.value = localStorage.getItem('custom_resume_url') || 'resume.pdf';
+    
+    // Display current resume file info in upload zone
+    const currentName = localStorage.getItem('custom_resume_filename');
+    if (uploadZoneText) {
+      if (currentName) {
+        uploadZoneText.textContent = `Current: ${currentName}`;
+        if (uploadFileInfo) uploadFileInfo.textContent = "Upload a new PDF to replace it";
+        if (resumeUploadZone) {
+          resumeUploadZone.style.borderColor = "#06b6d4";
+          resumeUploadZone.style.background = "rgba(6, 182, 212, 0.02)";
+        }
+      } else {
+        uploadZoneText.textContent = "Drag & Drop or Click to Upload PDF";
+        if (uploadFileInfo) uploadFileInfo.textContent = "Maximum size: 2MB";
+        if (resumeUploadZone) {
+          resumeUploadZone.style.borderColor = "rgba(6, 182, 212, 0.3)";
+          resumeUploadZone.style.background = "rgba(var(--glass-rgb), 0.01)";
+        }
+      }
     }
+    
     dashboardModal.classList.add('active');
   }
   
@@ -1080,38 +1110,110 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Save Resume Form
-  if (resumeForm && resumeInput) {
+  // Selected resume file cache variables
+  let selectedResumeBase64 = null;
+  let selectedResumeName = "";
+
+  // Drag-and-drop / select event listeners for PDF file
+  if (resumeFileInput) {
+    resumeFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.type !== "application/pdf") {
+          alert("Please upload a PDF file only!");
+          resumeFileInput.value = "";
+          return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+          alert("File size exceeds 2MB limit!");
+          resumeFileInput.value = "";
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          selectedResumeBase64 = evt.target.result;
+          selectedResumeName = file.name;
+          if (uploadZoneText) uploadZoneText.textContent = file.name;
+          if (uploadFileInfo) uploadFileInfo.textContent = `Size: ${(file.size / 1024).toFixed(1)} KB (Ready to save)`;
+          if (resumeUploadZone) {
+            resumeUploadZone.style.borderColor = "#10b981";
+            resumeUploadZone.style.background = "rgba(16, 185, 129, 0.05)";
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  if (resumeUploadZone) {
+    resumeUploadZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      resumeUploadZone.style.borderColor = "#06b6d4";
+      resumeUploadZone.style.background = "rgba(6, 182, 212, 0.05)";
+    });
+    
+    resumeUploadZone.addEventListener('dragleave', () => {
+      if (selectedResumeBase64) {
+        resumeUploadZone.style.borderColor = "#10b981";
+        resumeUploadZone.style.background = "rgba(16, 185, 129, 0.05)";
+      } else {
+        resumeUploadZone.style.borderColor = "rgba(6, 182, 212, 0.3)";
+        resumeUploadZone.style.background = "rgba(var(--glass-rgb), 0.01)";
+      }
+    });
+  }
+
+  // Save Resume Form (Base64 file sync)
+  if (resumeForm) {
     resumeForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      
+      if (!selectedResumeBase64) {
+        alert("Please select a PDF file first!");
+        return;
+      }
+      
       const btn = resumeForm.querySelector('button');
       const originalText = btn.innerHTML;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading & Syncing...';
       btn.disabled = true;
       
-      const newUrl = resumeInput.value.trim();
-      
       // Save locally
-      localStorage.setItem('custom_resume_url', newUrl);
+      localStorage.setItem('custom_resume_data', selectedResumeBase64);
+      localStorage.setItem('custom_resume_filename', selectedResumeName);
       
       // Update download link
       const downloadLink = document.getElementById('resume-download-link');
-      if (downloadLink) downloadLink.href = newUrl;
+      if (downloadLink) {
+        downloadLink.href = selectedResumeBase64;
+        downloadLink.download = selectedResumeName;
+      }
       
       // Save to global DB
       try {
-        const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/resume_url", {
+        const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/resume_data", {
           method: "POST",
-          body: newUrl
+          body: JSON.stringify({
+            filename: selectedResumeName,
+            data: selectedResumeBase64
+          })
         });
         if (res.ok) {
-          alert('✅ Resume link updated successfully on all devices!');
+          alert('✅ Resume uploaded and synchronized successfully on all devices!');
+          if (resumeUploadZone) {
+            resumeUploadZone.style.borderColor = "rgba(6, 182, 212, 0.3)";
+            resumeUploadZone.style.background = "rgba(var(--glass-rgb), 0.01)";
+          }
+          selectedResumeBase64 = null;
+          selectedResumeName = "";
+          openDashboard(); // refresh filename display
         } else {
           throw new Error("Sync failed");
         }
       } catch (err) {
         console.warn("Failed to sync resume globally:", err);
-        alert('⚠️ Saved locally, but failed to sync globally (Offline).');
+        alert('⚠️ Resume saved locally on this device, but failed to sync globally (Offline).');
       } finally {
         btn.innerHTML = originalText;
         btn.disabled = false;
