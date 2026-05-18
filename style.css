@@ -1238,3 +1238,23 @@ body:not(.light-mode) .navbar.scrolled {
 .form-group textarea {
   resize: vertical;
 }
+
+/* Interactive Theme Selector in Admin Panel */
+.theme-option-card:hover {
+  border-color: rgba(var(--glass-rgb), 0.2) !important;
+  background: rgba(var(--glass-rgb), 0.03) !important;
+  transform: translateY(-2px);
+}
+.theme-option-card:has(input:checked) {
+  border-color: var(--accent-color) !important;
+  background: rgba(var(--glass-rgb), 0.06) !important;
+  box-shadow: 0 0 15px rgba(var(--glass-rgb), 0.05);
+}
+.theme-option-card input:checked + .theme-preview-circle {
+  transform: scale(1.15);
+  box-shadow: 0 0 18px var(--accent-color) !important;
+  border-color: #ffffff !important;
+}
+.theme-preview-circle {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

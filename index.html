@@ -29,7 +29,7 @@
   <meta property="twitter:description" content="Portfolio of J.N.V. Phaneendra – Full Stack Developer & AI/ML undergraduate crafting seamless digital experiences and intelligent systems.">
   <meta property="twitter:image" content="https://phaneendra1228.github.io/Portfolio/preview-logo.png">
 
-  <link rel="stylesheet" href="style.css?v=40">
+  <link rel="stylesheet" href="style.css?v=41">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22%23bae6fd%22/><path d=%22M 30 78 L 70 78 L 62 70 L 38 70 Z%22 fill=%22%231e293b%22/><rect x=%2244%22 y=%2265%22 width=%2212%22 height=%2210%22 fill=%22%23334155%22/><rect x=%2215%22 y=%2220%22 width=%2270%22 height=%2248%22 rx=%224%22 fill=%22%231e293b%22/><rect x=%2218%22 y=%2223%22 width=%2264%22 height=%2242%22 rx=%222%22 fill=%22%2306b6d4%22/><rect x=%2218%22 y=%2223%22 width=%2264%22 height=%226%22 rx=%221%22 fill=%22%23f9ca24%22/><text x=%2250%22 y=%2250%22 font-family=%22sans-serif%22 font-size=%228.5%22 font-weight=%22bold%22 fill=%22white%22 text-anchor=%22middle%22>PHANEENDRA</text></svg>">
 </head>
@@ -440,6 +440,43 @@
               </div>
             </div>
 
+            <div class="form-group" style="margin: 0;">
+              <label style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Website Color Theme</label>
+              <div class="theme-selector-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; margin-top: 5px;">
+                
+                <label class="theme-option-card" style="position: relative; display: flex; flex-direction: column; align-items: center; padding: 15px 10px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(var(--glass-rgb), 0.01); cursor: pointer; transition: all 0.3s; text-align: center;">
+                  <input type="radio" name="website-theme" value="default" checked style="position: absolute; opacity: 0; width: 0; height: 0;">
+                  <div class="theme-preview-circle" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #f9ca24, #e67e22); border: 2px solid rgba(255,255,255,0.2); margin-bottom: 8px; box-shadow: 0 0 10px rgba(249, 202, 36, 0.4);"></div>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--text-main);">Amber Gold</span>
+                </label>
+
+                <label class="theme-option-card" style="position: relative; display: flex; flex-direction: column; align-items: center; padding: 15px 10px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(var(--glass-rgb), 0.01); cursor: pointer; transition: all 0.3s; text-align: center;">
+                  <input type="radio" name="website-theme" value="emerald" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                  <div class="theme-preview-circle" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #059669); border: 2px solid rgba(255,255,255,0.2); margin-bottom: 8px;"></div>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--text-main);">Emerald Mint</span>
+                </label>
+
+                <label class="theme-option-card" style="position: relative; display: flex; flex-direction: column; align-items: center; padding: 15px 10px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(var(--glass-rgb), 0.01); cursor: pointer; transition: all 0.3s; text-align: center;">
+                  <input type="radio" name="website-theme" value="cyberpunk" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                  <div class="theme-preview-circle" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #d946ef, #ec4899); border: 2px solid rgba(255,255,255,0.2); margin-bottom: 8px;"></div>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--text-main);">Neon Cyber</span>
+                </label>
+
+                <label class="theme-option-card" style="position: relative; display: flex; flex-direction: column; align-items: center; padding: 15px 10px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(var(--glass-rgb), 0.01); cursor: pointer; transition: all 0.3s; text-align: center;">
+                  <input type="radio" name="website-theme" value="sapphire" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                  <div class="theme-preview-circle" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #6366f1); border: 2px solid rgba(255,255,255,0.2); margin-bottom: 8px;"></div>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--text-main);">Royal Sapphire</span>
+                </label>
+
+                <label class="theme-option-card" style="position: relative; display: flex; flex-direction: column; align-items: center; padding: 15px 10px; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(var(--glass-rgb), 0.01); cursor: pointer; transition: all 0.3s; text-align: center;">
+                  <input type="radio" name="website-theme" value="crimson" style="position: absolute; opacity: 0; width: 0; height: 0;">
+                  <div class="theme-preview-circle" style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #ef4444, #dc2626); border: 2px solid rgba(255,255,255,0.2); margin-bottom: 8px;"></div>
+                  <span style="font-size: 12px; font-weight: 600; color: var(--text-main);">Crimson Rose</span>
+                </label>
+
+              </div>
+            </div>
+
             <button type="submit" class="admin-btn" style="width: auto; padding: 14px 28px; border-radius: 12px; font-size: 14px; margin: 5px 0 0;"><i class="fas fa-save"></i> Save & Sync Profile</button>
           </form>
         </div>
@@ -606,6 +643,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
-<script src="script.js?v=66"></script>
+<script src="script.js?v=67"></script>
 </body>
 </html>

@@ -87,6 +87,117 @@ if (!localStorage.getItem('portfolio_initialized')) {
   }
 }
 
+// ===== PREMIUM COLORS THEME DICTIONARY =====
+const themes = {
+  default: {
+    '--bg-color': '#030712',
+    '--card-bg': 'rgba(17, 24, 39, 0.7)',
+    '--nav-bg': 'rgba(3, 7, 18, 0.8)',
+    '--border-color': 'rgba(255, 255, 255, 0.08)',
+    '--text-main': '#ffffff',
+    '--text-muted': '#ffffff',
+    '--heading-color': '#ffffff',
+    '--glass-rgb': '255, 255, 255',
+    '--input-bg': 'rgba(0, 0, 0, 0.2)',
+    '--accent-color': '#f9ca24',
+    '--accent-gradient': 'linear-gradient(135deg, #f9ca24, #e67e22)',
+    '--accent-hover': 'linear-gradient(135deg, #e67e22, #d4a017)',
+    '--info-color': '#06b6d4'
+  },
+  emerald: {
+    '--bg-color': '#022c22',
+    '--card-bg': 'rgba(6, 78, 59, 0.4)',
+    '--nav-bg': 'rgba(2, 44, 34, 0.8)',
+    '--border-color': 'rgba(16, 185, 129, 0.15)',
+    '--text-main': '#ecfdf5',
+    '--text-muted': '#a7f3d0',
+    '--heading-color': '#ffffff',
+    '--glass-rgb': '16, 185, 129',
+    '--input-bg': 'rgba(2, 44, 34, 0.5)',
+    '--accent-color': '#10b981',
+    '--accent-gradient': 'linear-gradient(135deg, #10b981, #059669)',
+    '--accent-hover': 'linear-gradient(135deg, #059669, #047857)',
+    '--info-color': '#34d399'
+  },
+  cyberpunk: {
+    '--bg-color': '#0f051d',
+    '--card-bg': 'rgba(30, 9, 63, 0.4)',
+    '--nav-bg': 'rgba(15, 5, 29, 0.8)',
+    '--border-color': 'rgba(236, 72, 153, 0.15)',
+    '--text-main': '#fdf2f8',
+    '--text-muted': '#f472b6',
+    '--heading-color': '#ffffff',
+    '--glass-rgb': '236, 72, 153',
+    '--input-bg': 'rgba(15, 5, 29, 0.5)',
+    '--accent-color': '#d946ef',
+    '--accent-gradient': 'linear-gradient(135deg, #d946ef, #ec4899)',
+    '--accent-hover': 'linear-gradient(135deg, #c084fc, #db2777)',
+    '--info-color': '#a855f7'
+  },
+  sapphire: {
+    '--bg-color': '#03071e',
+    '--card-bg': 'rgba(26, 36, 86, 0.4)',
+    '--nav-bg': 'rgba(3, 7, 30, 0.8)',
+    '--border-color': 'rgba(59, 130, 246, 0.15)',
+    '--text-main': '#eff6ff',
+    '--text-muted': '#93c5fd',
+    '--heading-color': '#ffffff',
+    '--glass-rgb': '59, 130, 246',
+    '--input-bg': 'rgba(3, 7, 30, 0.5)',
+    '--accent-color': '#3b82f6',
+    '--accent-gradient': 'linear-gradient(135deg, #3b82f6, #6366f1)',
+    '--accent-hover': 'linear-gradient(135deg, #2563eb, #4f46e5)',
+    '--info-color': '#60a5fa'
+  },
+  crimson: {
+    '--bg-color': '#110208',
+    '--card-bg': 'rgba(67, 4, 29, 0.4)',
+    '--nav-bg': 'rgba(17, 2, 8, 0.8)',
+    '--border-color': 'rgba(239, 68, 68, 0.15)',
+    '--text-main': '#fef2f2',
+    '--text-muted': '#fca5a5',
+    '--heading-color': '#ffffff',
+    '--glass-rgb': '239, 68, 68',
+    '--input-bg': 'rgba(17, 2, 8, 0.5)',
+    '--accent-color': '#ef4444',
+    '--accent-gradient': 'linear-gradient(135deg, #ef4444, #dc2626)',
+    '--accent-hover': 'linear-gradient(135deg, #dc2626, #b91c1c)',
+    '--info-color': '#f87171'
+  }
+};
+
+function applyTheme(themeName) {
+  const root = document.documentElement;
+  const theme = themes[themeName] || themes.default;
+  const isLight = document.body.classList.contains('light-mode');
+  
+  Object.keys(theme).forEach(key => {
+    if (isLight) {
+      // In light mode, let standard CSS variables dictate general background/text,
+      // but override accent highlights and gradients with theme values!
+      if (key.includes('accent') || key.includes('info')) {
+        root.style.setProperty(key, theme[key]);
+      } else {
+        root.style.removeProperty(key);
+      }
+    } else {
+      // In dark mode, set all custom properties (bg, card-bg, text colors, etc.)
+      root.style.setProperty(key, theme[key]);
+    }
+  });
+
+  // Reapply mobile-specific overrides dynamically if viewport is mobile
+  if (window.innerWidth <= 768) {
+    if (isLight) {
+      root.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.98)', 'important');
+      root.style.setProperty('--nav-bg', 'rgba(255, 255, 255, 0.98)', 'important');
+    } else {
+      root.style.setProperty('--card-bg', 'rgba(17, 24, 39, 0.96)', 'important');
+      root.style.setProperty('--nav-bg', 'rgba(11, 15, 30, 0.97)', 'important');
+    }
+  }
+}
+
 // Helper to convert Base64 Data URL to binary Blob object for safe browser in-tab preview
 function base64ToBlob(base64, type = "application/pdf") {
   try {
@@ -200,6 +311,12 @@ if (localStorage.getItem('theme') === 'light') {
 if (themeSwitch && themeIcon) {
   themeSwitch.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
+    
+    // Re-apply theme accents for the new dark/light state
+    const profile = JSON.parse(localStorage.getItem('custom_profile')) || {};
+    const activeTheme = profile.theme || 'default';
+    applyTheme(activeTheme);
+
     if (document.body.classList.contains('light-mode')) {
       themeIcon.classList.remove('fa-sun');
       themeIcon.classList.add('fa-moon');
@@ -233,6 +350,18 @@ typewrite();
 // Dynamic Profile Loader
 function loadProfile() {
   const profile = JSON.parse(localStorage.getItem('custom_profile')) || defaultProfile;
+  
+  // Apply dynamic color theme
+  const activeTheme = profile.theme || 'default';
+  applyTheme(activeTheme);
+
+  // Map active theme radio button in admin panel
+  const radios = document.getElementsByName('website-theme');
+  radios.forEach(radio => {
+    if (radio.value === activeTheme) {
+      radio.checked = true;
+    }
+  });
   
   // 1. Navbar brand & footer brand
   const brandLink = document.querySelector('.navbar-brand');
@@ -1726,6 +1855,15 @@ document.addEventListener('DOMContentLoaded', () => {
       rolesEl.value = (profile.roles || []).join('\n');
     }
     
+    // Pre-select active theme radio button
+    const activeTheme = profile.theme || 'default';
+    const radios = document.getElementsByName('website-theme');
+    radios.forEach(radio => {
+      if (radio.value === activeTheme) {
+        radio.checked = true;
+      }
+    });
+
     selectedProfileImageBase64 = profile.image || 'profile.jpg';
     if (profileUploadText) {
       profileUploadText.textContent = profile.image ? (profile.image.startsWith('data:') ? 'Custom profile image active' : profile.image) : "Drag & Drop or Click to Upload Image";
@@ -1782,6 +1920,16 @@ document.addEventListener('DOMContentLoaded', () => {
       const originalText = btn.innerHTML;
       btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving & Syncing...';
       btn.disabled = true;
+
+      // Retrieve selected theme
+      let selectedTheme = "default";
+      const radios = document.getElementsByName('website-theme');
+      for (const radio of radios) {
+        if (radio.checked) {
+          selectedTheme = radio.value;
+          break;
+        }
+      }
       
       const updatedProfile = {
         name: document.getElementById('form-profile-name').value.trim(),
@@ -1793,6 +1941,7 @@ document.addEventListener('DOMContentLoaded', () => {
         github: document.getElementById('form-profile-github').value.trim(),
         linkedin: document.getElementById('form-profile-linkedin').value.trim(),
         instagram: document.getElementById('form-profile-instagram').value.trim(),
+        theme: selectedTheme,
         image: selectedProfileImageBase64 || "profile.jpg"
       };
       
