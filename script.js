@@ -93,6 +93,7 @@ const themes = {
     '--bg-color': '#030712',
     '--card-bg': 'rgba(17, 24, 39, 0.7)',
     '--nav-bg': 'rgba(3, 7, 18, 0.8)',
+    '--nav-menu-bg': 'rgba(3, 7, 18, 0.65)',
     '--border-color': 'rgba(255, 255, 255, 0.08)',
     '--text-main': '#ffffff',
     '--text-muted': '#ffffff',
@@ -108,6 +109,7 @@ const themes = {
     '--bg-color': '#022c22',
     '--card-bg': 'rgba(6, 78, 59, 0.4)',
     '--nav-bg': 'rgba(2, 44, 34, 0.8)',
+    '--nav-menu-bg': 'rgba(2, 44, 34, 0.65)',
     '--border-color': 'rgba(16, 185, 129, 0.15)',
     '--text-main': '#ecfdf5',
     '--text-muted': '#a7f3d0',
@@ -123,6 +125,7 @@ const themes = {
     '--bg-color': '#0f051d',
     '--card-bg': 'rgba(30, 9, 63, 0.4)',
     '--nav-bg': 'rgba(15, 5, 29, 0.8)',
+    '--nav-menu-bg': 'rgba(15, 5, 29, 0.65)',
     '--border-color': 'rgba(236, 72, 153, 0.15)',
     '--text-main': '#fdf2f8',
     '--text-muted': '#f472b6',
@@ -138,6 +141,7 @@ const themes = {
     '--bg-color': '#03071e',
     '--card-bg': 'rgba(26, 36, 86, 0.4)',
     '--nav-bg': 'rgba(3, 7, 30, 0.8)',
+    '--nav-menu-bg': 'rgba(3, 7, 30, 0.65)',
     '--border-color': 'rgba(59, 130, 246, 0.15)',
     '--text-main': '#eff6ff',
     '--text-muted': '#93c5fd',
@@ -153,6 +157,7 @@ const themes = {
     '--bg-color': '#110208',
     '--card-bg': 'rgba(67, 4, 29, 0.4)',
     '--nav-bg': 'rgba(17, 2, 8, 0.8)',
+    '--nav-menu-bg': 'rgba(17, 2, 8, 0.65)',
     '--border-color': 'rgba(239, 68, 68, 0.15)',
     '--text-main': '#fef2f2',
     '--text-muted': '#fca5a5',
@@ -191,9 +196,19 @@ function applyTheme(themeName) {
     if (isLight) {
       root.style.setProperty('--card-bg', 'rgba(255, 255, 255, 0.98)', 'important');
       root.style.setProperty('--nav-bg', 'rgba(255, 255, 255, 0.98)', 'important');
+      root.style.setProperty('--nav-menu-bg', 'rgba(250, 246, 238, 0.65)', 'important');
     } else {
       root.style.setProperty('--card-bg', 'rgba(17, 24, 39, 0.96)', 'important');
       root.style.setProperty('--nav-bg', 'rgba(11, 15, 30, 0.97)', 'important');
+      
+      // Determine theme-specific semi-transparent color for mobile menu background
+      let semiTrans = 'rgba(3, 7, 18, 0.65)';
+      if (themeName === 'emerald') semiTrans = 'rgba(2, 44, 34, 0.65)';
+      else if (themeName === 'cyberpunk') semiTrans = 'rgba(15, 5, 29, 0.65)';
+      else if (themeName === 'sapphire') semiTrans = 'rgba(3, 7, 30, 0.65)';
+      else if (themeName === 'crimson') semiTrans = 'rgba(17, 2, 8, 0.65)';
+      
+      root.style.setProperty('--nav-menu-bg', semiTrans, 'important');
     }
   }
 }

@@ -4,6 +4,7 @@
   --bg-color: #030712;
   --card-bg: rgba(17, 24, 39, 0.7);
   --nav-bg: rgba(3, 7, 18, 0.8);
+  --nav-menu-bg: rgba(3, 7, 18, 0.65);
   --border-color: rgba(255, 255, 255, 0.08);
   --text-main: #ffffff;
   --text-muted: #ffffff;
@@ -20,6 +21,7 @@ body.light-mode {
   --bg-color: #faf6ee;
   --card-bg: rgba(255, 255, 255, 0.85);
   --nav-bg: rgba(250, 246, 238, 0.9);
+  --nav-menu-bg: rgba(250, 246, 238, 0.65);
   --border-color: rgba(217, 119, 6, 0.15);
   --text-main: #2d3748;
   --text-muted: #4a5568;
@@ -796,13 +798,23 @@ body.light-mode .cert-date {
   }
 
   .menu-btn { display: block; z-index: 1000; }
-  .navbar .menu {
-    position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
-    background: var(--bg-color); backdrop-filter: blur(20px);
-    flex-direction: column; justify-content: center; gap: 40px;
-    transition: right 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+  .theme-switch {
+    position: absolute;
+    right: 90px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1001;
+    margin-left: 0;
   }
-  .navbar .menu.active { right: 0; }
+  .navbar .menu {
+    position: fixed; top: -100vh; left: 0; width: 100%; height: 100vh;
+    background: var(--nav-menu-bg, rgba(3, 7, 18, 0.65));
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    flex-direction: column; justify-content: center; gap: 40px;
+    transition: top 0.4s cubic-bezier(0.77, 0, 0.175, 1);
+  }
+  .navbar .menu.active { top: 0; }
   .navbar .menu li a { font-size: 24px; font-weight: 600; }
   
   .home { padding-top: 100px; text-align: center; }
@@ -831,10 +843,25 @@ body.light-mode .cert-date {
 
 /* ===== THEME SWITCH & FIXES ===== */
 .theme-switch {
-  cursor: pointer; font-size: 20px; color: var(--text-main);
-  transition: all 0.3s ease; padding: 5px; margin-left: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  color: var(--text-main);
+  transition: all 0.3s ease;
+  background: rgba(var(--glass-rgb), 0.03);
+  font-size: 18px;
+  margin-left: 20px;
 }
-.theme-switch:hover { color: var(--accent-color); transform: scale(1.1); }
+.theme-switch:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  box-shadow: 0 0 15px rgba(249, 202, 36, 0.2);
+}
 
 /* Force buttons to have white text regardless of light/dark mode */
 .about .about-content .right a, 
