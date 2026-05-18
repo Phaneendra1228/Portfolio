@@ -1165,6 +1165,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnAddProject = document.getElementById('btn-add-project');
   const btnAddCert = document.getElementById('btn-add-cert');
   const btnClearMessages = document.getElementById('btn-clear-messages');
+  const btnReloadMessages = document.getElementById('btn-reload-messages');
   const btnExportConfig = document.getElementById('btn-export-config');
   const projectForm = document.getElementById('project-form');
   const certForm = document.getElementById('cert-form');
@@ -1508,6 +1509,23 @@ document.addEventListener('DOMContentLoaded', () => {
         } finally {
           renderMessagesList();
         }
+      }
+    });
+  }
+
+  if (btnReloadMessages) {
+    btnReloadMessages.addEventListener('click', async () => {
+      const originalHtml = btnReloadMessages.innerHTML;
+      btnReloadMessages.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Reloading...';
+      btnReloadMessages.disabled = true;
+      
+      try {
+        await renderMessagesList();
+      } catch (err) {
+        console.warn("Reload messages failed:", err);
+      } finally {
+        btnReloadMessages.innerHTML = originalHtml;
+        btnReloadMessages.disabled = false;
       }
     });
   }
