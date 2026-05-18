@@ -1,6 +1,19 @@
 // ===== DATABASE INITIALIZATION =====
-console.log("🚀 Portfolio Script Loaded: Version 33 (Global DB Active)");
-window.PORTFOLIO_VERSION = 33;
+console.log("🚀 Portfolio Script Loaded: Version 34 (Global DB Active)");
+window.PORTFOLIO_VERSION = 34;
+
+const defaultProfile = {
+  name: "PHANEENDRA",
+  fullName: "JUJJAVARAPU NAGA VENKATA PHANEENDRA",
+  subtitle: "Full Stack Developer & AI/ML Engineer",
+  roles: ["Full Stack Developer,\nAI & ML Engineer :)"],
+  bio: "I'm Phaneendra, a passionate CSE student specializing in AI & ML. As a full-stack developer, I craft seamless digital experiences with precision and creativity. My code speaks in the language of innovation—blending logic, design, and intelligence. Beneath the surface, I dive deep into the world of machine learning, shaping ideas into smart, adaptive systems. My mission? To fuse technology and imagination, building solutions that redefine the way we interact with the digital world.",
+  email: "Phanee2005@gmail.com",
+  linkedin: "https://www.linkedin.com/in/jujjavarapu-naga-venkata-phaneendra-7416a232a/",
+  github: "https://github.com/Phaneendra1228",
+  instagram: "https://www.instagram.com/phaneendra_jnv/",
+  image: "profile.jpg"
+};
 
 const defaultProjects = [
   {
@@ -52,8 +65,13 @@ if (!localStorage.getItem('portfolio_initialized')) {
   localStorage.setItem('custom_projects', JSON.stringify(defaultProjects));
   localStorage.setItem('custom_certificates', JSON.stringify(defaultCerts));
   localStorage.setItem('custom_resume_url', defaultResumeUrl);
+  localStorage.setItem('custom_profile', JSON.stringify(defaultProfile));
   localStorage.setItem('portfolio_initialized', 'true');
 } else {
+  // Ensure default profile exists in cache
+  if (!localStorage.getItem('custom_profile')) {
+    localStorage.setItem('custom_profile', JSON.stringify(defaultProfile));
+  }
   // Ensure default resume link exists in cache
   if (!localStorage.getItem('custom_resume_url')) {
     localStorage.setItem('custom_resume_url', defaultResumeUrl);
@@ -195,21 +213,126 @@ if (themeSwitch && themeIcon) {
 }
 
 // Typed.js style typing effect
-const roles = ['Full Stack Developer,\nAI & ML Engineer :)'];
+let rolesList = ['Full Stack Developer,\nAI & ML Engineer :)'];
 let ri = 0, ci = 0, deleting = false;
 const typeEl = document.getElementById('typewriter');
 function typewrite() {
-  const word = roles[ri];
+  if (!typeEl) return;
+  const word = rolesList[ri] || 'Developer';
   if (!deleting) {
     typeEl.innerHTML = word.substring(0, ++ci).replace(/\n/g, '<br>');
     if (ci === word.length) { deleting = true; setTimeout(typewrite, 2500); return; }
   } else {
     typeEl.innerHTML = word.substring(0, --ci).replace(/\n/g, '<br>');
-    if (ci === 0) { deleting = false; ri = (ri + 1) % roles.length; }
+    if (ci === 0) { deleting = false; ri = (ri + 1) % rolesList.length; }
   }
   setTimeout(typewrite, deleting ? 40 : 80);
 }
 typewrite();
+
+// Dynamic Profile Loader
+function loadProfile() {
+  const profile = JSON.parse(localStorage.getItem('custom_profile')) || defaultProfile;
+  
+  // 1. Navbar brand & footer brand
+  const brandLink = document.querySelector('.navbar-brand');
+  if (brandLink) brandLink.textContent = profile.name;
+  
+  const footerBrand = document.querySelector('.footer-col h3');
+  if (footerBrand) footerBrand.textContent = profile.name;
+  
+  // 2. Hero Name
+  const heroName = document.querySelector('.home-content .text-2');
+  if (heroName) heroName.textContent = profile.name;
+  
+  // 3. Typewriter roles list update
+  if (profile.roles && profile.roles.length) {
+    rolesList = profile.roles;
+  } else {
+    rolesList = [profile.subtitle];
+  }
+  
+  // 4. Hero Photo & About Photo
+  const heroImg = document.querySelector('.hero-photo img');
+  if (heroImg) {
+    heroImg.src = profile.image;
+    heroImg.onerror = () => { heroImg.src = 'https://avatars.githubusercontent.com/u/202120526?v=4'; };
+  }
+  
+  const aboutImg = document.querySelector('.about-content .left img');
+  if (aboutImg) {
+    aboutImg.src = profile.image;
+    aboutImg.onerror = () => { aboutImg.src = 'https://avatars.githubusercontent.com/u/202120526?v=4'; };
+  }
+  
+  // 5. About Details
+  const aboutTextTitle = document.querySelector('.about-content .right .text');
+  if (aboutTextTitle) {
+    aboutTextTitle.innerHTML = `I'm ${profile.name} and I'm <span>${profile.subtitle}.</span>`;
+  }
+  
+  const aboutBio = document.querySelector('.about-content .right p');
+  if (aboutBio) {
+    aboutBio.textContent = profile.bio;
+  }
+  
+  // 6. Contact details
+  const contactName = document.querySelector('.contact .icons .row:nth-child(1) .info .sub-title');
+  if (contactName) contactName.textContent = profile.fullName;
+  
+  const contactEmail = document.querySelector('.contact .icons .row:nth-child(3) .info .sub-title a');
+  if (contactEmail) {
+    contactEmail.href = `mailto:${profile.email}`;
+    contactEmail.textContent = profile.email;
+  }
+  
+  // 7. Footer Bio
+  const footerBio = document.querySelector('.footer-col p');
+  if (footerBio) footerBio.textContent = `${profile.subtitle} crafting seamless digital experiences and intelligent systems.`;
+  
+  // 8. Footer Copyright
+  const footerCopyright = document.querySelector('.footer-bottom span');
+  if (footerCopyright) {
+    const year = new Date().getFullYear();
+    footerCopyright.innerHTML = `&copy; ${year} ${profile.name}. All rights reserved.`;
+  }
+  
+  // 9. Social links
+  const socialIcons = document.querySelectorAll('.social_icon li a, .social-links a');
+  socialIcons.forEach(a => {
+    const icon = a.querySelector('i');
+    if (icon) {
+      if (icon.classList.contains('fa-envelope')) {
+        a.href = `mailto:${profile.email}`;
+      } else if (icon.classList.contains('fa-linkedin-in') || icon.classList.contains('fa-linkedin')) {
+        a.href = profile.linkedin;
+      } else if (icon.classList.contains('fa-github')) {
+        a.href = profile.github;
+      } else if (icon.classList.contains('fa-instagram')) {
+        a.href = profile.instagram;
+      }
+    }
+  });
+}
+
+// Asynchronously load profile from KVDB with local cache fallback
+async function syncProfile() {
+  // First load from local storage cache for instant render
+  loadProfile();
+  
+  try {
+    const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/profile_data", { cache: 'no-store' });
+    if (res.ok) {
+      const payload = await res.json();
+      if (payload && payload.name) {
+        localStorage.setItem('custom_profile', JSON.stringify(payload));
+        loadProfile(); // Update with latest database payload
+      }
+    }
+  } catch (err) {
+    console.warn("Failed to load profile from global DB, offline active:", err);
+  }
+}
 
 // Load Projects from Database
 function loadProjects() {
@@ -574,6 +697,7 @@ document.addEventListener('DOMContentLoaded', () => {
   loadProjects();
   loadCertificates();
   loadResume();
+  syncProfile();
 });
 
 // ===== PRELOADER LOGIC & CANVAS CONSTELLATION =====
@@ -726,10 +850,12 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Tab Switching
   const tabBtnProjects = document.getElementById('tab-btn-projects');
+  const tabBtnProfile = document.getElementById('tab-btn-profile');
   const tabBtnCerts = document.getElementById('tab-btn-certs');
   const tabBtnResume = document.getElementById('tab-btn-resume');
   const tabBtnMessages = document.getElementById('tab-btn-messages');
   const tabProjects = document.getElementById('tab-projects');
+  const tabProfile = document.getElementById('tab-profile');
   const tabCerts = document.getElementById('tab-certs');
   const tabResume = document.getElementById('tab-resume');
   const tabMessages = document.getElementById('tab-messages');
@@ -846,52 +972,31 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // Tabs management
-  if (tabBtnProjects && tabBtnCerts && tabBtnResume && tabBtnMessages) {
-    tabBtnProjects.addEventListener('click', () => {
-      tabBtnProjects.classList.add('active');
-      tabBtnCerts.classList.remove('active');
-      tabBtnResume.classList.remove('active');
-      tabBtnMessages.classList.remove('active');
-      tabProjects.classList.add('active');
-      tabCerts.classList.remove('active');
-      tabResume.classList.remove('active');
-      tabMessages.classList.remove('active');
-    });
-    tabBtnCerts.addEventListener('click', () => {
-      tabBtnCerts.classList.add('active');
-      tabBtnProjects.classList.remove('active');
-      tabBtnResume.classList.remove('active');
-      tabBtnMessages.classList.remove('active');
-      tabCerts.classList.add('active');
-      tabProjects.classList.remove('active');
-      tabResume.classList.remove('active');
-      tabMessages.classList.remove('active');
-    });
-    tabBtnResume.addEventListener('click', () => {
-      tabBtnResume.classList.add('active');
-      tabBtnProjects.classList.remove('active');
-      tabBtnCerts.classList.remove('active');
-      tabBtnMessages.classList.remove('active');
-      tabResume.classList.add('active');
-      tabProjects.classList.remove('active');
-      tabCerts.classList.remove('active');
-      tabMessages.classList.remove('active');
-    });
-    tabBtnMessages.addEventListener('click', () => {
-      tabBtnMessages.classList.add('active');
-      tabBtnProjects.classList.remove('active');
-      tabBtnCerts.classList.remove('active');
-      tabBtnResume.classList.remove('active');
-      tabMessages.classList.add('active');
-      tabProjects.classList.remove('active');
-      tabCerts.classList.remove('active');
-      tabResume.classList.remove('active');
-    });
-  }
+  const allTabs = [
+    { btn: tabBtnProjects, content: tabProjects },
+    { btn: tabBtnProfile, content: tabProfile },
+    { btn: tabBtnCerts, content: tabCerts },
+    { btn: tabBtnResume, content: tabResume },
+    { btn: tabBtnMessages, content: tabMessages }
+  ];
+
+  allTabs.forEach(tab => {
+    if (tab.btn) {
+      tab.btn.addEventListener('click', () => {
+        allTabs.forEach(t => {
+          if (t.btn) t.btn.classList.remove('active');
+          if (t.content) t.content.classList.remove('active');
+        });
+        tab.btn.classList.add('active');
+        if (tab.content) tab.content.classList.add('active');
+      });
+    }
+  });
   
   // Open Dashboard Controls
   function openDashboard() {
     renderDashboardLists();
+    populateProfileForm();
     
     // Display current resume file info in upload zone
     const currentName = localStorage.getItem('custom_resume_filename');
@@ -1475,6 +1580,134 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
   
+  // --- Profile Management Logic ---
+  let selectedProfileImageBase64 = "";
+
+  const profileForm = document.getElementById('admin-profile-form');
+  const profileFileInput = document.getElementById('form-profile-file');
+  const profileUploadText = document.getElementById('profile-upload-text');
+  const profileUploadInfo = document.getElementById('profile-upload-info');
+  const profileUploadZone = document.getElementById('profile-upload-zone');
+
+  function populateProfileForm() {
+    const profile = JSON.parse(localStorage.getItem('custom_profile')) || defaultProfile;
+    
+    const fields = {
+      'form-profile-name': profile.name,
+      'form-profile-fullname': profile.fullName,
+      'form-profile-subtitle': profile.subtitle,
+      'form-profile-bio': profile.bio,
+      'form-profile-email': profile.email,
+      'form-profile-github': profile.github,
+      'form-profile-linkedin': profile.linkedin,
+      'form-profile-instagram': profile.instagram
+    };
+    
+    for (const [id, value] of Object.entries(fields)) {
+      const el = document.getElementById(id);
+      if (el) el.value = value || '';
+    }
+    
+    const rolesEl = document.getElementById('form-profile-roles');
+    if (rolesEl) {
+      rolesEl.value = (profile.roles || []).join('\n');
+    }
+    
+    selectedProfileImageBase64 = profile.image || 'profile.jpg';
+    if (profileUploadText) {
+      profileUploadText.textContent = profile.image ? (profile.image.startsWith('data:') ? 'Custom profile image active' : profile.image) : "Drag & Drop or Click to Upload Image";
+    }
+    if (profileUploadInfo) {
+      profileUploadInfo.textContent = profile.image ? "Upload a new image to replace it" : "Recommended: Square ratio, maximum size 1MB";
+    }
+    if (profileUploadZone) {
+      if (profile.image) {
+        profileUploadZone.style.borderColor = "#06b6d4";
+        profileUploadZone.style.background = "rgba(6, 182, 212, 0.02)";
+      } else {
+        profileUploadZone.style.borderColor = "rgba(6, 182, 212, 0.3)";
+        profileUploadZone.style.background = "rgba(var(--glass-rgb), 0.01)";
+      }
+    }
+  }
+
+  // Bind file input change for profile photo
+  if (profileFileInput) {
+    profileFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 1024 * 1024) { // 1MB limit for local storage
+          alert("Image file size is too large! Maximum limit is 1MB.");
+          profileFileInput.value = "";
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          selectedProfileImageBase64 = evt.target.result;
+          if (profileUploadText) {
+            profileUploadText.textContent = `Selected: ${file.name}`;
+          }
+          if (profileUploadInfo) {
+            profileUploadInfo.textContent = `Size: ${(file.size / 1024).toFixed(1)} KB (Ready to save)`;
+          }
+          if (profileUploadZone) {
+            profileUploadZone.style.borderColor = "#06b6d4";
+            profileUploadZone.style.background = "rgba(6, 182, 212, 0.05)";
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Submit Profile Form (Local storage + KVDB Sync)
+  if (profileForm) {
+    profileForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btn = profileForm.querySelector('button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving & Syncing...';
+      btn.disabled = true;
+      
+      const updatedProfile = {
+        name: document.getElementById('form-profile-name').value.trim(),
+        fullName: document.getElementById('form-profile-fullname').value.trim(),
+        subtitle: document.getElementById('form-profile-subtitle').value.trim(),
+        roles: document.getElementById('form-profile-roles').value.split('\n').map(r => r.trim()).filter(r => r.length > 0),
+        bio: document.getElementById('form-profile-bio').value.trim(),
+        email: document.getElementById('form-profile-email').value.trim(),
+        github: document.getElementById('form-profile-github').value.trim(),
+        linkedin: document.getElementById('form-profile-linkedin').value.trim(),
+        instagram: document.getElementById('form-profile-instagram').value.trim(),
+        image: selectedProfileImageBase64 || "profile.jpg"
+      };
+      
+      // Save locally
+      localStorage.setItem('custom_profile', JSON.stringify(updatedProfile));
+      loadProfile();
+      
+      // Sync to global DB
+      try {
+        const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/profile_data", {
+          method: "POST",
+          body: JSON.stringify(updatedProfile)
+        });
+        if (res.ok) {
+          alert('✅ Profile details updated and synchronized successfully on all devices!');
+        } else {
+          throw new Error("Sync failed");
+        }
+      } catch (err) {
+        console.warn("Global database sync failed for profile, saved locally:", err);
+        alert('⚠️ Profile saved locally (offline cache active). Edits will load on this browser, but global database sync failed.');
+      } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+      }
+    });
+  }
+
   // Logout Trigger
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
@@ -1488,8 +1721,11 @@ document.addEventListener('DOMContentLoaded', () => {
     btnExportConfig.addEventListener('click', () => {
       const projects = localStorage.getItem('custom_projects');
       const certs = localStorage.getItem('custom_certificates');
+      const profile = localStorage.getItem('custom_profile') || JSON.stringify(defaultProfile);
       
       const configText = `// Copy and replace the database arrays at the beginning of script.js to make your edits permanent!
+
+const defaultProfile = ${profile};
 
 const defaultProjects = ${projects};
 

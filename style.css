@@ -793,6 +793,10 @@ body.light-mode .cert-date {
   .hero-photo { width: 280px; height: 280px; }
   .contact .contact-content { padding: 25px; border-radius: 20px; }
   .services .box { padding: 30px 20px; }
+  .admin-modal-content { padding: 20px 15px; border-radius: 18px; }
+  .admin-tabs { gap: 5px; margin-bottom: 15px; padding-bottom: 8px; }
+  .tab-btn { padding: 8px 12px; font-size: 14px; }
+  .dashboard-footer { flex-wrap: wrap !important; }
 }
 
 /* ===== THEME SWITCH & FIXES ===== */
@@ -1086,6 +1090,13 @@ body:not(.light-mode) .navbar.scrolled {
   margin-bottom: 20px;
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 10px;
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+.admin-tabs::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari, and Opera */
 }
 .tab-btn {
   background: transparent;
@@ -1098,6 +1109,7 @@ body:not(.light-mode) .navbar.scrolled {
   cursor: pointer;
   position: relative;
   transition: color 0.3s;
+  flex-shrink: 0; /* Prevent buttons from shrinking on small screens */
 }
 .tab-btn.active {
   color: var(--accent-color);
