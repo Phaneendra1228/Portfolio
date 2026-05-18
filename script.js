@@ -503,9 +503,72 @@ function loadProjects() {
 // Contact form
 const form = document.getElementById('contact-form');
 if (form) {
+  // Clear error styles on input
+  form.querySelectorAll('input, textarea').forEach(input => {
+    input.addEventListener('input', () => {
+      input.classList.remove('invalid-field');
+      const alertEl = document.getElementById('alert');
+      if (alertEl && alertEl.classList.contains('alert-error')) {
+        alertEl.style.visibility = 'hidden';
+      }
+    });
+  });
+
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
     e.stopPropagation();
+
+    // Clean up any previous invalid fields
+    form.querySelectorAll('.invalid-field').forEach(el => el.classList.remove('invalid-field'));
+
+    const nameInput = form.querySelector('input[name="name"]');
+    const emailInput = form.querySelector('input[name="email"]');
+    const subjectInput = form.querySelector('input[name="subject"]');
+    const messageInput = form.querySelector('textarea[name="message"]');
+    const alertEl = document.getElementById('alert');
+
+    const name = nameInput ? nameInput.value.trim() : '';
+    const email = emailInput ? emailInput.value.trim() : '';
+    const subject = subjectInput ? subjectInput.value.trim() : '';
+    const message = messageInput ? messageInput.value.trim() : '';
+
+    let errorMessage = '';
+    let errorField = null;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!name) {
+      errorMessage = 'Please enter your name.';
+      errorField = nameInput;
+    } else if (!email) {
+      errorMessage = 'Please enter your email address.';
+      errorField = emailInput;
+    } else if (!emailRegex.test(email)) {
+      errorMessage = 'Please enter a valid email address.';
+      errorField = emailInput;
+    } else if (!subject) {
+      errorMessage = 'Please enter a subject.';
+      errorField = subjectInput;
+    } else if (!message) {
+      errorMessage = 'Please enter a message.';
+      errorField = messageInput;
+    }
+
+    if (errorMessage) {
+      if (errorField) {
+        errorField.classList.add('invalid-field');
+        errorField.focus();
+      }
+      if (alertEl) {
+        alertEl.classList.add('alert-error');
+        alertEl.style.visibility = 'visible';
+        alertEl.innerHTML = `<span class="closebtn" onclick="this.parentElement.style.visibility='hidden'">&times;</span>❌ ${errorMessage}`;
+        alertEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        alert(errorMessage);
+      }
+      return;
+    }
+
     const btn = form.querySelector('button');
     btn.textContent = 'Sending...';
     btn.disabled = true;
@@ -557,6 +620,7 @@ if (form) {
 
         const alertEl = document.getElementById('alert');
         if (alertEl) {
+          alertEl.classList.remove('alert-error');
           alertEl.style.visibility = 'visible';
           alertEl.innerHTML = `<span class="closebtn" onclick="this.parentElement.style.visibility='hidden'">&times;</span>✅ Your message has been sent successfully!`;
         }
@@ -1028,25 +1092,35 @@ document.addEventListener('DOMContentLoaded', () => {
     isWindowLoaded = true;
   });
 
+  function dismissPreloader() {
+    if (!active) return; // already dismissed
+    clearInterval(statusInterval);
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+      preloader.classList.add('fade-out');
+      setTimeout(() => {
+        active = false; // stop canvas animation loop
+        preloader.remove();
+      }, 800);
+    }
+  }
+
   // Guarantee minimum display time of 3.2 seconds for aesthetic impact
   setTimeout(() => {
     function checkAndFade() {
       if (isWindowLoaded || document.readyState === 'complete') {
-        clearInterval(statusInterval);
-        const preloader = document.getElementById('preloader');
-        if (preloader) {
-          preloader.classList.add('fade-out');
-          setTimeout(() => {
-            active = false; // stop canvas animation loop
-            preloader.remove();
-          }, 800);
-        }
+        dismissPreloader();
       } else {
         setTimeout(checkAndFade, 200);
       }
     }
     checkAndFade();
   }, 3200);
+
+  // Bulletproof fail-safe: Force hide preloader after a maximum of 5 seconds to prevent loading lock
+  setTimeout(() => {
+    dismissPreloader();
+  }, 5000);
 })();
 
 // ===== ADMIN PANEL LOGIC =====
