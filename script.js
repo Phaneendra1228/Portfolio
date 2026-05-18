@@ -692,10 +692,70 @@ function loadCertificates() {
   }
 }
 
+// Sync Projects globally to KVDB
+async function syncProjectsToGlobalDB(projects) {
+  try {
+    await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/projects_data", {
+      method: "POST",
+      body: JSON.stringify(projects)
+    });
+  } catch (err) {
+    console.warn("Failed to sync projects to global DB:", err);
+  }
+}
+
+// Sync Certificates globally to KVDB
+async function syncCertificatesToGlobalDB(certs) {
+  try {
+    await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/certs_data", {
+      method: "POST",
+      body: JSON.stringify(certs)
+    });
+  } catch (err) {
+    console.warn("Failed to sync certificates to global DB:", err);
+  }
+}
+
+// Asynchronously load projects from KVDB with local cache fallback
+async function syncProjects() {
+  loadProjects(); // Render immediately from local cache
+  
+  try {
+    const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/projects_data", { cache: 'no-store' });
+    if (res.ok) {
+      const payload = await res.json();
+      if (payload && Array.isArray(payload)) {
+        localStorage.setItem('custom_projects', JSON.stringify(payload));
+        loadProjects(); // Render with latest database payload
+      }
+    }
+  } catch (err) {
+    console.warn("Failed to load projects from global DB:", err);
+  }
+}
+
+// Asynchronously load certificates from KVDB with local cache fallback
+async function syncCertificates() {
+  loadCertificates(); // Render immediately from local cache
+  
+  try {
+    const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/certs_data", { cache: 'no-store' });
+    if (res.ok) {
+      const payload = await res.json();
+      if (payload && Array.isArray(payload)) {
+        localStorage.setItem('custom_certificates', JSON.stringify(payload));
+        loadCertificates(); // Render with latest database payload
+      }
+    }
+  } catch (err) {
+    console.warn("Failed to load certificates from global DB:", err);
+  }
+}
+
 // Initial Dynamic Load Trigger
 document.addEventListener('DOMContentLoaded', () => {
-  loadProjects();
-  loadCertificates();
+  syncProjects();
+  syncCertificates();
   loadResume();
   syncProfile();
 });
@@ -1139,23 +1199,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // Expose CRUD actions globally so onclick handles work
-  window.deleteProject = function(idx) {
+  window.deleteProject = async function(idx) {
     if (confirm('Are you sure you want to delete this project?')) {
       const projects = JSON.parse(localStorage.getItem('custom_projects')) || [];
       projects.splice(idx, 1);
       localStorage.setItem('custom_projects', JSON.stringify(projects));
       renderDashboardLists();
       loadProjects();
+      await syncProjectsToGlobalDB(projects);
     }
   };
   
-  window.deleteCertificate = function(idx) {
+  window.deleteCertificate = async function(idx) {
     if (confirm('Are you sure you want to delete this certificate?')) {
       const certs = JSON.parse(localStorage.getItem('custom_certificates')) || [];
       certs.splice(idx, 1);
       localStorage.setItem('custom_certificates', JSON.stringify(certs));
       renderDashboardLists();
       loadCertificates();
+      await syncCertificatesToGlobalDB(certs);
     }
   };
 
@@ -1216,8 +1278,13 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Save Project Form
   if (projectForm) {
-    projectForm.addEventListener('submit', (e) => {
+    projectForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const btn = projectForm.querySelector('button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      btn.disabled = true;
+
       const idx = document.getElementById('project-edit-index').value;
       const projects = JSON.parse(localStorage.getItem('custom_projects')) || [];
       
@@ -1239,6 +1306,10 @@ document.addEventListener('DOMContentLoaded', () => {
       projFormModal.classList.remove('active');
       renderDashboardLists();
       loadProjects();
+
+      await syncProjectsToGlobalDB(projects);
+      btn.innerHTML = originalText;
+      btn.disabled = false;
     });
   }
   
@@ -1296,7 +1367,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Save Certificate Form
   if (certForm) {
-    certForm.addEventListener('submit', (e) => {
+    certForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       if (!selectedCertBase64) {
@@ -1304,6 +1375,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       
+      const btn = certForm.querySelector('button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      btn.disabled = true;
+
       const idx = document.getElementById('cert-edit-index').value;
       const certs = JSON.parse(localStorage.getItem('custom_certificates')) || [];
       
@@ -1329,6 +1405,10 @@ document.addEventListener('DOMContentLoaded', () => {
       
       // Clear file cache
       selectedCertBase64 = "";
+
+      await syncCertificatesToGlobalDB(certs);
+      btn.innerHTML = originalText;
+      btn.disabled = false;
     });
   }
 
