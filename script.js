@@ -659,9 +659,23 @@ function loadCertificates() {
   
   if (typeof pdfjsLib !== 'undefined') {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-    document.querySelectorAll('.cert-img').forEach(async (img) => {
+    
+    // Asynchronously render a single PDF page to an image
+    const renderPdfThumbnail = async (img) => {
       const pdfUrl = img.dataset.pdf;
       if (!pdfUrl) return;
+
+      // Append a highly-responsive CSS loading spinner to preview zone
+      const parent = img.parentElement;
+      const loader = document.createElement('div');
+      loader.className = 'cert-loader';
+      loader.innerHTML = '<i class="fas fa-circle-notch fa-spin" style="font-size:24px;color:var(--accent-color);"></i>';
+      loader.style.cssText = 'position:absolute;top:0;left:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:rgba(17,24,39,0.4);backdrop-filter:blur(4px);z-index:2;border-radius:12px;';
+      if (parent) {
+        parent.style.position = 'relative';
+        parent.appendChild(loader);
+      }
+
       try {
         const loadingTask = pdfjsLib.getDocument(pdfUrl);
         const pdf = await loadingTask.promise;
@@ -687,7 +701,26 @@ function loadCertificates() {
         icon.innerHTML = '<i class="fas fa-file-pdf" style="font-size:48px;color:var(--accent-color);"></i><span style="font-size:14px;color:var(--text-muted);">Click to view</span>';
         icon.style.cssText = 'display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:10px;';
         img.parentElement.insertBefore(icon, img);
+      } finally {
+        if (loader && loader.parentElement) {
+          loader.parentElement.removeChild(loader);
+        }
       }
+    };
+
+    // Intersection Observer to lazy load and pre-render PDF thumbnails 150px before entering viewport
+    const certObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          observer.unobserve(img); // Unobserve immediately to prevent duplicate renders
+          renderPdfThumbnail(img);
+        }
+      });
+    }, { rootMargin: '150px' });
+
+    document.querySelectorAll('.cert-img').forEach(img => {
+      certObserver.observe(img);
     });
   }
 }
