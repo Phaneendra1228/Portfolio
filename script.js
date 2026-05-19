@@ -2178,20 +2178,50 @@ const defaultCerts = ${certs};`;
       const utterance = new SpeechSynthesisUtterance(cleanText);
       const voices = window.speechSynthesis.getVoices();
       
-      // Try to choose a high-quality English voice if loaded
-      const premiumVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Microsoft')));
-      if (premiumVoice) {
-        utterance.voice = premiumVoice;
-      } else {
-        const engVoice = voices.find(v => v.lang.startsWith('en'));
-        if (engVoice) utterance.voice = engVoice;
+      // Filter English voices
+      const engVoices = voices.filter(v => v.lang.toLowerCase().startsWith('en'));
+      
+      // Look for beautiful female English voices in order of premium preference
+      let selectedVoice = engVoices.find(v => {
+        const name = v.name.toLowerCase();
+        return name.includes('google us english') || name.includes('samantha') || name.includes('zira') || name.includes('female') || name.includes('natural');
+      });
+      
+      // Fallback 1: Any soft English voice with female name indicators
+      if (!selectedVoice) {
+        selectedVoice = engVoices.find(v => {
+          const name = v.name.toLowerCase();
+          return name.includes('female') || name.includes('susan') || name.includes('hazel') || name.includes('heera') || name.includes('linda') || name.includes('kathy') || name.includes('sally');
+        });
       }
       
-      utterance.pitch = 1.05;
-      utterance.rate = 1.0; 
+      // Fallback 2: First en-US voice
+      if (!selectedVoice) {
+        selectedVoice = engVoices.find(v => v.lang.toLowerCase().startsWith('en-us'));
+      }
+      
+      // Fallback 3: First available English voice
+      if (!selectedVoice) {
+        selectedVoice = engVoices[0];
+      }
+      
+      if (selectedVoice) {
+        utterance.voice = selectedVoice;
+      }
+      
+      // Setup warm, human-like voice characteristics
+      utterance.pitch = 1.15; // Slightly higher pitch for a very clear and soft voice
+      utterance.rate = 0.98; // Very slightly slower rate for optimal clarity and premium tone
       window.speechSynthesis.speak(utterance);
     }
   };
+
+  // Pre-load and cache voices asynchronously (specifically helpful for Chrome)
+  if ('speechSynthesis' in window && window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      window.speechSynthesis.getVoices();
+    };
+  }
 
   // Sync initial icon state
   updateVoiceIcon();
