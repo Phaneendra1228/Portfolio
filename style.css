@@ -34,7 +34,8 @@ body.light-mode {
   --info-color: #0e7490;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+* { margin: 0; padding: 0; box-sizing: border-box; text-decoration: none; -webkit-tap-highlight-color: transparent !important; }
+button:focus, a:focus { outline: none !important; }
 html { scroll-behavior: smooth; }
 body {
   font-family: 'Inter', sans-serif;
