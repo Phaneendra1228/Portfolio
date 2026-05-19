@@ -1839,7 +1839,33 @@ body.light-mode .toggle-mic-btn {
 
 /* ===== PREMIUM ACTIVE/PRESSED TOUCH ANIMATIONS FOR RESPONSIVE HAPTICS ===== */
 
-/* 1. Global Shrink and Transition on Press (Tactile feedback) */
+/* 1. Slow Luxurious Fade Out Transition on Touch Release specifically on Touch Screens */
+@media (hover: none) {
+  .social_icon li a,
+  .footer .social-links a,
+  .check-bg,
+  .project-link,
+  .interest .i-img,
+  .interest,
+  .btn-hire,
+  .about .about-content .right a,
+  .contact form button,
+  .admin-btn,
+  .suggest-chip,
+  .toggle-mic-btn,
+  .ai-chat-footer button,
+  .scroll-up-btn,
+  .theme-switch,
+  .admin-float-btn,
+  .cert-card {
+    transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                border-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
+                transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+}
+
+/* 2. Global Shrink and Transition on Press (tactile instant feedback) */
 .btn-hire:active,
 .about .about-content .right a:active,
 .contact form button:active,
@@ -1858,10 +1884,10 @@ body.light-mode .toggle-mic-btn {
 .interest:active,
 .check-bg:active {
   transform: scale(0.96) translateY(0) !important;
-  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition: transform 0.05s ease, background-color 0.05s ease, box-shadow 0.05s ease, border-color 0.05s ease !important;
 }
 
-/* 2. Custom Golden Glow animations for interactive cards & links during active press */
+/* 3. Custom Golden Glow animations for interactive cards & links during active press */
 .social_icon li a:active,
 .footer .social-links a:active {
   background-color: var(--accent-color) !important;
