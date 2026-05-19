@@ -1,6 +1,6 @@
 // ===== DATABASE INITIALIZATION =====
-console.log("🚀 Portfolio Script Loaded: Version 35 (Global DB Active)");
-window.PORTFOLIO_VERSION = 35;
+console.log("🚀 Portfolio Script Loaded: Version 36 (Global DB Active)");
+window.PORTFOLIO_VERSION = 36;
 
 const defaultProfile = {
   name: "PHANEENDRA",
@@ -2357,17 +2357,41 @@ const defaultCerts = ${certs};`;
 
   const removeThinking = () => {
     const thinking = document.getElementById('ai-thinking');
-    if (thinking) thinking.remove();
-  };
-
-  // NLP logic to process queries
-  const processQuery = (rawQuery) => {
+     const processQuery = (rawQuery) => {
     const query = rawQuery.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"");
     const { profile, projects, certs } = getAIContext();
     
     // Greeting
     if (query === '' || ['hi', 'hello', 'hey', 'greetings', 'sup', 'yo'].some(w => query.startsWith(w)) || ['who are you', 'purpose', 'about', 'assistant'].some(w => query.includes(w))) {
-      return `Hello! 👋 I'm Phaneendra's AI Assistant, built specifically to guide you through his work and tech profile. <br><br>You can ask me about his **projects**, **skills**, **certificates**, or how to **contact** him. What are you interested in?`;
+      return `Hello! 👋 I'm Phaneendra's AI Assistant, built specifically to guide you through his work and tech profile. <br><br>You can ask me about his **projects**, **skills**, **certificates**, **resume**, or how to **contact** him. What are you interested in?`;
+    }
+    
+    // Resume download / CV
+    if (['resume', 'cv', 'pdf', 'biodata'].some(w => query.includes(w))) {
+      return `Phaneendra's professional resume is fully loaded and ready to download! <br><br>👉 Click the **"GET MY RESUME"** button in the **About Me** section to preview and download the PDF directly in a new tab.`;
+    }
+
+    // Hobbies / Interests
+    if (['hobby', 'interest', 'music', 'ride', 'game', 'motorcycle', 'coding', 'learn'].some(w => query.includes(w))) {
+      return `Phaneendra has dynamic interests both inside and outside of tech! <br><br>
+        💻 **Coding & Learning**: Constant focus on advanced full-stack systems and neural network architectures.<br>
+        🏍️ **Riding**: Loves exploring the streets and scenic routes on motorbikes.<br>
+        🎮 **Gaming**: Enjoys immersive digital environments and competitive gameplay.<br>
+        🎵 **Music**: Relaxes and stays inspired by tuning into premium background beats.<br><br>
+        You can see his interests highlighted with beautiful interactive cards under the **About Me** section!`;
+    }
+
+    // Location
+    if (['location', 'live', 'city', 'address', 'where', 'india', 'hyderabad'].some(w => query.includes(w))) {
+      return `Phaneendra lives in **Hyderabad, India**! 🇮🇳 <br><br>It's one of India's major high-tech hubs, providing a great ecosystem for tech innovation and software engineering.`;
+    }
+
+    // Hackathons
+    if (['avinya', 'anurag', 'codestorm', 'techknow', 'hackathon'].some(w => query.includes(w))) {
+      return `Phaneendra is highly passionate about hackathons! Here are the ones he has excelled in:<br><br>
+        🏆 **AVINYA 2K25 (Anurag University)**: A national-level 24-hour hackathon where he engineered AI-driven solutions on **18th - 19th September 2025**.<br>
+        🥇 **Fresher's CodeStorm 2K25 (Narsimha Reddy Engineering College)**: Secured **Second Prize** in this intense 8-hour hackathon with team CTRL FREAKS.<br>
+        🚀 **Techknow 2.0 (Knowvation Learnings)**: A comprehensive 24-hour hackathon and tech summit in March 2025.`;
     }
     
     // Projects
@@ -2400,7 +2424,7 @@ const defaultCerts = ${certs};`;
     }
     
     // Certificates
-    if (['cert', 'award', 'hack', 'win', 'trophy', 'achieve'].some(w => query.includes(w))) {
+    if (['cert', 'award', 'win', 'trophy', 'achieve'].some(w => query.includes(w))) {
       if (certs.length === 0) {
         return `Phaneendra holds multiple achievements and has participated in multiple developer hackathons! You can explore and download his certification documents in the **Certificates** section below.`;
       }
@@ -2446,7 +2470,43 @@ const defaultCerts = ${certs};`;
       👉 **Projects** (ask me *'what projects did he build?'*)<br>
       👉 **Tech Stack** (ask me *'what are his skills?'*)<br>
       👉 **Certifications** (ask me *'show me his achievements'*)<br>
+      👉 **Resume** (ask me *'can I see his resume?'*)<br>
       👉 **Contact** (ask me *'how do I email him?'*)`;
+  };
+
+  // Scroll Viewport matching user query keywords to spotlight relevant sections
+  const performInteractiveScroll = (query) => {
+    const scrollMap = {
+      'project': '#services',
+      'work': '#services',
+      'skill': '#skills',
+      'stack': '#skills',
+      'edu': '#education',
+      'study': '#education',
+      'college': '#education',
+      'cert': '#certificates',
+      'award': '#certificates',
+      'hack': '#certificates',
+      'avinya': '#certificates',
+      'anurag': '#certificates',
+      'codestorm': '#certificates',
+      'techknow': '#certificates',
+      'contact': '#contact',
+      'hire': '#contact',
+      'email': '#contact'
+    };
+    
+    for (const [key, selector] of Object.entries(scrollMap)) {
+      if (query.includes(key)) {
+        const targetEl = document.querySelector(selector);
+        if (targetEl) {
+          setTimeout(() => {
+            targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 850);
+          break; // scroll only to the first matched section
+        }
+      }
+    }
   };
 
   // Handle message sending
@@ -2463,11 +2523,20 @@ const defaultCerts = ${certs};`;
     // Show AI typing delay
     showThinking();
     
+    // Clear speechSynthesis if user submitted text manually
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+    
     setTimeout(() => {
       removeThinking();
       const response = processQuery(text);
       appendMessage('ai', response, true);
       speakResponse(response);
+      
+      const queryClean = text.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"");
+      performInteractiveScroll(queryClean);
+      
       chatBody.scrollTop = chatBody.scrollHeight;
     }, 600);
   };
@@ -2494,9 +2563,75 @@ const defaultCerts = ${certs};`;
     if (query === 'projects') userQuery = "Show me Phaneendra's top projects!";
     if (query === 'skills') userQuery = "What is his developer tech stack?";
     if (query === 'certs') userQuery = "What certifications does he have?";
+    if (query === 'resume') userQuery = "Can I download his professional resume?";
     if (query === 'contact') userQuery = "How can I contact Phaneendra?";
     
     handleUserMessage(userQuery);
   });
+
+  // --- Speech Recognition (Voice Input Microphone Integration) ---
+  const micBtn = document.getElementById('toggle-ai-mic');
+  let recognition = null;
+  
+  if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    
+    recognition.onstart = () => {
+      if (micBtn) {
+        micBtn.classList.add('listening');
+        micBtn.title = "Listening...";
+      }
+      if (chatInput) {
+        chatInput.placeholder = "Listening...";
+      }
+    };
+    
+    recognition.onend = () => {
+      if (micBtn) {
+        micBtn.classList.remove('listening');
+        micBtn.title = "Speak to AI";
+      }
+      if (chatInput) {
+        chatInput.placeholder = "Type a question...";
+      }
+    };
+    
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      if (chatInput) {
+        chatInput.value = transcript;
+        handleUserMessage(transcript);
+      }
+    };
+    
+    recognition.onerror = (event) => {
+      console.warn("Speech recognition error:", event.error);
+      if (micBtn) {
+        micBtn.classList.remove('listening');
+      }
+    };
+  }
+  
+  if (micBtn) {
+    if (recognition) {
+      micBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (micBtn.classList.contains('listening')) {
+          recognition.stop();
+        } else {
+          if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+          }
+          recognition.start();
+        }
+      });
+    } else {
+      micBtn.style.display = 'none'; // hide microphone button if browser doesn't support STT
+    }
+  }
 })();
 
