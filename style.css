@@ -1773,3 +1773,26 @@ body.light-mode .toggle-mic-btn {
     bottom: 65px;
   }
 }
+
+/* ===== PREMIUM ACTIVE/PRESSED TOUCH ANIMATIONS FOR RESPONSIVE HAPTICS ===== */
+.btn-hire:active,
+.about .about-content .right a:active,
+.contact form button:active,
+.admin-btn:active,
+.admin-float-btn:active,
+.social_icon li a:active,
+.footer .social-links a:active,
+.suggest-chip:active,
+.toggle-mic-btn:active,
+.ai-chat-footer button:active,
+.scroll-up-btn:active,
+.theme-switch:active,
+.project-link:active,
+.navbar .menu li a:active,
+.cert-card:active,
+.interest:active,
+.check-bg:active {
+  transform: scale(0.96) translateY(0) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+  transition: transform 0.1s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}

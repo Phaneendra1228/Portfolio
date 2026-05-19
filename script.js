@@ -2641,5 +2641,29 @@ const defaultCerts = ${certs};`;
       micBtn.style.display = 'none'; // hide microphone button if browser doesn't support STT
     }
   }
+
+  // ===== GLOBAL TOUCH STICKY HOVER MITIGATION SYSTEM =====
+  // On touch devices, when a user releases their finger, we instantly trigger
+  // blur() on the tapped element. This instantly releases the simulated CSS :hover state
+  // so that animations (like translation, scales, and glows) play during tap and snap back immediately!
+  const touchInteractiveSelectors = 'a, button, .btn-hire, .social_icon li a, .footer .social-links a, .suggest-chip, .toggle-mic-btn, .scroll-up-btn, .theme-switch, .admin-float-btn, .project-link, .cert-card, .interest, .check-bg';
+  
+  document.addEventListener('touchend', (e) => {
+    const interactiveTarget = e.target.closest(touchInteractiveSelectors);
+    if (interactiveTarget) {
+      // A tiny delay ensures the browser processes the tap and click events first,
+      // and then we cleanly blur the element to release focus/hover simulated states.
+      setTimeout(() => {
+        interactiveTarget.blur();
+      }, 80);
+    }
+  }, { passive: true });
+
+  document.addEventListener('touchcancel', (e) => {
+    const interactiveTarget = e.target.closest(touchInteractiveSelectors);
+    if (interactiveTarget) {
+      interactiveTarget.blur();
+    }
+  }, { passive: true });
 })();
 
