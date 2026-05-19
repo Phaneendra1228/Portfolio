@@ -2357,7 +2357,10 @@ const defaultCerts = ${certs};`;
 
   const removeThinking = () => {
     const thinking = document.getElementById('ai-thinking');
-     const processQuery = (rawQuery) => {
+    if (thinking) thinking.remove();
+  };
+
+  const processQuery = (rawQuery) => {
     const query = rawQuery.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"");
     const { profile, projects, certs } = getAIContext();
     
