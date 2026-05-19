@@ -1,6 +1,6 @@
 // ===== DATABASE INITIALIZATION =====
-console.log("🚀 Portfolio Script Loaded: Version 34 (Global DB Active)");
-window.PORTFOLIO_VERSION = 34;
+console.log("🚀 Portfolio Script Loaded: Version 35 (Global DB Active)");
+window.PORTFOLIO_VERSION = 35;
 
 const defaultProfile = {
   name: "PHANEENDRA",
@@ -53,7 +53,7 @@ const defaultCerts = [
     title: "Avinya Technical Event",
     org: "Anurag University",
     badge: "cyan",
-    date: "2025",
+    date: "18th - 19th September 2025",
     pdf: "Certificate_Avinya.pdf",
     description: "Successfully participated in AVINYA 2K25, a 24-Hour National Level Hackathon organized by the Department of Artificial Intelligence at Anurag University. Gained hands-on experience in AI-driven innovation, teamwork, and real-time problem-solving while collaborating on impactful technology solutions in a competitive environment."
   }
@@ -82,6 +82,20 @@ if (!localStorage.getItem('portfolio_initialized')) {
     // Ensure "Personalized Entrance Exam Coach" is removed permanently on old initializations
     customProjects = customProjects.filter(p => p.title !== "Personalized Entrance Exam Coach");
     localStorage.setItem('custom_projects', JSON.stringify(customProjects));
+
+    // Migrate Avinya certificate date for existing users
+    let customCerts = JSON.parse(localStorage.getItem('custom_certificates')) || [];
+    let updatedCerts = false;
+    customCerts = customCerts.map(c => {
+      if (c.title === "Avinya Technical Event" && c.date === "2025") {
+        c.date = "18th - 19th September 2025";
+        updatedCerts = true;
+      }
+      return c;
+    });
+    if (updatedCerts) {
+      localStorage.setItem('custom_certificates', JSON.stringify(customCerts));
+    }
   } catch(e) {
     console.warn("Migration failed:", e);
   }
