@@ -1,6 +1,6 @@
 // ===== DATABASE INITIALIZATION =====
-console.log("🚀 Portfolio Script Loaded: Version 36 (Global DB Active)");
-window.PORTFOLIO_VERSION = 36;
+console.log("🚀 Portfolio Script Loaded: Version 37 (Global DB Active)");
+window.PORTFOLIO_VERSION = 37;
 
 const defaultProfile = {
   name: "PHANEENDRA",
@@ -1115,8 +1115,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 750);
 
-  // Fade out preloader when page finishes loading
-  let isWindowLoaded = false;
+  // Fade out preloader when page finishes loading (with race condition checks)
+  let isWindowLoaded = document.readyState === 'complete' || document.readyState === 'interactive';
   window.addEventListener('load', () => {
     isWindowLoaded = true;
   });
@@ -1137,7 +1137,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Guarantee minimum display time of 3.2 seconds for aesthetic impact
   setTimeout(() => {
     function checkAndFade() {
-      if (isWindowLoaded || document.readyState === 'complete') {
+      if (isWindowLoaded || document.readyState === 'complete' || document.readyState === 'interactive') {
         dismissPreloader();
       } else {
         setTimeout(checkAndFade, 200);
@@ -2577,46 +2577,51 @@ const defaultCerts = ${certs};`;
   let recognition = null;
   
   if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.continuous = false;
-    recognition.lang = 'en-US';
-    recognition.interimResults = false;
-    
-    recognition.onstart = () => {
-      if (micBtn) {
-        micBtn.classList.add('listening');
-        micBtn.title = "Listening...";
-      }
-      if (chatInput) {
-        chatInput.placeholder = "Listening...";
-      }
-    };
-    
-    recognition.onend = () => {
-      if (micBtn) {
-        micBtn.classList.remove('listening');
-        micBtn.title = "Speak to AI";
-      }
-      if (chatInput) {
-        chatInput.placeholder = "Type a question...";
-      }
-    };
-    
-    recognition.onresult = (event) => {
-      const transcript = event.results[0][0].transcript;
-      if (chatInput) {
-        chatInput.value = transcript;
-        handleUserMessage(transcript);
-      }
-    };
-    
-    recognition.onerror = (event) => {
-      console.warn("Speech recognition error:", event.error);
-      if (micBtn) {
-        micBtn.classList.remove('listening');
-      }
-    };
+    try {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      
+      recognition.onstart = () => {
+        if (micBtn) {
+          micBtn.classList.add('listening');
+          micBtn.title = "Listening...";
+        }
+        if (chatInput) {
+          chatInput.placeholder = "Listening...";
+        }
+      };
+      
+      recognition.onend = () => {
+        if (micBtn) {
+          micBtn.classList.remove('listening');
+          micBtn.title = "Speak to AI";
+        }
+        if (chatInput) {
+          chatInput.placeholder = "Type a question...";
+        }
+      };
+      
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        if (chatInput) {
+          chatInput.value = transcript;
+          handleUserMessage(transcript);
+        }
+      };
+      
+      recognition.onerror = (event) => {
+        console.warn("Speech recognition error:", event.error);
+        if (micBtn) {
+          micBtn.classList.remove('listening');
+        }
+      };
+    } catch (err) {
+      console.warn("Speech recognition initialization failed:", err);
+      recognition = null;
+    }
   }
   
   if (micBtn) {
