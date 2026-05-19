@@ -47,30 +47,47 @@ body {
 
 body::before, body::after {
   content: ''; position: fixed; border-radius: 50%; z-index: -1; pointer-events: none;
-  transition: transform 0.2s ease-out;
   will-change: transform;
   backface-visibility: hidden;
+  transform: translate3d(0, 0, 0);
 }
 body::before { 
   top: 5%; left: -10%; width: 600px; height: 600px; 
   background: radial-gradient(circle, rgba(249, 202, 36, 0.15) 0%, rgba(249, 202, 36, 0) 70%); 
-  transform: translate(calc(var(--mouse-x, 0) * 30px), calc(var(--mouse-y, 0) * 30px)); 
+  transform: translate3d(calc(var(--mouse-x, 0) * 30px), calc(var(--mouse-y, 0) * 30px), 0); 
   animation: bgBreathe1 8s infinite alternate ease-in-out; 
 }
 body::after { 
   top: 35%; right: -10%; width: 700px; height: 700px; 
   background: radial-gradient(circle, rgba(230, 126, 34, 0.12) 0%, rgba(230, 126, 34, 0) 70%); 
-  transform: translate(calc(var(--mouse-x, 0) * -40px), calc(var(--mouse-y, 0) * -40px)); 
+  transform: translate3d(calc(var(--mouse-x, 0) * -40px), calc(var(--mouse-y, 0) * -40px), 0); 
   animation: bgBreathe2 10s infinite alternate ease-in-out; 
 }
 
 @keyframes bgBreathe1 {
-  0% { transform: translate(calc(var(--mouse-x, 0) * 30px), calc(var(--mouse-y, 0) * 30px)) scale(1); opacity: 0.8; }
-  100% { transform: translate(calc(var(--mouse-x, 0) * 30px), calc(var(--mouse-y, 0) * 30px)) scale(1.1); opacity: 1; }
+  0% { transform: translate3d(calc(var(--mouse-x, 0) * 30px), calc(var(--mouse-y, 0) * 30px), 0) scale(1); opacity: 0.8; }
+  100% { transform: translate3d(calc(var(--mouse-x, 0) * 30px), calc(var(--mouse-y, 0) * 30px), 0) scale(1.1); opacity: 1; }
 }
 @keyframes bgBreathe2 {
-  0% { transform: translate(calc(var(--mouse-x, 0) * -40px), calc(var(--mouse-y, 0) * -40px)) scale(1); opacity: 0.8; }
-  100% { transform: translate(calc(var(--mouse-x, 0) * -40px), calc(var(--mouse-y, 0) * -40px)) scale(1.05); opacity: 1; }
+  0% { transform: translate3d(calc(var(--mouse-x, 0) * -40px), calc(var(--mouse-y, 0) * -40px), 0) scale(1); opacity: 0.8; }
+  100% { transform: translate3d(calc(var(--mouse-x, 0) * -40px), calc(var(--mouse-y, 0) * -40px), 0) scale(1.05); opacity: 1; }
+}
+
+/* ===== HARDWARE GPU ACCELERATION FOR BUTTERY SMOOTH SCROLLING ===== */
+.navbar,
+.services .box,
+.education .box,
+.skills-bg,
+.cert-card,
+.contact .contact-content,
+.project-link,
+.interest,
+.check-bg,
+.about .about-content .right a,
+.btn-hire {
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 
 /* ===== CUSTOM SCROLLBAR ===== */
