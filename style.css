@@ -1368,7 +1368,7 @@ body.light-mode .admin-float-btn {
 /* ===== AI ASSISTANT CHATBOT ===== */
 .ai-assistant-container {
   position: fixed;
-  bottom: 85px;
+  bottom: 40px;
   left: 30px;
   z-index: 99999;
   font-family: 'Inter', sans-serif;
@@ -1376,18 +1376,18 @@ body.light-mode .admin-float-btn {
 
 /* Chat bubble trigger */
 .ai-chat-bubble {
-  width: 55px;
-  height: 55px;
+  width: 42px;
+  height: 45px;
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--accent-color);
-  font-size: 24px;
+  font-size: 20px;
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1417,7 +1417,7 @@ body.light-mode .ai-chat-bubble {
   left: 0;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: 8px;
   border: 2px solid var(--accent-color);
   animation: bubble-pulse 2s infinite;
   opacity: 0.6;
