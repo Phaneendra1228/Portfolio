@@ -1864,24 +1864,28 @@ body.light-mode .toggle-mic-btn {
 /* 2. Custom Golden Glow animations for interactive cards & links during active press */
 .social_icon li a:active,
 .footer .social-links a:active {
-  background: var(--accent-gradient) !important;
+  background-color: var(--accent-color) !important;
+  background-image: none !important;
   border-color: transparent !important;
   box-shadow: 0 10px 25px rgba(249, 202, 36, 0.5) !important;
 }
 
 .check-bg:active {
-  background: var(--accent-gradient) !important;
+  background-color: var(--accent-color) !important;
+  background-image: none !important;
   border-color: transparent !important;
   box-shadow: 0 20px 40px rgba(249, 202, 36, 0.3) !important;
 }
 
 .project-link:active {
-  background: var(--accent-gradient) !important;
+  background-color: var(--accent-color) !important;
+  background-image: none !important;
   box-shadow: 0 5px 15px rgba(249, 202, 36, 0.3) !important;
 }
 
 .interest:active .i-img {
-  background: var(--accent-gradient) !important;
+  background-color: var(--accent-color) !important;
+  background-image: none !important;
   color: #ffffff !important;
   border-color: transparent !important;
   box-shadow: 0 10px 20px rgba(249,202,36,0.3) !important;
