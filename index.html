@@ -645,6 +645,57 @@
   </div>
 </div>
 
+<!-- Floating AI Chat Assistant -->
+<div class="ai-assistant-container" id="ai-assistant">
+  <!-- Chat Trigger Bubble -->
+  <div class="ai-chat-bubble" id="ai-chat-bubble">
+    <div class="pulse-ring"></div>
+    <i class="fas fa-robot"></i>
+    <span class="bubble-tooltip">Ask my AI!</span>
+  </div>
+  
+  <!-- Chat Window -->
+  <div class="ai-chat-window" id="ai-chat-window">
+    <div class="ai-chat-header">
+      <div class="ai-chat-info">
+        <div class="ai-avatar">
+          <i class="fas fa-robot"></i>
+          <span class="online-indicator"></span>
+        </div>
+        <div class="ai-chat-meta">
+          <h4>Phaneendra's AI</h4>
+          <p>Online Assistant</p>
+        </div>
+      </div>
+      <div class="ai-chat-actions">
+        <button id="close-ai-chat" title="Minimize Chat"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    
+    <div class="ai-chat-body" id="ai-chat-body">
+      <!-- Welcome Message -->
+      <div class="chat-message ai-message">
+        <div class="msg-bubble">
+          Hello! 👋 I'm Phaneendra's AI Assistant. I can tell you all about his projects, skills, education, certifications, and how to get in touch! How can I help you today?
+        </div>
+      </div>
+      
+      <!-- Quick Options -->
+      <div class="chat-suggestions" id="chat-suggestions">
+        <button class="suggest-chip" data-query="projects">🚀 Projects</button>
+        <button class="suggest-chip" data-query="skills">💻 Tech Stack</button>
+        <button class="suggest-chip" data-query="certs">🏆 Certificates</button>
+        <button class="suggest-chip" data-query="contact">📧 Contact info</button>
+      </div>
+    </div>
+    
+    <div class="ai-chat-footer">
+      <input type="text" id="ai-chat-input" placeholder="Type a question..." autocomplete="off">
+      <button id="send-ai-message" title="Send message"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
 <script src="script.js?v=68"></script>

@@ -2129,3 +2129,230 @@ const defaultCerts = ${certs};`;
     });
   }
 })();
+
+// ===== FLOATING AI PORTFOLIO CHATBOT ASSISTANT =====
+(function() {
+  const bubble = document.getElementById('ai-chat-bubble');
+  const windowEl = document.getElementById('ai-chat-window');
+  const closeBtn = document.getElementById('close-ai-chat');
+  const chatBody = document.getElementById('ai-chat-body');
+  const chatInput = document.getElementById('ai-chat-input');
+  const sendBtn = document.getElementById('send-ai-message');
+  const suggestions = document.getElementById('chat-suggestions');
+
+  if (!bubble || !windowEl) return;
+
+  // Toggle chat window
+  bubble.addEventListener('click', () => {
+    windowEl.classList.toggle('active');
+    if (windowEl.classList.contains('active')) {
+      setTimeout(() => chatInput.focus(), 300);
+    }
+  });
+
+  closeBtn.addEventListener('click', () => {
+    windowEl.classList.remove('active');
+  });
+
+  // Get dynamic content from site configuration
+  const getAIContext = () => {
+    const profile = JSON.parse(localStorage.getItem('custom_profile')) || {
+      name: "PHANEENDRA",
+      roles: "Full Stack Developer\nAI & ML Engineer",
+      bio: "I'm Phaneendra, a passionate CSE student specializing in AI & ML. As a full-stack developer, I craft seamless digital experiences.",
+      email: "Phanee2005@gmail.com",
+      github: "https://github.com/Phaneendra1228",
+      linkedin: "https://www.linkedin.com/in/jujjavarapu-naga-venkata-phaneendra-7416a232a/"
+    };
+    
+    const projects = JSON.parse(localStorage.getItem('custom_projects')) || [];
+    const certs = JSON.parse(localStorage.getItem('custom_certificates')) || [];
+    
+    return { profile, projects, certs };
+  };
+
+  // Add message bubble to chat
+  const appendMessage = (sender, content, isHtml = false) => {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `chat-message ${sender}-message`;
+    
+    const bubbleDiv = document.createElement('div');
+    bubbleDiv.className = 'msg-bubble';
+    if (isHtml) {
+      bubbleDiv.innerHTML = content;
+    } else {
+      bubbleDiv.textContent = content;
+    }
+    
+    const timeSpan = document.createElement('span');
+    timeSpan.className = 'msg-time';
+    const now = new Date();
+    timeSpan.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    msgDiv.appendChild(bubbleDiv);
+    msgDiv.appendChild(timeSpan);
+    chatBody.appendChild(msgDiv);
+    
+    // Auto scroll to bottom
+    chatBody.scrollTop = chatBody.scrollHeight;
+  };
+
+  // Show thinking indicator
+  const showThinking = () => {
+    const thinkingDiv = document.createElement('div');
+    thinkingDiv.className = 'chat-message ai-message';
+    thinkingDiv.id = 'ai-thinking';
+    
+    const loader = document.createElement('div');
+    loader.className = 'thinking-bubble';
+    loader.innerHTML = '<span></span><span></span><span></span>';
+    
+    thinkingDiv.appendChild(loader);
+    chatBody.appendChild(thinkingDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  };
+
+  const removeThinking = () => {
+    const thinking = document.getElementById('ai-thinking');
+    if (thinking) thinking.remove();
+  };
+
+  // NLP logic to process queries
+  const processQuery = (rawQuery) => {
+    const query = rawQuery.toLowerCase().trim().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g,"");
+    const { profile, projects, certs } = getAIContext();
+    
+    // Greeting
+    if (query === '' || ['hi', 'hello', 'hey', 'greetings', 'sup', 'yo'].some(w => query.startsWith(w)) || ['who are you', 'purpose', 'about', 'assistant'].some(w => query.includes(w))) {
+      return `Hello! 👋 I'm Phaneendra's AI Assistant, built specifically to guide you through his work and tech profile. <br><br>You can ask me about his **projects**, **skills**, **certificates**, or how to **contact** him. What are you interested in?`;
+    }
+    
+    // Projects
+    if (['project', 'work', 'build', 'app', 'website', 'github', 'demo', 'code'].some(w => query.includes(w))) {
+      if (projects.length === 0) {
+        return `Phaneendra has built several premium full-stack and AI projects! You can check his live GitHub repositories directly in the **Recent Works** section of this page.`;
+      }
+      const projectList = projects.slice(0, 3).map(p => `
+        <li style="margin-bottom: 12px; list-style-type: none; border-left: 2px solid var(--accent-color); padding-left: 10px;">
+          <strong style="color: var(--heading-color);">${p.title}</strong> <span style="font-size: 11px; background: rgba(var(--glass-rgb), 0.05); padding: 2px 6px; border-radius: 4px; color: var(--accent-color); font-weight: 600;">${p.tag || "Project"}</span><br>
+          <span style="font-size: 13px; color: var(--text-muted);">${p.description || ""}</span><br>
+          <a href="${p.link}" target="_blank" style="color: var(--accent-color); font-size: 12px; text-decoration: none; font-weight: 500;"><i class="fab fa-github"></i> Repository</a>
+          ${p.live ? `| <a href="${p.live}" target="_blank" style="color: var(--accent-color); font-size: 12px; text-decoration: none; font-weight: 500;"><i class="fas fa-external-link-alt"></i> Live Demo</a>` : ''}
+        </li>
+      `).join('');
+      
+      return `Phaneendra has designed and engineered several state-of-the-art applications. Here are some of his top projects:<br><br>
+        <ul style="padding-left: 0;">${projectList}</ul>
+        You can view all of them in detail in the **Recent Works** section!`;
+    }
+    
+    // Skills
+    if (['skill', 'stack', 'language', 'python', 'javascript', 'react', 'html', 'css', 'java', 'ml', 'ai', 'deep', 'tensor', 'fastapi'].some(w => query.includes(w))) {
+      return `Phaneendra is a highly skilled full-stack developer and AI/ML enthusiast. His key technologies include:<br><br>
+        💻 **Core Languages**: Python, JavaScript (ES6+), HTML5, CSS3, C++, SQL<br>
+        🚀 **Web Libraries**: React.js, Next.js, Node.js, FastAPI, Express.js<br>
+        🧠 **AI/ML Engine**: TensorFlow, Keras, Scikit-Learn, Pandas, NumPy<br>
+        🛠️ **Platforms**: GitHub, Vercel, Supabase, Render, Git<br><br>
+        He specializes in building intelligent web apps that seamlessly fuse deep learning algorithms with sleek UI designs. Try scrolling to his **Skills** section to see them react interactively!`;
+    }
+    
+    // Certificates
+    if (['cert', 'award', 'hack', 'win', 'trophy', 'achieve'].some(w => query.includes(w))) {
+      if (certs.length === 0) {
+        return `Phaneendra holds multiple achievements and has participated in multiple developer hackathons! You can explore and download his certification documents in the **Certificates** section below.`;
+      }
+      const certList = certs.slice(0, 3).map(c => `
+        <li style="margin-bottom: 8px; list-style-type: none; border-left: 2px solid #10b981; padding-left: 10px;">
+          🏆 <strong>${c.title}</strong><br>
+          <span style="font-size: 12px; color: var(--text-muted);">Organized by ${c.org} | ${c.date}</span>
+        </li>
+      `).join('');
+      
+      return `Phaneendra is highly active in tech challenges. Here are some of his notable certifications:<br><br>
+        <ul style="padding-left: 0;">${certList}</ul>
+        You can download and verify the official PDFs directly in the **Certificates** panel!`;
+    }
+    
+    // Education
+    if (['study', 'college', 'school', 'degree', 'edu', 'university', 'btech', 'cse'].some(w => query.includes(w))) {
+      return `Phaneendra is currently pursuing his **Bachelor of Technology (B.Tech) in Computer Science and Engineering (CSE)** with a core focus on **Artificial Intelligence & Machine Learning**. <br><br>He has built a strong theoretical foundation in algorithms and neural networks, translating them directly into his full-stack coding portfolio.`;
+    }
+    
+    // Contact / Hiring
+    if (['contact', 'hire', 'email', 'phone', 'job', 'reach', 'linkedin', 'insta', 'mail'].some(w => query.includes(w))) {
+      return `You can connect with Phaneendra directly! He is always open to exciting new collaborations and full-time opportunities:<br><br>
+        📧 **Email**: <a href="mailto:${profile.email}" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">${profile.email}</a><br>
+        💼 **LinkedIn**: <a href="${profile.linkedin}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">J.N.V. Phaneendra</a><br>
+        🐙 **GitHub**: <a href="${profile.github}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">@Phaneendra1228</a><br><br>
+        You can also type your message in the **Contact Form** on the homepage to send an instant message straight to his dashboard!`;
+    }
+    
+    // Jokes / Easter Egg
+    if (['joke', 'funny', 'hacker', 'matrix', 'terminal'].some(w => query.includes(w))) {
+      const jokes = [
+        "Why do programmers wear glasses? Because they can't C#! 🤓",
+        "There are 10 types of people in the world: those who understand binary, and those who don't! 💻",
+        "Why did the database administrator leave his wife? She had too many one-to-many relationships! 💔",
+        "An AI assistant walks into a bar... The bartender says: 'What'll it be?' The AI replies: 'I'm sorry, as a language model, I cannot consume beverages!' 🤖"
+      ];
+      return jokes[Math.floor(Math.random() * jokes.length)];
+    }
+    
+    // General fallback
+    return `I'm not fully sure how to answer that specific question. 🤖<br><br>However, as Phaneendra's personal assistant, I can easily help you with:<br>
+      👉 **Projects** (ask me *'what projects did he build?'*)<br>
+      👉 **Tech Stack** (ask me *'what are his skills?'*)<br>
+      👉 **Certifications** (ask me *'show me his achievements'*)<br>
+      👉 **Contact** (ask me *'how do I email him?'*)`;
+  };
+
+  // Handle message sending
+  const handleUserMessage = (text) => {
+    if (!text.trim()) return;
+    
+    // Append user message
+    appendMessage('user', text);
+    chatInput.value = '';
+    
+    // Scroll body
+    chatBody.scrollTop = chatBody.scrollHeight;
+    
+    // Show AI typing delay
+    showThinking();
+    
+    setTimeout(() => {
+      removeThinking();
+      const response = processQuery(text);
+      appendMessage('ai', response, true);
+      chatBody.scrollTop = chatBody.scrollHeight;
+    }, 600);
+  };
+
+  // Event Listeners
+  sendBtn.addEventListener('click', () => {
+    handleUserMessage(chatInput.value);
+  });
+
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      handleUserMessage(chatInput.value);
+    }
+  });
+
+  // Suggestion chips handler
+  suggestions.addEventListener('click', (e) => {
+    const chip = e.target.closest('.suggest-chip');
+    if (!chip) return;
+    
+    const query = chip.getAttribute('data-query');
+    let userQuery = '';
+    
+    if (query === 'projects') userQuery = "Show me Phaneendra's top projects!";
+    if (query === 'skills') userQuery = "What is his developer tech stack?";
+    if (query === 'certs') userQuery = "What certifications does he have?";
+    if (query === 'contact') userQuery = "How can I contact Phaneendra?";
+    
+    handleUserMessage(userQuery);
+  });
+})();
+
