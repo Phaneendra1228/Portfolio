@@ -423,6 +423,12 @@ body.light-mode .education .box h3 { color: #d97706; }
   transition: all 0.3s ease;
   pointer-events: none;
 }
+.skills1 {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
 @media (hover: hover) {
   .skills-bg:hover::after, .skills-bg:hover::before {
     opacity: 1;
@@ -433,7 +439,26 @@ body.light-mode .education .box h3 { color: #d97706; }
     transform: translateY(-10px) scale(1.05); border-color: var(--accent-color);
     background: rgba(249, 202, 36, 0.05); box-shadow: 0 15px 30px rgba(249, 202, 36, 0.2);
   }
-  .skills-bg:hover .skills1 { filter: drop-shadow(0 8px 15px rgba(249, 202, 36, 0.5)); }
+  .skills-bg:hover .skills1 {
+    transform: scale(1.1);
+    filter: drop-shadow(0 8px 15px rgba(249, 202, 36, 0.5));
+  }
+}
+/* Touch haptics and tooltip triggers for touch screens when held/tapped */
+.skills-bg:active::after, .skills-bg:active::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+.skills-bg:active {
+  transform: translateY(-5px) scale(1.05) !important;
+  border-color: var(--accent-color) !important;
+  background: rgba(249, 202, 36, 0.05) !important;
+  box-shadow: 0 10px 20px rgba(249, 202, 36, 0.2) !important;
+}
+.skills-bg:active .skills1 {
+  transform: scale(1.1);
+  filter: drop-shadow(0 8px 15px rgba(249, 202, 36, 0.5)) !important;
 }
 
 /* ===== CERTIFICATES ===== */
@@ -1857,7 +1882,8 @@ body.light-mode .toggle-mic-btn {
   .scroll-up-btn,
   .theme-switch,
   .admin-float-btn,
-  .cert-card {
+  .cert-card,
+  .skills-bg {
     transition: background-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
                 box-shadow 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
                 border-color 0.8s cubic-bezier(0.16, 1, 0.3, 1), 
@@ -1882,7 +1908,8 @@ body.light-mode .toggle-mic-btn {
 .navbar .menu li a:active,
 .cert-card:active,
 .interest:active,
-.check-bg:active {
+.check-bg:active,
+.skills-bg:active {
   transform: scale(0.96) translateY(0) !important;
   transition: transform 0.05s ease, background-color 0.05s ease, box-shadow 0.05s ease, border-color 0.05s ease !important;
 }
