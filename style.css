@@ -1194,7 +1194,7 @@ body.light-mode .admin-float-btn {
   transform: scale(1);
 }
 .admin-modal-content.dashboard-content {
-  max-width: 600px;
+  max-width: 720px;
 }
 .admin-modal-content.form-content {
   max-width: 500px;
