@@ -2136,16 +2136,35 @@ const defaultCerts = ${certs};`;
   const windowEl = document.getElementById('ai-chat-window');
   const closeBtn = document.getElementById('close-ai-chat');
   const chatBody = document.getElementById('ai-chat-body');
+  const chatHistory = document.getElementById('ai-chat-history');
   const chatInput = document.getElementById('ai-chat-input');
   const sendBtn = document.getElementById('send-ai-message');
   const suggestions = document.getElementById('chat-suggestions');
 
   if (!bubble || !windowEl) return;
 
+  // Clear chat history and restore the initial greeting
+  const resetChat = () => {
+    if (chatHistory) {
+      chatHistory.innerHTML = `
+        <!-- Welcome Message -->
+        <div class="chat-message ai-message">
+          <div class="msg-bubble">
+            Hello! 👋 I'm Phaneendra's AI Assistant. I can tell you all about his projects, skills, education, certifications, and how to get in touch! How can I help you today?
+          </div>
+        </div>
+      `;
+    }
+    if (chatInput) {
+      chatInput.value = '';
+    }
+  };
+
   // Toggle chat window
   bubble.addEventListener('click', () => {
     windowEl.classList.toggle('active');
     if (windowEl.classList.contains('active')) {
+      resetChat();
       setTimeout(() => chatInput.focus(), 300);
     }
   });
@@ -2191,7 +2210,10 @@ const defaultCerts = ${certs};`;
     
     msgDiv.appendChild(bubbleDiv);
     msgDiv.appendChild(timeSpan);
-    chatBody.appendChild(msgDiv);
+    
+    if (chatHistory) {
+      chatHistory.appendChild(msgDiv);
+    }
     
     // Auto scroll to bottom
     chatBody.scrollTop = chatBody.scrollHeight;
@@ -2208,7 +2230,10 @@ const defaultCerts = ${certs};`;
     loader.innerHTML = '<span></span><span></span><span></span>';
     
     thinkingDiv.appendChild(loader);
-    chatBody.appendChild(thinkingDiv);
+    
+    if (chatHistory) {
+      chatHistory.appendChild(thinkingDiv);
+    }
     chatBody.scrollTop = chatBody.scrollHeight;
   };
 
