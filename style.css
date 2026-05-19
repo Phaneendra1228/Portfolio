@@ -420,7 +420,6 @@ body.light-mode .education .box h3 { color: #d97706; }
   font-weight: 700;
   white-space: nowrap;
   opacity: 0;
-  visibility: hidden;
   transition: all 0.3s ease;
   pointer-events: none;
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -436,7 +435,6 @@ body.light-mode .education .box h3 { color: #d97706; }
   border-style: solid;
   border-color: var(--heading-color) transparent transparent transparent;
   opacity: 0;
-  visibility: hidden;
   transition: all 0.3s ease;
   pointer-events: none;
 }
@@ -449,7 +447,6 @@ body.light-mode .education .box h3 { color: #d97706; }
 @media (hover: hover) {
   .skills-bg:hover::after, .skills-bg:hover::before {
     opacity: 1;
-    visibility: visible;
     transform: translateX(-50%) translateY(0);
   }
   .skills-bg:hover {
@@ -464,7 +461,6 @@ body.light-mode .education .box h3 { color: #d97706; }
 /* Touch haptics and tooltip triggers for touch screens when held/tapped */
 .skills-bg:active::after, .skills-bg:active::before {
   opacity: 1;
-  visibility: visible;
   transform: translateX(-50%) translateY(0);
   transition: opacity 0.05s ease, transform 0.05s ease !important;
 }
@@ -1909,9 +1905,8 @@ body.light-mode .toggle-mic-btn {
   }
   .skills-bg::after,
   .skills-bg::before {
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                visibility 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 }
 
