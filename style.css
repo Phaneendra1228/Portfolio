@@ -1355,7 +1355,7 @@ body:not(.light-mode) .navbar.scrolled {
 .ai-assistant-container {
   position: fixed;
   bottom: 105px;
-  right: 30px;
+  left: 30px;
   z-index: 99999;
   font-family: 'Inter', sans-serif;
 }
@@ -1409,7 +1409,7 @@ body:not(.light-mode) .navbar.scrolled {
 /* Tooltip */
 .ai-chat-bubble .bubble-tooltip {
   position: absolute;
-  right: 70px;
+  left: 70px;
   background: var(--card-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -1421,7 +1421,7 @@ body:not(.light-mode) .navbar.scrolled {
   color: var(--text-main);
   white-space: nowrap;
   opacity: 0;
-  transform: translateX(10px);
+  transform: translateX(-10px);
   transition: all 0.3s ease;
   pointer-events: none;
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -1435,7 +1435,7 @@ body:not(.light-mode) .navbar.scrolled {
 .ai-chat-window {
   position: absolute;
   bottom: 70px;
-  right: 0;
+  left: 0;
   width: 370px;
   height: 500px;
   background: var(--card-bg);
@@ -1691,7 +1691,7 @@ body.light-mode .chat-message.ai-message .msg-bubble {
   .ai-chat-window {
     width: calc(100vw - 40px);
     height: 440px;
-    right: -10px;
+    left: -10px;
     bottom: 65px;
   }
 }
