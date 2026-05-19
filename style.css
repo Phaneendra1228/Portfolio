@@ -1354,7 +1354,7 @@ body:not(.light-mode) .navbar.scrolled {
 /* ===== AI ASSISTANT CHATBOT ===== */
 .ai-assistant-container {
   position: fixed;
-  bottom: 105px;
+  bottom: 85px;
   left: 30px;
   z-index: 99999;
   font-family: 'Inter', sans-serif;
