@@ -1053,38 +1053,38 @@ body.light-mode .scroll-up-btn {
   50% { transform: scale(1.08); opacity: 1; text-shadow: 0 0 40px rgba(249, 202, 36, 0.7); }
 }
 
-/* ===== ADMIN FLOATING BUTTON & MODAL ===== */
+/* ===== ADMIN NAVBAR BUTTON ===== */
 .admin-float-btn {
-  position: fixed;
-  bottom: 30px;
-  left: 30px;
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 12px 22px;
-  border-radius: 30px;
-  color: var(--heading-color);
-  font-family: 'Outfit', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
   cursor: pointer;
-  z-index: 9998;
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  color: var(--text-main);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  background: rgba(var(--glass-rgb), 0.03);
+  font-size: 18px;
+  margin-left: 12px;
+  position: relative;
+  z-index: 9998;
 }
 body.light-mode .admin-float-btn {
   background: rgba(0, 0, 0, 0.03);
   border-color: rgba(0, 0, 0, 0.08);
 }
 .admin-float-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
   border-color: var(--accent-color);
-  box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.2);
-  transform: translateY(-3px);
+  color: var(--accent-color);
+  box-shadow: 0 0 15px rgba(var(--accent-rgb), 0.2);
+}
+.admin-float-btn i {
+  transition: transform 0.4s ease;
+}
+.admin-float-btn:hover i {
+  transform: rotate(45deg);
 }
 .admin-modal {
   position: fixed;
