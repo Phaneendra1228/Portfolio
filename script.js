@@ -2140,11 +2140,85 @@ const defaultCerts = ${certs};`;
   const chatInput = document.getElementById('ai-chat-input');
   const sendBtn = document.getElementById('send-ai-message');
   const suggestions = document.getElementById('chat-suggestions');
+  const toggleVoiceBtn = document.getElementById('toggle-ai-voice');
 
   if (!bubble || !windowEl) return;
 
+  // Speech synthesis state (default to enabled, cached in localStorage)
+  let isSpeechEnabled = localStorage.getItem('ai_speech_enabled') !== 'false';
+  
+  // Update toggle button icon state based on isSpeechEnabled
+  const updateVoiceIcon = () => {
+    if (!toggleVoiceBtn) return;
+    if (isSpeechEnabled) {
+      toggleVoiceBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+      toggleVoiceBtn.title = "Mute AI voice";
+    } else {
+      toggleVoiceBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+      toggleVoiceBtn.title = "Unmute AI voice";
+    }
+  };
+
+  // Speak the chatbot response using Web Speech Synthesis API
+  const speakResponse = (text) => {
+    if (!isSpeechEnabled) return;
+    if ('speechSynthesis' in window) {
+      // Cancel active speaking to avoid overlap
+      window.speechSynthesis.cancel();
+      
+      // Clean up text by stripping HTML tags and emoticons for clean TTS reading
+      let cleanText = text
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/👉|👋|🤖|💻|📧|📚|🏆|🛠️|🚀|📊|✨|🔥|💖|💔|✅|🎓/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+        
+      if (!cleanText) return;
+
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      const voices = window.speechSynthesis.getVoices();
+      
+      // Try to choose a high-quality English voice if loaded
+      const premiumVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Microsoft')));
+      if (premiumVoice) {
+        utterance.voice = premiumVoice;
+      } else {
+        const engVoice = voices.find(v => v.lang.startsWith('en'));
+        if (engVoice) utterance.voice = engVoice;
+      }
+      
+      utterance.pitch = 1.05;
+      utterance.rate = 1.0; 
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
+  // Sync initial icon state
+  updateVoiceIcon();
+
+  // Voice toggle action
+  if (toggleVoiceBtn) {
+    toggleVoiceBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      isSpeechEnabled = !isSpeechEnabled;
+      localStorage.setItem('ai_speech_enabled', isSpeechEnabled);
+      updateVoiceIcon();
+      
+      if (isSpeechEnabled) {
+        speakResponse("Voice active");
+      } else {
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+    });
+  }
+
   // Clear chat history and restore the initial greeting
   const resetChat = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
     if (chatHistory) {
       chatHistory.innerHTML = `
         <!-- Welcome Message -->
@@ -2349,6 +2423,7 @@ const defaultCerts = ${certs};`;
       removeThinking();
       const response = processQuery(text);
       appendMessage('ai', response, true);
+      speakResponse(response);
       chatBody.scrollTop = chatBody.scrollHeight;
     }, 600);
   };
