@@ -2643,19 +2643,29 @@ const defaultCerts = ${certs};`;
   }
 
   // ===== GLOBAL TOUCH STICKY HOVER MITIGATION SYSTEM =====
-  // On touch devices, when a user releases their finger, we instantly trigger
-  // blur() on the tapped element. This instantly releases the simulated CSS :hover state
-  // so that animations (like translation, scales, and glows) play during tap and snap back immediately!
+  // On touch devices, simulated mouse events (and the sticky :hover state) 
+  // are applied after touch events. To cleanly release these sticky states:
   const touchInteractiveSelectors = 'a, button, .btn-hire, .social_icon li a, .footer .social-links a, .suggest-chip, .toggle-mic-btn, .scroll-up-btn, .theme-switch, .admin-float-btn, .project-link, .cert-card, .interest, .check-bg';
   
+  // 1. Release simulated hover state immediately after tap/click completes
+  document.addEventListener('click', (e) => {
+    const interactiveTarget = e.target.closest(touchInteractiveSelectors);
+    if (interactiveTarget) {
+      // We blur after a tiny delay so the browser fully finishes processing 
+      // the click and simulated mouse states before we strip the focus/hover.
+      setTimeout(() => {
+        interactiveTarget.blur();
+      }, 100);
+    }
+  });
+
+  // 2. Release on touchend/touchcancel to cover any gestures or direct taps
   document.addEventListener('touchend', (e) => {
     const interactiveTarget = e.target.closest(touchInteractiveSelectors);
     if (interactiveTarget) {
-      // A tiny delay ensures the browser processes the tap and click events first,
-      // and then we cleanly blur the element to release focus/hover simulated states.
       setTimeout(() => {
         interactiveTarget.blur();
-      }, 80);
+      }, 350); // Larger delay to clear simulated mouse events that trigger ~300ms later
     }
   }, { passive: true });
 
@@ -2665,5 +2675,22 @@ const defaultCerts = ${certs};`;
       interactiveTarget.blur();
     }
   }, { passive: true });
+
+  // 3. Clear simulated states when returning to the tab (essential for target="_blank" links like Instagram)
+  window.addEventListener('focus', () => {
+    const activeEl = document.activeElement;
+    if (activeEl && activeEl.closest(touchInteractiveSelectors)) {
+      activeEl.blur();
+    }
+  });
+  
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      const activeEl = document.activeElement;
+      if (activeEl && activeEl.closest(touchInteractiveSelectors)) {
+        activeEl.blur();
+      }
+    }
+  });
 })();
 
