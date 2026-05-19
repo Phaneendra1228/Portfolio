@@ -153,25 +153,8 @@
   <div class="max-width">
     <h2 class="title">My Education</h2>
   </div>
-  <div class="box-container max-width">
-    <div class="box">
-      <i class="fas fa-graduation-cap"></i>
-      <span>2024-2028</span>
-      <h3>B.Tech</h3>
-      <p>Currently Studying At Narsimha Reddy Engineering College.</p>
-    </div>
-    <div class="box">
-      <i class="fas fa-graduation-cap"></i>
-      <span>2022-2024</span>
-      <h3>Intermediate</h3>
-      <p>Completed class 12th at Vignan Junior College, Hyderabad.</p>
-    </div>
-    <div class="box">
-      <i class="fas fa-graduation-cap"></i>
-      <span>2022</span>
-      <h3>High School</h3>
-      <p>Completed class 10th at Bhashyam High School.</p>
-    </div>
+  <div class="box-container max-width" id="educationGrid">
+    <!-- Dynamic Education list -->
   </div>
 </section>
 
@@ -357,6 +340,7 @@
       <div class="admin-tabs">
         <button class="tab-btn active" data-tab="tab-projects" id="tab-btn-projects">Projects</button>
         <button class="tab-btn" data-tab="tab-profile" id="tab-btn-profile">Profile</button>
+        <button class="tab-btn" data-tab="tab-education" id="tab-btn-education">Education</button>
         <button class="tab-btn" data-tab="tab-certs" id="tab-btn-certs">Certificates</button>
         <button class="tab-btn" data-tab="tab-resume" id="tab-btn-resume">Resume</button>
         <button class="tab-btn" data-tab="tab-messages" id="tab-btn-messages">Messages</button>
@@ -370,6 +354,17 @@
         </div>
         <div class="admin-list" id="admin-projects-list">
           <!-- Dynamic Projects list -->
+        </div>
+      </div>
+
+      <!-- Education Tab -->
+      <div class="tab-content" id="tab-education">
+        <div class="tab-header">
+          <h4>Manage Education</h4>
+          <button class="admin-btn-sm" id="btn-add-education"><i class="fas fa-plus"></i> Add Education</button>
+        </div>
+        <div class="admin-list" id="admin-education-list">
+          <!-- Dynamic Education list -->
         </div>
       </div>
 
@@ -569,6 +564,38 @@
           <textarea id="form-proj-desc" rows="4" placeholder="Details about project..." required></textarea>
         </div>
         <button type="submit" class="admin-btn" id="btn-save-project">Save Project</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Education Form Modal -->
+<div class="admin-modal" id="education-form-modal">
+  <div class="admin-modal-content form-content">
+    <div class="admin-modal-header">
+      <h3 id="education-form-title">Add Education</h3>
+      <span class="close-modal" id="close-education-form">&times;</span>
+    </div>
+    <div class="admin-modal-body">
+      <form id="education-form">
+        <input type="hidden" id="education-edit-index">
+        <div class="form-group">
+          <label>Degree / Qualification</label>
+          <input type="text" id="form-edu-degree" placeholder="e.g. B.Tech" required>
+        </div>
+        <div class="form-group">
+          <label>Institution Name</label>
+          <input type="text" id="form-edu-institution" placeholder="e.g. Narsimha Reddy Engineering College" required>
+        </div>
+        <div class="form-group">
+          <label>Session / Duration</label>
+          <input type="text" id="form-edu-duration" placeholder="e.g. 2024-2028" required>
+        </div>
+        <div class="form-group">
+          <label>Details / Description</label>
+          <textarea id="form-edu-desc" rows="4" placeholder="e.g. Currently Studying At Narsimha Reddy Engineering College." required></textarea>
+        </div>
+        <button type="submit" class="admin-btn" id="btn-save-education">Save Education</button>
       </form>
     </div>
   </div>

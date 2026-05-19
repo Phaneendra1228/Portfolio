@@ -61,9 +61,31 @@ const defaultCerts = [
 
 const defaultResumeUrl = "resume.pdf";
 
+const defaultEducation = [
+  {
+    institution: "Narsimha Reddy Engineering College",
+    degree: "B.Tech",
+    duration: "2024-2028",
+    description: "Currently Studying At Narsimha Reddy Engineering College."
+  },
+  {
+    institution: "Vignan Junior College, Hyderabad",
+    degree: "Intermediate",
+    duration: "2022-2024",
+    description: "Completed class 12th at Vignan Junior College, Hyderabad."
+  },
+  {
+    institution: "Bhashyam High School",
+    degree: "High School",
+    duration: "2022",
+    description: "Completed class 10th at Bhashyam High School."
+  }
+];
+
 if (!localStorage.getItem('portfolio_initialized')) {
   localStorage.setItem('custom_projects', JSON.stringify(defaultProjects));
   localStorage.setItem('custom_certificates', JSON.stringify(defaultCerts));
+  localStorage.setItem('custom_education', JSON.stringify(defaultEducation));
   localStorage.setItem('custom_resume_url', defaultResumeUrl);
   localStorage.setItem('custom_profile', JSON.stringify(defaultProfile));
   localStorage.setItem('portfolio_initialized', 'true');
@@ -75,6 +97,10 @@ if (!localStorage.getItem('portfolio_initialized')) {
   // Ensure default resume link exists in cache
   if (!localStorage.getItem('custom_resume_url')) {
     localStorage.setItem('custom_resume_url', defaultResumeUrl);
+  }
+  // Ensure default education exists in cache
+  if (!localStorage.getItem('custom_education')) {
+    localStorage.setItem('custom_education', JSON.stringify(defaultEducation));
   }
   // Purge unwanted project and handle migrations
   try {
@@ -971,6 +997,42 @@ async function syncCertificatesToGlobalDB(certs) {
   }
 }
 
+// Sync Education globally to KVDB
+async function syncEducationToGlobalDB(education) {
+  try {
+    await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/education_data", {
+      method: "POST",
+      body: JSON.stringify(education)
+    });
+  } catch (err) {
+    console.warn("Failed to sync education to global DB:", err);
+  }
+}
+
+// Load Education details dynamically
+function loadEducation() {
+  const grid = document.getElementById('educationGrid');
+  if (!grid) return;
+  
+  const education = JSON.parse(localStorage.getItem('custom_education')) || [];
+  
+  if (!education.length) {
+    grid.innerHTML = '<p style="text-align:center;color:#ccc;width:100%">Education details coming soon...</p>';
+    return;
+  }
+  
+  grid.innerHTML = education.map(e => {
+    return `
+      <div class="box">
+        <i class="fas fa-graduation-cap"></i>
+        <span>${e.duration}</span>
+        <h3>${e.degree}</h3>
+        <p>${e.description} at <strong>${e.institution}</strong></p>
+      </div>
+    `;
+  }).join('');
+}
+
 // Asynchronously load projects from KVDB with local cache fallback
 async function syncProjects() {
   loadProjects(); // Render immediately from local cache
@@ -1007,10 +1069,29 @@ async function syncCertificates() {
   }
 }
 
+// Asynchronously load education from KVDB with local cache fallback
+async function syncEducation() {
+  loadEducation(); // Render immediately from local cache
+  
+  try {
+    const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/education_data", { cache: 'no-store' });
+    if (res.ok) {
+      const payload = await res.json();
+      if (payload && Array.isArray(payload)) {
+        localStorage.setItem('custom_education', JSON.stringify(payload));
+        loadEducation(); // Render with latest database payload
+      }
+    }
+  } catch (err) {
+    console.warn("Failed to load education from global DB:", err);
+  }
+}
+
 // Initial Dynamic Load Trigger
 document.addEventListener('DOMContentLoaded', () => {
   syncProjects();
   syncCertificates();
+  syncEducation();
   loadResume();
   syncProfile();
 });
@@ -1160,12 +1241,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const dashboardModal = document.getElementById('admin-dashboard-modal');
   const projFormModal = document.getElementById('project-form-modal');
   const certFormModal = document.getElementById('cert-form-modal');
+  const eduFormModal = document.getElementById('education-form-modal');
   const exportModal = document.getElementById('export-config-modal');
   
   const closeLogin = document.getElementById('close-login-modal');
   const closeDashboard = document.getElementById('close-dashboard-modal');
   const closeProjForm = document.getElementById('close-project-form');
   const closeCertForm = document.getElementById('close-cert-form');
+  const closeEduForm = document.getElementById('close-education-form');
   const closeExport = document.getElementById('close-export-modal');
   
   const loginSubmit = document.getElementById('login-submit-btn');
@@ -1177,28 +1260,33 @@ document.addEventListener('DOMContentLoaded', () => {
   // Tab Switching
   const tabBtnProjects = document.getElementById('tab-btn-projects');
   const tabBtnProfile = document.getElementById('tab-btn-profile');
+  const tabBtnEducation = document.getElementById('tab-btn-education');
   const tabBtnCerts = document.getElementById('tab-btn-certs');
   const tabBtnResume = document.getElementById('tab-btn-resume');
   const tabBtnMessages = document.getElementById('tab-btn-messages');
   const tabProjects = document.getElementById('tab-projects');
   const tabProfile = document.getElementById('tab-profile');
+  const tabEducation = document.getElementById('tab-education');
   const tabCerts = document.getElementById('tab-certs');
   const tabResume = document.getElementById('tab-resume');
   const tabMessages = document.getElementById('tab-messages');
   
   // Dashboard lists
   const adminProjectsList = document.getElementById('admin-projects-list');
+  const adminEducationList = document.getElementById('admin-education-list');
   const adminCertsList = document.getElementById('admin-certs-list');
   const adminMessagesList = document.getElementById('admin-messages-list');
   
   // Form submission and trigger buttons
   const btnAddProject = document.getElementById('btn-add-project');
   const btnAddCert = document.getElementById('btn-add-cert');
+  const btnAddEducation = document.getElementById('btn-add-education');
   const btnClearMessages = document.getElementById('btn-clear-messages');
   const btnReloadMessages = document.getElementById('btn-reload-messages');
   const btnExportConfig = document.getElementById('btn-export-config');
   const projectForm = document.getElementById('project-form');
   const certForm = document.getElementById('cert-form');
+  const educationForm = document.getElementById('education-form');
   const certFileInput = document.getElementById('form-cert-file');
   const certUploadText = document.getElementById('cert-upload-text');
   const certUploadInfo = document.getElementById('cert-upload-info');
@@ -1250,6 +1338,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { btn: closeDashboard, modal: dashboardModal },
     { btn: closeProjForm, modal: projFormModal },
     { btn: closeCertForm, modal: certFormModal },
+    { btn: closeEduForm, modal: eduFormModal },
     { btn: closeExport, modal: exportModal }
   ];
   
@@ -1313,6 +1402,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const allTabs = [
     { btn: tabBtnProjects, content: tabProjects },
     { btn: tabBtnProfile, content: tabProfile },
+    { btn: tabBtnEducation, content: tabEducation },
     { btn: tabBtnCerts, content: tabCerts },
     { btn: tabBtnResume, content: tabResume },
     { btn: tabBtnMessages, content: tabMessages }
@@ -1472,6 +1562,27 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Render Education list
+    if (adminEducationList) {
+      const education = JSON.parse(localStorage.getItem('custom_education')) || [];
+      if (!education.length) {
+        adminEducationList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">No education details found.</p>';
+      } else {
+        adminEducationList.innerHTML = education.map((e, idx) => `
+          <div class="admin-item">
+            <div class="admin-item-info">
+              <h5>${e.degree}</h5>
+              <span>${e.institution} (${e.duration})</span>
+            </div>
+            <div class="admin-item-actions">
+              <button class="btn-edit" onclick="editEducation(${idx})"><i class="fas fa-edit" style="color: #06b6d4;"></i></button>
+              <button class="btn-del" onclick="deleteEducation(${idx})"><i class="fas fa-trash-alt" style="color: #ef4444;"></i></button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
     // Trigger async global message fetch and rendering
     renderMessagesList();
   }
@@ -1496,6 +1607,17 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDashboardLists();
       loadCertificates();
       await syncCertificatesToGlobalDB(certs);
+    }
+  };
+
+  window.deleteEducation = async function(idx) {
+    if (confirm('Are you sure you want to delete this education entry?')) {
+      const education = JSON.parse(localStorage.getItem('custom_education')) || [];
+      education.splice(idx, 1);
+      localStorage.setItem('custom_education', JSON.stringify(education));
+      renderDashboardLists();
+      loadEducation();
+      await syncEducationToGlobalDB(education);
     }
   };
 
@@ -1707,6 +1829,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Save Education Form
+  if (educationForm) {
+    educationForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btn = educationForm.querySelector('button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      btn.disabled = true;
+
+      const idx = document.getElementById('education-edit-index').value;
+      const education = JSON.parse(localStorage.getItem('custom_education')) || [];
+      
+      const newEdu = {
+        degree: document.getElementById('form-edu-degree').value,
+        institution: document.getElementById('form-edu-institution').value,
+        duration: document.getElementById('form-edu-duration').value,
+        description: document.getElementById('form-edu-desc').value
+      };
+      
+      if (idx !== "") {
+        education[parseInt(idx)] = newEdu;
+      } else {
+        education.push(newEdu);
+      }
+      
+      localStorage.setItem('custom_education', JSON.stringify(education));
+      eduFormModal.classList.remove('active');
+      renderDashboardLists();
+      loadEducation();
+      
+      await syncEducationToGlobalDB(education);
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    });
+  }
+
   // Selected resume file cache variables
   let selectedResumeBase64 = null;
   let selectedResumeName = "";
@@ -1910,6 +2069,19 @@ document.addEventListener('DOMContentLoaded', () => {
       certFormModal.classList.add('active');
     });
   }
+
+  // Add Education Trigger
+  if (btnAddEducation) {
+    btnAddEducation.addEventListener('click', () => {
+      document.getElementById('education-form-title').textContent = "Add Education";
+      document.getElementById('education-edit-index').value = "";
+      document.getElementById('form-edu-degree').value = "";
+      document.getElementById('form-edu-institution').value = "";
+      document.getElementById('form-edu-duration').value = "";
+      document.getElementById('form-edu-desc').value = "";
+      eduFormModal.classList.add('active');
+    });
+  }
   
   // Edit handlers
   window.editProject = function(idx) {
@@ -1952,6 +2124,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (certFileInput) certFileInput.value = "";
       
       certFormModal.classList.add('active');
+    }
+  };
+
+  window.editEducation = function(idx) {
+    const education = JSON.parse(localStorage.getItem('custom_education')) || [];
+    const e = education[idx];
+    if (e) {
+      document.getElementById('education-form-title').textContent = "Edit Education";
+      document.getElementById('education-edit-index').value = idx;
+      document.getElementById('form-edu-degree').value = e.degree;
+      document.getElementById('form-edu-institution').value = e.institution;
+      document.getElementById('form-edu-duration').value = e.duration;
+      document.getElementById('form-edu-desc').value = e.description;
+      eduFormModal.classList.add('active');
     }
   };
   
@@ -2111,11 +2297,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
-  // Export Config Trigger
   if (btnExportConfig) {
     btnExportConfig.addEventListener('click', () => {
       const projects = localStorage.getItem('custom_projects');
       const certs = localStorage.getItem('custom_certificates');
+      const education = localStorage.getItem('custom_education');
       const profile = localStorage.getItem('custom_profile') || JSON.stringify(defaultProfile);
       
       const configText = `// Copy and replace the database arrays at the beginning of script.js to make your edits permanent!
@@ -2124,7 +2310,9 @@ const defaultProfile = ${profile};
 
 const defaultProjects = ${projects};
 
-const defaultCerts = ${certs};`;
+const defaultCerts = ${certs};
+
+const defaultEducation = ${education};`;
       
       exportDataJson.value = configText;
       exportModal.classList.add('active');
