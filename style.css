@@ -162,6 +162,7 @@ section .title::after {
 .navbar-brand:hover { opacity: 0.85; }
 .navbar .menu { display: flex; align-items: center; gap: 20px; margin-left: 30px; }
 .navbar .menu li { list-style: none; }
+.navbar .menu .admin-nav-item { display: none; }
 .navbar .menu li a {
   color: var(--text-main); font-size: 13px; font-weight: 500; text-transform: uppercase;
   letter-spacing: 0.8px; transition: color 0.3s ease; position: relative; white-space: nowrap;
@@ -863,7 +864,10 @@ body.light-mode .cert-date {
   .navbar .menu.active li:nth-child(6) { transition-delay: 0.20s; }
   .navbar .menu.active li:nth-child(7) { transition-delay: 0.23s; }
   .navbar .menu.active li:nth-child(8) { transition-delay: 0.26s; }
+  .navbar .menu.active li:nth-child(9) { transition-delay: 0.29s; }
   .navbar .menu li a { font-size: 24px; font-weight: 600; }
+  .navbar .menu .admin-nav-item { display: block; }
+  .admin-float-btn { display: none !important; }
   
   .home { padding-top: 100px; text-align: center; }
   .home .max-width { flex-direction: column-reverse; gap: 50px; }

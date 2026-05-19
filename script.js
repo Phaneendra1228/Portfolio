@@ -1141,6 +1141,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ===== ADMIN PANEL LOGIC =====
 (function() {
   const adminFloatBtn = document.getElementById('admin-float-btn');
+  const menuAdminBtn = document.getElementById('menu-admin-btn');
   const loginModal = document.getElementById('admin-login-modal');
   const dashboardModal = document.getElementById('admin-dashboard-modal');
   const projFormModal = document.getElementById('project-form-modal');
@@ -1199,22 +1200,33 @@ document.addEventListener('DOMContentLoaded', () => {
   const exportDataJson = document.getElementById('export-data-json');
   const btnCopyExport = document.getElementById('btn-copy-export');
 
-  // Open modals
-  if (adminFloatBtn) {
-    adminFloatBtn.addEventListener('click', () => {
-      if (sessionStorage.getItem('admin_logged_in') === 'true') {
-        openDashboard();
-      } else {
-        loginModal.classList.add('active');
-        if (adminEmailInput) {
-          adminEmailInput.value = '';
-          adminEmailInput.focus();
-        }
-        if (adminPasswordInput) {
-          adminPasswordInput.value = '';
-        }
-        loginError.style.display = 'none';
+  // Open modals flow
+  const openAdminFlow = () => {
+    if (sessionStorage.getItem('admin_logged_in') === 'true') {
+      openDashboard();
+    } else {
+      loginModal.classList.add('active');
+      if (adminEmailInput) {
+        adminEmailInput.value = '';
+        adminEmailInput.focus();
       }
+      if (adminPasswordInput) {
+        adminPasswordInput.value = '';
+      }
+      loginError.style.display = 'none';
+    }
+    // Automatically reset mobile hamburger close icon back to active bars state
+    const menuBtnIcon = document.querySelector('.menu-btn i');
+    if (menuBtnIcon) menuBtnIcon.classList.remove('active');
+  };
+
+  if (adminFloatBtn) {
+    adminFloatBtn.addEventListener('click', openAdminFlow);
+  }
+  if (menuAdminBtn) {
+    menuAdminBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openAdminFlow();
     });
   }
   
