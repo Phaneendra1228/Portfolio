@@ -942,12 +942,15 @@ body:not(.light-mode) .navbar.scrolled {
   position: fixed;
   height: 45px;
   width: 42px;
-  background: var(--accent-gradient);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   right: 30px;
   bottom: 30px;
   text-align: center;
-  line-height: 45px;
-  color: #fff;
+  line-height: 43px;
+  color: var(--accent-color);
   z-index: 9999;
   font-size: 24px;
   border-radius: 8px;
@@ -955,7 +958,11 @@ body:not(.light-mode) .navbar.scrolled {
   opacity: 0;
   pointer-events: none;
   transition: all 0.3s ease;
-  box-shadow: 0 10px 20px rgba(249, 202, 36, 0.3);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+body.light-mode .scroll-up-btn {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
 }
 .scroll-up-btn.show {
   opacity: 1;
@@ -963,8 +970,10 @@ body:not(.light-mode) .navbar.scrolled {
   bottom: 40px;
 }
 .scroll-up-btn:hover {
-  filter: brightness(1.1);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-color);
   transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(var(--accent-rgb), 0.2);
 }
 
 /* ===== PRELOADER ===== */
@@ -1049,10 +1058,10 @@ body:not(.light-mode) .navbar.scrolled {
   position: fixed;
   bottom: 30px;
   left: 30px;
-  background: var(--card-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   padding: 12px 22px;
   border-radius: 30px;
   color: var(--heading-color);
@@ -1065,11 +1074,16 @@ body:not(.light-mode) .navbar.scrolled {
   align-items: center;
   gap: 8px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+body.light-mode .admin-float-btn {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
 }
 .admin-float-btn:hover {
-  border-color: #f9ca24;
-  box-shadow: 0 10px 30px rgba(249, 202, 36, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-color);
+  box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.2);
   transform: translateY(-3px);
 }
 .admin-modal {
@@ -1364,20 +1378,29 @@ body:not(.light-mode) .navbar.scrolled {
 .ai-chat-bubble {
   width: 55px;
   height: 55px;
-  background: var(--accent-gradient);
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--accent-color);
   font-size: 24px;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.1) inset;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
+body.light-mode .ai-chat-bubble {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.08);
+}
 .ai-chat-bubble:hover {
   transform: scale(1.08) translateY(-3px);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent-color);
   box-shadow: 0 15px 35px rgba(0,0,0,0.4), 0 0 15px var(--accent-color);
 }
 .ai-chat-bubble i {
