@@ -2,6 +2,18 @@
 console.log("🚀 Portfolio Script Loaded: Version 37 (Global DB Active)");
 window.PORTFOLIO_VERSION = 37;
 
+// Force page scroll reset to the very top (Home section) on reload/refresh
+if ('history' in window) {
+  window.history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+document.addEventListener('DOMContentLoaded', () => {
+  window.scrollTo(0, 0);
+});
+window.addEventListener('load', () => {
+  window.scrollTo(0, 0);
+});
+
 const defaultProfile = {
   name: "PHANEENDRA",
   fullName: "JUJJAVARAPU NAGA VENKATA PHANEENDRA",
