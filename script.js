@@ -6,13 +6,30 @@ window.PORTFOLIO_VERSION = 37;
 if ('history' in window) {
   window.history.scrollRestoration = 'manual';
 }
-window.scrollTo(0, 0);
-document.addEventListener('DOMContentLoaded', () => {
-  window.scrollTo(0, 0);
-});
-window.addEventListener('load', () => {
-  window.scrollTo(0, 0);
-});
+
+const resetScrollToTop = () => {
+  if (window.location.hash) {
+    try {
+      history.replaceState("", document.title, window.location.pathname + window.location.search);
+    } catch(e) {
+      console.warn("Could not clear hash:", e);
+    }
+  }
+  window.scrollTo({ top: 0, behavior: 'instant' });
+};
+
+// Reset scroll instantly as script loads
+resetScrollToTop();
+
+// Reset scroll on DOM structure ready and when all assets (images, stylesheets) are loaded
+document.addEventListener('DOMContentLoaded', resetScrollToTop);
+window.addEventListener('load', resetScrollToTop);
+
+// Multi-stage timed resets to catch and override browser scroll-restoration/hash-jumping delays
+setTimeout(resetScrollToTop, 50);
+setTimeout(resetScrollToTop, 150);
+setTimeout(resetScrollToTop, 300);
+setTimeout(resetScrollToTop, 600);
 
 const defaultProfile = {
   name: "PHANEENDRA",
