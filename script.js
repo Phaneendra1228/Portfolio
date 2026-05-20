@@ -2,12 +2,12 @@
 console.log("🚀 Portfolio Script Loaded: Version 37 (Global DB Active)");
 window.PORTFOLIO_VERSION = 37;
 
-// Force smooth scroll to the very top of the home section on reload/refresh
+// Force instant page scroll reset to the very top (Home section) on reload/refresh
 if ('history' in window) {
-  window.history.scrollRestoration = 'auto'; // Allow browser to restore scroll position first
+  window.history.scrollRestoration = 'manual';
 }
 
-const smoothScrollToTop = () => {
+const resetScrollToTop = () => {
   if (window.location.hash) {
     try {
       history.replaceState("", document.title, window.location.pathname + window.location.search);
@@ -15,16 +15,21 @@ const smoothScrollToTop = () => {
       console.warn("Could not clear hash:", e);
     }
   }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({ top: 0, behavior: 'instant' });
 };
 
-// Trigger smooth scroll to the top at progressive load intervals to ensure a seamless, smooth scroll up
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(smoothScrollToTop, 100);
-});
-window.addEventListener('load', () => {
-  setTimeout(smoothScrollToTop, 250);
-});
+// Reset scroll instantly as script loads
+resetScrollToTop();
+
+// Reset scroll on DOM structure ready and when all assets (images, stylesheets) are loaded
+document.addEventListener('DOMContentLoaded', resetScrollToTop);
+window.addEventListener('load', resetScrollToTop);
+
+// Multi-stage timed resets to catch and override browser scroll-restoration/hash-jumping delays
+setTimeout(resetScrollToTop, 50);
+setTimeout(resetScrollToTop, 150);
+setTimeout(resetScrollToTop, 300);
+setTimeout(resetScrollToTop, 600);
 
 const defaultProfile = {
   name: "PHANEENDRA",
