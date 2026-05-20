@@ -54,6 +54,16 @@ html.loading {
   touch-action: none;
 }
 
+/* Hide scroll progress and scroll-up button during initial loading to prevent jumping visual artifacts */
+html.loading .scroll-progress,
+body.loading .scroll-progress,
+html.loading .scroll-up-btn,
+body.loading .scroll-up-btn {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 body::before, body::after {
   content: ''; position: fixed; border-radius: 50%; z-index: -1; pointer-events: none;
   will-change: transform;

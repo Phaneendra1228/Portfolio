@@ -1245,12 +1245,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (preloader) {
       preloader.classList.add('fade-out');
       
-      // Release body and html scroll locking so that the smooth scroll can animate normally
-      document.body.classList.remove('loading');
-      document.documentElement.classList.remove('loading');
-      
       setTimeout(() => {
         active = false; // stop canvas animation loop
+        
+        // Release body and html scroll locking only after preloader is completely gone
+        document.body.classList.remove('loading');
+        document.documentElement.classList.remove('loading');
+        
         preloader.remove();
         
         // Silky-smooth hardware-accelerated scroll back to home section
