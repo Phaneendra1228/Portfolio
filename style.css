@@ -45,6 +45,13 @@ body {
   position: relative;
 }
 
+body.menu-active,
+html.menu-active {
+  overflow: hidden !important;
+  height: 100vh !important;
+  touch-action: none;
+}
+
 body::before, body::after {
   content: ''; position: fixed; border-radius: 50%; z-index: -1; pointer-events: none;
   will-change: transform;

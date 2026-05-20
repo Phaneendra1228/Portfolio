@@ -343,13 +343,30 @@ if (menuBtn) {
   menuBtn.addEventListener('click', () => {
     menu.classList.toggle('active');
     const icon = menuBtn.querySelector('i');
-    icon.classList.toggle('active');
+    if (icon) {
+      icon.classList.toggle('active');
+    }
+    
+    // Lock/unlock background scrolling on mobile when menu is active
+    if (menu.classList.contains('active')) {
+      document.body.classList.add('menu-active');
+      document.documentElement.classList.add('menu-active');
+    } else {
+      document.body.classList.remove('menu-active');
+      document.documentElement.classList.remove('menu-active');
+    }
   });
 }
 // Close menu on link click
 document.querySelectorAll('.navbar .menu a').forEach(a => {
   a.addEventListener('click', () => {
     menu.classList.remove('active');
+    const icon = menuBtn ? menuBtn.querySelector('i') : null;
+    if (icon) {
+      icon.classList.remove('active');
+    }
+    document.body.classList.remove('menu-active');
+    document.documentElement.classList.remove('menu-active');
   });
 });
 
@@ -1320,6 +1337,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Automatically reset mobile hamburger close icon back to active bars state
     const menuBtnIcon = document.querySelector('.menu-btn i');
     if (menuBtnIcon) menuBtnIcon.classList.remove('active');
+    
+    // Also close the mobile menu container and release scroll lock
+    const mobileMenu = document.querySelector('.navbar .menu');
+    if (mobileMenu) mobileMenu.classList.remove('active');
+    document.body.classList.remove('menu-active');
+    document.documentElement.classList.remove('menu-active');
   };
 
   if (adminFloatBtn) {
