@@ -46,7 +46,9 @@ body {
 }
 
 body.menu-active,
-html.menu-active {
+html.menu-active,
+body.loading,
+html.loading {
   overflow: hidden !important;
   height: 100vh !important;
   touch-action: none;

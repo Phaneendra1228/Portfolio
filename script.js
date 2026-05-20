@@ -1244,6 +1244,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const preloader = document.getElementById('preloader');
     if (preloader) {
       preloader.classList.add('fade-out');
+      
+      // Release body and html scroll locking so that the smooth scroll can animate normally
+      document.body.classList.remove('loading');
+      document.documentElement.classList.remove('loading');
+      
       setTimeout(() => {
         active = false; // stop canvas animation loop
         preloader.remove();
