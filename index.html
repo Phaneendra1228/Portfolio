@@ -765,6 +765,40 @@
   </div>
 </div>
 
+<!-- PREMIUM CERTIFICATE VIEWER MODAL -->
+<div id="cert-viewer-modal" class="cert-modal">
+  <div class="cert-modal-backdrop" id="cert-modal-backdrop"></div>
+  <div class="cert-modal-content">
+    <div class="cert-modal-header">
+      <div class="cert-modal-meta">
+        <h3 id="cert-modal-title">Certificate Title</h3>
+        <p id="cert-modal-org"><i class="fas fa-university"></i> Organization Name</p>
+      </div>
+      <button class="cert-modal-close" id="cert-modal-close" title="Close Certificate"><i class="fas fa-times"></i></button>
+    </div>
+    
+    <div class="cert-modal-controls">
+      <button class="cert-control-btn" id="cert-zoom-out" title="Zoom Out"><i class="fas fa-search-minus"></i></button>
+      <span class="cert-zoom-level" id="cert-zoom-level">100%</span>
+      <button class="cert-control-btn" id="cert-zoom-in" title="Zoom In"><i class="fas fa-search-plus"></i></button>
+      <button class="cert-control-btn" id="cert-zoom-reset" title="Reset Zoom"><i class="fas fa-redo-alt"></i></button>
+      <div class="cert-control-divider"></div>
+      <a class="cert-control-btn" id="cert-download-btn" title="Download File" download><i class="fas fa-download"></i> Download</a>
+    </div>
+
+    <div class="cert-modal-body">
+      <div class="cert-modal-spinner" id="cert-modal-spinner">
+        <div class="spinner-ring"></div>
+        <p>Loading document...</p>
+      </div>
+      <div class="cert-render-viewport" id="cert-render-viewport">
+        <canvas id="cert-pdf-canvas"></canvas>
+        <img id="cert-viewer-img" src="" alt="Certificate Preview">
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
 <script src="script.js?v=71"></script>
