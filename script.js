@@ -940,7 +940,27 @@ function loadCertificates() {
       </a>
     `;
   }).join('');
-  
+
+  // Intercept clicks on cert cards with base64 PDF data and open as Blob URLs
+  // Browsers block long data: URLs in href/window.open, so convert to Blob first
+  document.querySelectorAll('.cert-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      if (href && href.startsWith('data:application/pdf;base64,')) {
+        e.preventDefault();
+        const blob = base64ToBlob(href, "application/pdf");
+        if (blob) {
+          const blobUrl = URL.createObjectURL(blob);
+          window.open(blobUrl, '_blank');
+          setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+        } else {
+          // Fallback: try opening directly (may still fail in some browsers)
+          window.open(href, '_blank');
+        }
+      }
+    });
+  });
+
   if (typeof pdfjsLib !== 'undefined') {
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
     
