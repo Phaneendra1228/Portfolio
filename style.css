@@ -658,6 +658,92 @@ body.light-mode .cert-date {
 }
 
 
+
+/* ===== BLOG & MOMENTS ===== */
+.blog .title {
+  margin-bottom: 50px;
+}
+.blog-subtitle {
+  font-size: 14px;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: block;
+  margin-bottom: 5px;
+  font-family: 'Outfit', sans-serif;
+}
+.blog-container {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  background: transparent;
+}
+.blog-image {
+  flex: 1;
+  max-width: 50%;
+}
+.blog-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+.blog-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.blog-date {
+  display: inline-block;
+  background: rgba(249, 202, 36, 0.1);
+  color: #f9ca24;
+  border: 1px solid rgba(249, 202, 36, 0.3);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  align-self: flex-start;
+}
+body.light-mode .blog-date {
+  background: rgba(180, 83, 9, 0.1);
+  color: #b45309;
+  border-color: rgba(180, 83, 9, 0.25);
+}
+.blog-post-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--heading-color);
+  line-height: 1.3;
+  margin-bottom: 20px;
+}
+.blog-divider {
+  border: none;
+  height: 3px;
+  width: 40px;
+  background: var(--accent-color);
+  margin-bottom: 25px;
+  align-self: flex-start;
+}
+.blog-text {
+  color: var(--text-muted);
+  font-size: 16px;
+  line-height: 1.8;
+}
+@media (max-width: 900px) {
+  .blog-container {
+    flex-direction: column;
+  }
+  .blog-image {
+    max-width: 100%;
+  }
+}
+
+
 /* ===== TEAMS / CHECK ME ===== */
 .teams .text { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 16px; }
 .check-me { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
