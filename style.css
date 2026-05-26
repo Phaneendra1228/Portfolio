@@ -677,8 +677,8 @@ body.light-mode .cert-date {
   background: transparent;
 }
 .blog-image {
-  flex: 1;
-  max-width: 50%;
+  flex: 0 0 35%;
+  max-width: 35%;
 }
 .blog-image img {
   width: 100%;
