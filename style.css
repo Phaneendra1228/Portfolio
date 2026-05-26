@@ -662,6 +662,12 @@ body.light-mode .cert-date {
 /* ===== BLOG & MOMENTS ===== */
 .blog .title {
   margin-bottom: 50px;
+  background: none;
+  -webkit-text-fill-color: var(--heading-color);
+  color: var(--heading-color);
+}
+.blog .title::after {
+  display: none;
 }
 .blog-subtitle {
   font-size: 14px;
@@ -671,6 +677,7 @@ body.light-mode .cert-date {
   display: block;
   margin-bottom: 5px;
   font-family: 'Outfit', sans-serif;
+  -webkit-text-fill-color: var(--accent-color);
 }
 .blog-container {
   display: flex;
