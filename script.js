@@ -1408,9 +1408,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabResume = document.getElementById('tab-resume');
   const tabMessages = document.getElementById('tab-messages');
   
-  const allTabs = [tabProjects, tabProfile, tabEducation, tabCerts, tabBlog, tabResume, tabMessages];
-  const allTabBtns = [tabBtnProjects, tabBtnProfile, tabBtnEducation, tabBtnCerts, tabBtnBlog, tabBtnResume, tabBtnMessages];
-  
   // Dashboard lists
   const adminProjectsList = document.getElementById('admin-projects-list');
   const adminEducationList = document.getElementById('admin-education-list');
@@ -1559,6 +1556,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { btn: tabBtnProfile, content: tabProfile },
     { btn: tabBtnEducation, content: tabEducation },
     { btn: tabBtnCerts, content: tabCerts },
+    { btn: tabBtnBlog, content: tabBlog },
     { btn: tabBtnResume, content: tabResume },
     { btn: tabBtnMessages, content: tabMessages }
   ];
