@@ -676,6 +676,17 @@ body.light-mode .cert-date {
   align-items: flex-start;
   background: transparent;
 }
+.blog-container:nth-child(even) {
+  flex-direction: row-reverse;
+}
+.blog-container:nth-child(even) .blog-content {
+  align-items: flex-end;
+  text-align: right;
+}
+.blog-container:nth-child(even) .blog-divider,
+.blog-container:nth-child(even) .blog-date {
+  align-self: flex-end;
+}
 .blog-image {
   flex: 0 0 35%;
   max-width: 35%;
@@ -733,8 +744,16 @@ body.light-mode .blog-date {
   line-height: 1.8;
 }
 @media (max-width: 900px) {
-  .blog-container {
+  .blog-container, .blog-container:nth-child(even) {
     flex-direction: column;
+  }
+  .blog-container:nth-child(even) .blog-content {
+    align-items: flex-start;
+    text-align: left;
+  }
+  .blog-container:nth-child(even) .blog-divider,
+  .blog-container:nth-child(even) .blog-date {
+    align-self: flex-start;
   }
   .blog-image {
     max-width: 100%;
