@@ -1029,6 +1029,41 @@ function loadCertificates() {
   }
 }
 
+// Load Blogs from localStorage
+function loadBlogs() {
+  const grid = document.getElementById('blogGrid');
+  if (!grid) return;
+  
+  let blogs = JSON.parse(localStorage.getItem('custom_blogs'));
+  
+  if (!blogs || !blogs.length) {
+    // Default initial blog post if nothing is stored
+    blogs = [{
+      title: "How Did Our Team Win 2nd Prize at CodeStorm 2K25? 🏆",
+      date: "26 APRIL 2025",
+      image: "blog1.jpg",
+      text: "CodeStorm 2K25 was more than just a competition for me — it was an experience that taught me the true value of teamwork, confidence, and consistency. Throughout the event, our team stayed focused, supported each other, and gave our best in every round despite the pressure and competition around us. When we were announced as the 2nd Prize winners, it felt like every discussion, idea, and hard-working moment had finally paid off. More than the prize itself, this achievement gave me confidence in my abilities and motivated me to keep learning, improving, and aiming higher in the future.<br><br>— J N V Phaneendra"
+    }];
+    localStorage.setItem('custom_blogs', JSON.stringify(blogs));
+  }
+  
+  grid.innerHTML = blogs.map(b => {
+    return `
+      <div class="blog-container">
+        <div class="blog-image">
+          <img src="${b.image}" alt="Blog Image" loading="lazy" onerror="this.src='profile.jpg'">
+        </div>
+        <div class="blog-content">
+          <span class="blog-date">${b.date}</span>
+          <h3 class="blog-post-title">${b.title}</h3>
+          <hr class="blog-divider">
+          <p class="blog-text">${b.text}</p>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
 // Sync Projects globally to KVDB
 async function syncProjectsToGlobalDB(projects) {
   try {
@@ -1143,11 +1178,42 @@ async function syncEducation() {
   }
 }
 
+// Sync Blogs globally to KVDB
+async function syncBlogsToGlobalDB(blogs) {
+  try {
+    await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/blogs_data", {
+      method: "POST",
+      body: JSON.stringify(blogs)
+    });
+  } catch (err) {
+    console.warn("Failed to sync blogs to global DB:", err);
+  }
+}
+
+// Asynchronously load blogs from KVDB with local cache fallback
+async function syncBlogs() {
+  loadBlogs(); // Render immediately from local cache
+  
+  try {
+    const res = await fetch("https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/blogs_data", { cache: 'no-store' });
+    if (res.ok) {
+      const payload = await res.json();
+      if (payload && Array.isArray(payload)) {
+        localStorage.setItem('custom_blogs', JSON.stringify(payload));
+        loadBlogs(); // Render with latest database payload
+      }
+    }
+  } catch (err) {
+    console.warn("Failed to load blogs from global DB:", err);
+  }
+}
+
 // Initial Dynamic Load Trigger
 document.addEventListener('DOMContentLoaded', () => {
   syncProjects();
   syncCertificates();
   syncEducation();
+  syncBlogs();
   loadResume();
   syncProfile();
 });
@@ -1308,6 +1374,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const dashboardModal = document.getElementById('admin-dashboard-modal');
   const projFormModal = document.getElementById('project-form-modal');
   const certFormModal = document.getElementById('cert-form-modal');
+  const blogFormModal = document.getElementById('blog-form-modal');
   const eduFormModal = document.getElementById('education-form-modal');
   const exportModal = document.getElementById('export-config-modal');
   
@@ -1315,6 +1382,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeDashboard = document.getElementById('close-dashboard-modal');
   const closeProjForm = document.getElementById('close-project-form');
   const closeCertForm = document.getElementById('close-cert-form');
+  const closeBlogForm = document.getElementById('close-blog-form');
   const closeEduForm = document.getElementById('close-education-form');
   const closeExport = document.getElementById('close-export-modal');
   
@@ -1329,24 +1397,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabBtnProfile = document.getElementById('tab-btn-profile');
   const tabBtnEducation = document.getElementById('tab-btn-education');
   const tabBtnCerts = document.getElementById('tab-btn-certs');
+  const tabBtnBlog = document.getElementById('tab-btn-blog');
   const tabBtnResume = document.getElementById('tab-btn-resume');
   const tabBtnMessages = document.getElementById('tab-btn-messages');
   const tabProjects = document.getElementById('tab-projects');
   const tabProfile = document.getElementById('tab-profile');
   const tabEducation = document.getElementById('tab-education');
   const tabCerts = document.getElementById('tab-certs');
+  const tabBlog = document.getElementById('tab-blog');
   const tabResume = document.getElementById('tab-resume');
   const tabMessages = document.getElementById('tab-messages');
+  
+  const allTabs = [tabProjects, tabProfile, tabEducation, tabCerts, tabBlog, tabResume, tabMessages];
+  const allTabBtns = [tabBtnProjects, tabBtnProfile, tabBtnEducation, tabBtnCerts, tabBtnBlog, tabBtnResume, tabBtnMessages];
   
   // Dashboard lists
   const adminProjectsList = document.getElementById('admin-projects-list');
   const adminEducationList = document.getElementById('admin-education-list');
   const adminCertsList = document.getElementById('admin-certs-list');
+  const adminBlogList = document.getElementById('admin-blog-list');
   const adminMessagesList = document.getElementById('admin-messages-list');
   
   // Form submission and trigger buttons
   const btnAddProject = document.getElementById('btn-add-project');
   const btnAddCert = document.getElementById('btn-add-cert');
+  const btnAddBlog = document.getElementById('btn-add-blog');
   const btnAddEducation = document.getElementById('btn-add-education');
   const btnClearMessages = document.getElementById('btn-clear-messages');
   const btnReloadMessages = document.getElementById('btn-reload-messages');
@@ -1358,6 +1433,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const certUploadText = document.getElementById('cert-upload-text');
   const certUploadInfo = document.getElementById('cert-upload-info');
   const certUploadZone = document.getElementById('cert-upload-zone');
+  
+  const blogForm = document.getElementById('blog-form');
+  const blogFileInput = document.getElementById('form-blog-file');
+  const blogUploadText = document.getElementById('blog-upload-text');
+  const blogUploadInfo = document.getElementById('blog-upload-info');
+  const blogUploadZone = document.getElementById('blog-upload-zone');
   const resumeForm = document.getElementById('admin-resume-form');
   const resumeFileInput = document.getElementById('admin-resume-file');
   const uploadZoneText = document.getElementById('upload-zone-text');
@@ -1411,6 +1492,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { btn: closeDashboard, modal: dashboardModal },
     { btn: closeProjForm, modal: projFormModal },
     { btn: closeCertForm, modal: certFormModal },
+    { btn: closeBlogForm, modal: blogFormModal },
     { btn: closeEduForm, modal: eduFormModal },
     { btn: closeExport, modal: exportModal }
   ];
@@ -1656,6 +1738,27 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
 
+    // Render Blog list
+    if (adminBlogList) {
+      const blogs = JSON.parse(localStorage.getItem('custom_blogs')) || [];
+      if (!blogs.length) {
+        adminBlogList.innerHTML = '<p style="color: var(--text-muted); font-size: 13px;">No blogs found.</p>';
+      } else {
+        adminBlogList.innerHTML = blogs.map((b, idx) => `
+          <div class="admin-item">
+            <div class="admin-item-info">
+              <h5>${b.title}</h5>
+              <span>${b.date}</span>
+            </div>
+            <div class="admin-item-actions">
+              <button class="btn-edit" onclick="editBlog(${idx})"><i class="fas fa-edit" style="color: #06b6d4;"></i></button>
+              <button class="btn-del" onclick="deleteBlog(${idx})"><i class="fas fa-trash-alt" style="color: #ef4444;"></i></button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
     // Trigger async global message fetch and rendering
     renderMessagesList();
   }
@@ -1691,6 +1794,17 @@ document.addEventListener('DOMContentLoaded', () => {
       renderDashboardLists();
       loadEducation();
       await syncEducationToGlobalDB(education);
+    }
+  };
+
+  window.deleteBlog = async function(idx) {
+    if (confirm('Are you sure you want to delete this blog post?')) {
+      const blogs = JSON.parse(localStorage.getItem('custom_blogs')) || [];
+      blogs.splice(idx, 1);
+      localStorage.setItem('custom_blogs', JSON.stringify(blogs));
+      renderDashboardLists();
+      loadBlogs();
+      await syncBlogsToGlobalDB(blogs);
     }
   };
 
@@ -1805,6 +1919,9 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Selected certificate file cache variables
   let selectedCertBase64 = "";
+  
+  // Selected blog image cache variable
+  let selectedBlogBase64 = "";
 
   // Drag-and-drop / select event listeners for Certificate PDF file
   if (certFileInput) {
@@ -1836,6 +1953,38 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+  
+  // Drag-and-drop / select event listeners for Blog Image file
+  if (blogFileInput) {
+    blogFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (!file.type.startsWith("image/")) {
+          alert("Please upload an image file only!");
+          blogFileInput.value = "";
+          return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+          alert("File size exceeds 2MB limit!");
+          blogFileInput.value = "";
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          selectedBlogBase64 = evt.target.result;
+          if (blogUploadText) blogUploadText.textContent = file.name;
+          if (blogUploadInfo) blogUploadInfo.textContent = `Size: ${(file.size / 1024).toFixed(1)} KB (Ready to save)`;
+          if (blogUploadZone) {
+            blogUploadZone.style.borderColor = "#10b981";
+            blogUploadZone.style.background = "rgba(16, 185, 129, 0.05)";
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
 
   if (certUploadZone) {
     certUploadZone.addEventListener('dragover', (e) => {
@@ -1897,6 +2046,50 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedCertBase64 = "";
 
       await syncCertificatesToGlobalDB(certs);
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    });
+  }
+
+  // Save Blog Form
+  if (blogForm) {
+    blogForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const btn = blogForm.querySelector('button');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      btn.disabled = true;
+
+      const idx = document.getElementById('blog-edit-index').value;
+      const blogs = JSON.parse(localStorage.getItem('custom_blogs')) || [];
+      
+      const newBlog = {
+        title: document.getElementById('form-blog-title').value,
+        date: document.getElementById('form-blog-date').value,
+        text: document.getElementById('form-blog-desc').value,
+        image: selectedBlogBase64 || "blog1.jpg" // Fallback to default if no image uploaded
+      };
+      
+      if (idx !== "") {
+        // If editing, keep the old image if none is provided
+        if (!selectedBlogBase64 && blogs[parseInt(idx)].image) {
+          newBlog.image = blogs[parseInt(idx)].image;
+        }
+        blogs[parseInt(idx)] = newBlog;
+      } else {
+        blogs.push(newBlog);
+      }
+      
+      localStorage.setItem('custom_blogs', JSON.stringify(blogs));
+      blogFormModal.classList.remove('active');
+      renderDashboardLists();
+      loadBlogs();
+      
+      // Clear file cache
+      selectedBlogBase64 = "";
+
+      await syncBlogsToGlobalDB(blogs);
       btn.innerHTML = originalText;
       btn.disabled = false;
     });
@@ -2155,7 +2348,30 @@ document.addEventListener('DOMContentLoaded', () => {
       eduFormModal.classList.add('active');
     });
   }
-  
+
+  // Add Blog Trigger
+  if (btnAddBlog) {
+    btnAddBlog.addEventListener('click', () => {
+      document.getElementById('blog-form-title').textContent = "Add Blog";
+      document.getElementById('blog-edit-index').value = "";
+      document.getElementById('form-blog-title').value = "";
+      document.getElementById('form-blog-date').value = "";
+      document.getElementById('form-blog-desc').value = "";
+      
+      // Reset upload zone
+      selectedBlogBase64 = "";
+      if (blogUploadText) blogUploadText.textContent = "Drag & Drop or Click to Upload Image";
+      if (blogUploadInfo) blogUploadInfo.textContent = "Maximum size: 2MB";
+      if (blogUploadZone) {
+        blogUploadZone.style.borderColor = "rgba(6, 182, 212, 0.3)";
+        blogUploadZone.style.background = "rgba(var(--glass-rgb), 0.01)";
+      }
+      if (blogFileInput) blogFileInput.value = "";
+      
+      blogFormModal.classList.add('active');
+    });
+  }
+
   // Edit handlers
   window.editProject = function(idx) {
     const projects = JSON.parse(localStorage.getItem('custom_projects')) || [];
@@ -2211,6 +2427,31 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('form-edu-duration').value = e.duration;
       document.getElementById('form-edu-desc').value = e.description;
       eduFormModal.classList.add('active');
+    }
+  };
+
+  window.editBlog = function(idx) {
+    const blogs = JSON.parse(localStorage.getItem('custom_blogs')) || [];
+    const b = blogs[idx];
+    if (b) {
+      document.getElementById('blog-form-title').textContent = "Edit Blog";
+      document.getElementById('blog-edit-index').value = idx;
+      document.getElementById('form-blog-title').value = b.title;
+      document.getElementById('form-blog-date').value = b.date;
+      document.getElementById('form-blog-desc').value = b.text;
+      
+      selectedBlogBase64 = b.image || "";
+      if (blogUploadText) {
+        blogUploadText.textContent = selectedBlogBase64 && selectedBlogBase64 !== "blog1.jpg" ? "Existing Image Loaded" : (selectedBlogBase64 === "blog1.jpg" ? "blog1.jpg" : "Drag & Drop or Click to Upload Image");
+      }
+      if (blogUploadInfo) blogUploadInfo.textContent = "Drag & Drop a new image to replace it";
+      if (blogUploadZone) {
+        blogUploadZone.style.borderColor = "#06b6d4";
+        blogUploadZone.style.background = "rgba(6, 182, 212, 0.05)";
+      }
+      if (blogFileInput) blogFileInput.value = "";
+      
+      blogFormModal.classList.add('active');
     }
   };
   

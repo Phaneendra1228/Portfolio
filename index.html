@@ -239,19 +239,8 @@
     <h2 class="title">
       Blog & Moments
     </h2>
-    
-    <div class="blog-container">
-      <div class="blog-image">
-        <img src="blog1.jpg" alt="Blog Image" loading="lazy" onerror="this.src='profile.jpg'">
-      </div>
-      <div class="blog-content">
-        <span class="blog-date">26 APRIL 2025</span>
-        <h3 class="blog-post-title">How Did Our Team Win 2nd Prize at CodeStorm 2K25? 🏆</h3>
-        <hr class="blog-divider">
-        <p class="blog-text">
-          CodeStorm 2K25 was more than just a competition for me — it was an experience that taught me the true value of teamwork, confidence, and consistency. Throughout the event, our team stayed focused, supported each other, and gave our best in every round despite the pressure and competition around us. When we were announced as the 2nd Prize winners, it felt like every discussion, idea, and hard-working moment had finally paid off. More than the prize itself, this achievement gave me confidence in my abilities and motivated me to keep learning, improving, and aiming higher in the future.<br><br>— J N V Phaneendra
-        </p>
-      </div>
+    <div class="blog-grid" id="blogGrid" style="display: flex; flex-direction: column; gap: 50px;">
+      <!-- Dynamic Blogs loaded from script.js -->
     </div>
   </div>
 </section>
@@ -410,6 +399,7 @@
         <button class="tab-btn" data-tab="tab-profile" id="tab-btn-profile">Profile</button>
         <button class="tab-btn" data-tab="tab-education" id="tab-btn-education">Education</button>
         <button class="tab-btn" data-tab="tab-certs" id="tab-btn-certs">Certificates</button>
+        <button class="tab-btn" data-tab="tab-blog" id="tab-btn-blog">Blog</button>
         <button class="tab-btn" data-tab="tab-resume" id="tab-btn-resume">Resume</button>
         <button class="tab-btn" data-tab="tab-messages" id="tab-btn-messages">Messages</button>
       </div>
@@ -551,6 +541,17 @@
         </div>
         <div class="admin-list" id="admin-certs-list">
           <!-- Dynamic Certs list -->
+        </div>
+      </div>
+      
+      <!-- Blog Tab -->
+      <div class="tab-content" id="tab-blog">
+        <div class="tab-header">
+          <h4>Manage Blog & Moments</h4>
+          <button class="admin-btn-sm" id="btn-add-blog"><i class="fas fa-plus"></i> Add Blog</button>
+        </div>
+        <div class="admin-list" id="admin-blog-list">
+          <!-- Dynamic Blogs list -->
         </div>
       </div>
       
@@ -718,6 +719,42 @@
   </div>
 </div>
 
+<!-- Blog Form Modal -->
+<div class="admin-modal" id="blog-form-modal">
+  <div class="admin-modal-content form-content">
+    <div class="admin-modal-header">
+      <h3 id="blog-form-title">Add Blog</h3>
+      <span class="close-modal" id="close-blog-form">&times;</span>
+    </div>
+    <div class="admin-modal-body">
+      <form id="blog-form">
+        <input type="hidden" id="blog-edit-index">
+        <div class="form-group">
+          <label>Blog Title</label>
+          <input type="text" id="form-blog-title" placeholder="e.g. How Did Our Team Win..." required>
+        </div>
+        <div class="form-group">
+          <label>Date</label>
+          <input type="text" id="form-blog-date" placeholder="e.g. 26 APRIL 2025" required>
+        </div>
+        <div class="form-group">
+          <label>Blog Image (Optional)</label>
+          <div id="blog-upload-zone" style="border: 2px dashed rgba(6, 182, 212, 0.3); padding: 20px; border-radius: 12px; text-align: center; background: rgba(var(--glass-rgb), 0.01); cursor: pointer; transition: all 0.3s; position: relative;">
+            <input type="file" id="form-blog-file" accept="image/*" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+            <i class="fas fa-image" style="font-size: 24px; color: #06b6d4; margin-bottom: 5px;"></i>
+            <h5 id="blog-upload-text" style="font-size: 13px; color: var(--text-main); margin: 0 0 2px;">Drag & Drop or Click to Upload Image</h5>
+            <span id="blog-upload-info" style="font-size: 11px; color: var(--text-muted);">Maximum size: 2MB</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Blog Content (HTML tags supported)</label>
+          <textarea id="form-blog-desc" rows="6" placeholder="Write your blog post here..." required></textarea>
+        </div>
+        <button type="submit" class="admin-btn" id="btn-save-blog">Save Blog</button>
+      </form>
+    </div>
+  </div>
+</div>
 <!-- Export Config Modal -->
 <div class="admin-modal" id="export-config-modal">
   <div class="admin-modal-content dashboard-content" style="max-width: 650px;">
