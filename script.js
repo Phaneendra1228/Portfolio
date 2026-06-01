@@ -3194,3 +3194,149 @@ const defaultEducation = ${education};`;
   });
 })();
 
+// ===== VISITOR ANALYTICS =====
+(async function initAnalytics() {
+  const kvdbUrl = "https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/analytics";
+  
+  // Only track unique views per session
+  const hasVisited = sessionStorage.getItem('has_visited');
+  
+  if (!hasVisited) {
+    try {
+      // Fetch current stats
+      const res = await fetch(kvdbUrl, { cache: 'no-store' });
+      let data = res.ok ? await res.json() : { views: 0, visitors: 0 };
+      
+      // Increment stats
+      data.views = (data.views || 0) + 1;
+      
+      // If no local storage flag, count as unique visitor
+      if (!localStorage.getItem('unique_visitor')) {
+        data.visitors = (data.visitors || 0) + 1;
+        localStorage.setItem('unique_visitor', 'true');
+      }
+      
+      // Save back to KVDB
+      await fetch(kvdbUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      
+      sessionStorage.setItem('has_visited', 'true');
+    } catch (err) {
+      console.warn("Analytics error:", err);
+    }
+  }
+
+  // Admin Panel Analytics Reload Logic
+  const btnReloadAnalytics = document.getElementById('btn-reload-analytics');
+  if (btnReloadAnalytics) {
+    btnReloadAnalytics.addEventListener('click', async () => {
+      btnReloadAnalytics.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+      try {
+        const res = await fetch(kvdbUrl, { cache: 'no-store' });
+        const data = res.ok ? await res.json() : { views: 0, visitors: 0 };
+        document.getElementById('stat-total-views').textContent = data.views || 0;
+        document.getElementById('stat-unique-visitors').textContent = data.visitors || 0;
+      } catch (err) {
+        console.warn(err);
+      } finally {
+        btnReloadAnalytics.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
+      }
+    });
+  }
+})();
+
+// ===== VCARD QR CODE GENERATOR =====
+(function initQR() {
+  const qrImg = document.getElementById('qr-code-img');
+  const qrLoading = document.getElementById('qr-loading');
+  if (!qrImg || !qrLoading) return;
+
+  // Build VCard String
+  const vcard = `BEGIN:VCARD\nVERSION:3.0\nN:Phaneendra;J.N.V;;;\nFN:J.N.V Phaneendra\nTITLE:Full Stack Developer & AI/ML Engineer\nEMAIL:Phanee2005@gmail.com\nURL:https://phaneendra1228.github.io/Portfolio/\nURL:https://www.linkedin.com/in/jujjavarapu-naga-venkata-phaneendra-7416a232a/\nEND:VCARD`;
+
+  const encodedVcard = encodeURIComponent(vcard);
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodedVcard}&margin=0`;
+
+  qrImg.onload = () => {
+    qrLoading.style.display = 'none';
+    qrImg.style.display = 'block';
+  };
+  qrImg.src = qrUrl;
+})();
+
+// ===== SIMULATED AI CHATBOT =====
+(function initChatbot() {
+  const toggleBtn = document.getElementById('chatbot-toggle');
+  const chatWindow = document.getElementById('chatbot-window');
+  const closeBtn = document.getElementById('chatbot-close');
+  const chatBody = document.getElementById('chatbot-body');
+  const chatInput = document.getElementById('chatbot-input');
+  const sendBtn = document.getElementById('chatbot-send');
+
+  if (!toggleBtn || !chatWindow) return;
+
+  // Toggle Window
+  toggleBtn.addEventListener('click', () => {
+    chatWindow.classList.add('active');
+    chatInput.focus();
+  });
+
+  closeBtn.addEventListener('click', () => {
+    chatWindow.classList.remove('active');
+  });
+
+  // Knowledge Base (Fuzzy Rules)
+  const knowledge = [
+    { keys: ["hello", "hi", "hey"], response: "Hello there! I'm Phaneendra's AI assistant. How can I help you learn more about his portfolio?" },
+    { keys: ["who", "about", "bio", "yourself"], response: "Phaneendra is a Full Stack Developer & AI/ML Engineer. He loves building intelligent systems and dynamic web applications!" },
+    { keys: ["skills", "tech", "stack", "languages", "know"], response: "He is skilled in Python, React, Next.js, Node.js, C, C++, Java, SQL, and AI/ML frameworks like TensorFlow. He also uses Gemini API and RAG technologies!" },
+    { keys: ["projects", "work", "portfolio"], response: "Check out his 'Recent Works' section! Notably, he built the LogSagittarius AI Ecosystem which secured a Top 20 finish at the NYXORA 2k26 National Hackathon." },
+    { keys: ["hackathon", "nyxora", "dynamo"], response: "Yes! His team 'Dynamo Developers' reached the Top 20 at NYXORA 2k26 with a Gemini-powered RAG application." },
+    { keys: ["education", "study", "college"], response: "He is currently studying B.Tech at Narsimha Reddy Engineering College (2024-2028)." },
+    { keys: ["contact", "email", "hire", "reach"], response: "You can reach him at Phanee2005@gmail.com, or through the Contact form at the bottom of the page!" },
+    { keys: ["resume", "cv"], response: "You can download his resume directly from the 'About Me' section by clicking 'GET MY RESUME'." },
+    { keys: ["bye", "thanks", "thank you"], response: "You're welcome! Have a great day, and feel free to reach out to Phaneendra!" }
+  ];
+
+  function getAiResponse(msg) {
+    msg = msg.toLowerCase();
+    for (let rule of knowledge) {
+      if (rule.keys.some(key => msg.includes(key))) {
+        return rule.response;
+      }
+    }
+    return "I'm still learning! But you can find most of the information about Phaneendra's experience in the sections above, or email him directly at Phanee2005@gmail.com.";
+  }
+
+  function appendMessage(text, sender) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `chat-msg ${sender}-msg`;
+    msgDiv.innerHTML = `<p>${text}</p>`;
+    chatBody.appendChild(msgDiv);
+    chatBody.scrollTop = chatBody.scrollHeight;
+  }
+
+  function handleSend() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    
+    // User message
+    appendMessage(text, 'user');
+    chatInput.value = '';
+
+    // Simulate thinking delay
+    setTimeout(() => {
+      const response = getAiResponse(text);
+      appendMessage(response, 'ai');
+    }, 600 + Math.random() * 400);
+  }
+
+  sendBtn.addEventListener('click', handleSend);
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleSend();
+  });
+})();
+
