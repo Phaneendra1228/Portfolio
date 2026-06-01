@@ -1485,6 +1485,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   
+  // Global keyboard shortcut for Admin Panel (Ctrl + Alt + A)
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.altKey && (e.key === 'a' || e.key === 'A')) {
+      e.preventDefault();
+      openAdminFlow();
+    }
+  });
+
   // Close buttons
   const modalsList = [
     { btn: closeLogin, modal: loginModal },
@@ -3358,12 +3366,3 @@ const defaultEducation = ${education};`;
   });
 })();
 
-// Global keyboard shortcut for Admin Panel (Ctrl + Alt + A)
-document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.altKey && (e.key === 'a' || e.key === 'A')) {
-    e.preventDefault();
-    if (typeof openAdminFlow === 'function') {
-      openAdminFlow();
-    }
-  }
-});
