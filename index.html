@@ -651,7 +651,6 @@
       </div>
       
       <div class="dashboard-footer" style="display: flex; gap: 15px; margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-        <button class="admin-btn btn-secondary" id="btn-export-config" style="background: rgba(6, 182, 212, 0.1); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.3);"><i class="fas fa-file-export"></i> Export Config</button>
         <button class="admin-btn btn-danger" id="btn-admin-logout" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3);"><i class="fas fa-lock"></i> Lock Controls</button>
       </div>
     </div>
@@ -811,25 +810,6 @@
     </div>
   </div>
 </div>
-<!-- Export Config Modal -->
-<div class="admin-modal" id="export-config-modal">
-  <div class="admin-modal-content dashboard-content" style="max-width: 650px;">
-    <div class="admin-modal-header">
-      <h3><i class="fas fa-file-export"></i> Export HTML Configuration</h3>
-      <span class="close-modal" id="close-export-modal">&times;</span>
-    </div>
-    <div class="admin-modal-body">
-      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px; line-height: 1.5;">To make your custom edits **permanent** for everyone globally (so they load without localStorage), simply copy the updated HTML configurations below and paste them into your project files, or send them to us to push to GitHub!</p>
-      
-      <div class="form-group">
-        <label>Updated Data Configuration (Copy the block below)</label>
-        <textarea id="export-data-json" rows="12" readonly style="width: 100%; font-family: monospace; font-size: 12px; padding: 15px; background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 12px; color: #06b6d4; outline: none; resize: none; margin-bottom: 15px;"></textarea>
-      </div>
-      <button class="admin-btn" id="btn-copy-export"><i class="far fa-copy"></i> Copy Configuration Code</button>
-    </div>
-  </div>
-</div>
-
 <!-- Floating AI Chat Assistant -->
 <div class="ai-assistant-container" id="ai-assistant">
   <!-- Chat Trigger Bubble -->
