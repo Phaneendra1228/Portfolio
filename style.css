@@ -1426,7 +1426,10 @@ body.light-mode .admin-float-btn {
   border-bottom: 1px solid var(--border-color);
   padding-bottom: 10px;
   overflow-x: auto;
-  scrollbar-width: thin;
+  scrollbar-width: none;
+}
+.admin-tabs::-webkit-scrollbar {
+  display: none;
 }
 .tab-btn {
   background: transparent;
@@ -1439,7 +1442,8 @@ body.light-mode .admin-float-btn {
   cursor: pointer;
   position: relative;
   transition: color 0.3s;
-  flex-shrink: 0; /* Prevent buttons from shrinking on small screens */
+  flex: 1;
+  text-align: center;
 }
 .tab-btn.active {
   color: var(--accent-color);
