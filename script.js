@@ -1486,8 +1486,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   // Global keyboard shortcut for Admin Panel (Ctrl + Alt + A)
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey && e.altKey && (e.key === 'a' || e.key === 'A')) {
+  window.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.altKey && (e.key.toLowerCase() === 'a' || e.code === 'KeyA')) {
       e.preventDefault();
       openAdminFlow();
     }
