@@ -1400,6 +1400,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabBtnBlog = document.getElementById('tab-btn-blog');
   const tabBtnResume = document.getElementById('tab-btn-resume');
   const tabBtnMessages = document.getElementById('tab-btn-messages');
+  const tabBtnAnalytics = document.getElementById('tab-btn-analytics');
   const tabProjects = document.getElementById('tab-projects');
   const tabProfile = document.getElementById('tab-profile');
   const tabEducation = document.getElementById('tab-education');
@@ -1407,6 +1408,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabBlog = document.getElementById('tab-blog');
   const tabResume = document.getElementById('tab-resume');
   const tabMessages = document.getElementById('tab-messages');
+  const tabAnalytics = document.getElementById('tab-analytics');
   
   // Dashboard lists
   const adminProjectsList = document.getElementById('admin-projects-list');
@@ -1558,7 +1560,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { btn: tabBtnCerts, content: tabCerts },
     { btn: tabBtnBlog, content: tabBlog },
     { btn: tabBtnResume, content: tabResume },
-    { btn: tabBtnMessages, content: tabMessages }
+    { btn: tabBtnMessages, content: tabMessages },
+    { btn: tabBtnAnalytics, content: tabAnalytics }
   ];
 
   allTabs.forEach(tab => {
