@@ -3200,22 +3200,26 @@ const defaultEducation = ${education};`;
 // ===== VISITOR ANALYTICS =====
 (async function initAnalytics() {
   const kvdbUrl = "https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/analytics";
+  let currentData = { views: 0, visitors: 0 };
   
   // Only track unique views per session
   const hasVisited = sessionStorage.getItem('has_visited');
   
-  if (!hasVisited) {
-    try {
-      // Fetch current stats
-      const res = await fetch(kvdbUrl, { cache: 'no-store' });
-      let data = res.ok ? await res.json() : { views: 0, visitors: 0 };
-      
+  try {
+    // Fetch current stats safely
+    const res = await fetch(kvdbUrl, { cache: 'no-store' });
+    const text = await res.text();
+    if (res.ok && text) {
+      try { currentData = JSON.parse(text); } catch(e) {}
+    }
+    
+    if (!hasVisited) {
       // Increment stats
-      data.views = (data.views || 0) + 1;
+      currentData.views = (currentData.views || 0) + 1;
       
       // If no local storage flag, count as unique visitor
       if (!localStorage.getItem('unique_visitor')) {
-        data.visitors = (data.visitors || 0) + 1;
+        currentData.visitors = (currentData.visitors || 0) + 1;
         localStorage.setItem('unique_visitor', 'true');
       }
       
@@ -3223,13 +3227,20 @@ const defaultEducation = ${education};`;
       await fetch(kvdbUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify(currentData)
       });
       
       sessionStorage.setItem('has_visited', 'true');
-    } catch (err) {
-      console.warn("Analytics error:", err);
     }
+
+    // Populate DOM initially
+    const elViews = document.getElementById('stat-total-views');
+    const elVisitors = document.getElementById('stat-unique-visitors');
+    if (elViews) elViews.textContent = currentData.views || 0;
+    if (elVisitors) elVisitors.textContent = currentData.visitors || 0;
+
+  } catch (err) {
+    console.warn("Analytics error:", err);
   }
 
   // Admin Panel Analytics Reload Logic
@@ -3239,7 +3250,11 @@ const defaultEducation = ${education};`;
       btnReloadAnalytics.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
       try {
         const res = await fetch(kvdbUrl, { cache: 'no-store' });
-        const data = res.ok ? await res.json() : { views: 0, visitors: 0 };
+        const text = await res.text();
+        let data = { views: 0, visitors: 0 };
+        if (res.ok && text) {
+          try { data = JSON.parse(text); } catch(e) {}
+        }
         document.getElementById('stat-total-views').textContent = data.views || 0;
         document.getElementById('stat-unique-visitors').textContent = data.visitors || 0;
       } catch (err) {
@@ -3258,7 +3273,7 @@ const defaultEducation = ${education};`;
   if (!qrImg || !qrLoading) return;
 
   // Build VCard String
-  const vcard = `BEGIN:VCARD\nVERSION:3.0\nN:Phaneendra;J.N.V;;;\nFN:J.N.V Phaneendra\nTITLE:Full Stack Developer & AI/ML Engineer\nEMAIL:Phanee2005@gmail.com\nURL:https://phaneendra1228.github.io/Portfolio/\nURL:https://www.linkedin.com/in/jujjavarapu-naga-venkata-phaneendra-7416a232a/\nEND:VCARD`;
+  const vcard = `BEGIN:VCARD\nVERSION:3.0\nN:Phaneendra;J.N.V;;;\nFN:J.N.V Phaneendra\nTITLE:Full Stack Developer & AI/ML Engineer\nEMAIL:Phanee2005@gmail.com\nTEL;TYPE=CELL:9390672337\nURL:https://phaneendra1228.github.io/Portfolio/\nURL:https://www.linkedin.com/in/jujjavarapu-naga-venkata-phaneendra-7416a232a/\nEND:VCARD`;
 
   const encodedVcard = encodeURIComponent(vcard);
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodedVcard}&margin=0`;
