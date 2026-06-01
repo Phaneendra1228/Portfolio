@@ -3358,3 +3358,12 @@ const defaultEducation = ${education};`;
   });
 })();
 
+// Global keyboard shortcut for Admin Panel (Ctrl + Alt + A)
+document.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.altKey && (e.key === 'a' || e.key === 'A')) {
+    e.preventDefault();
+    if (typeof openAdminFlow === 'function') {
+      openAdminFlow();
+    }
+  }
+});
