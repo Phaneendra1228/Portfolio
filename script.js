@@ -3208,7 +3208,7 @@ const defaultEducation = ${education};`;
 // ===== VISITOR ANALYTICS =====
 (async function initAnalytics() {
   const kvdbUrl = "https://kvdb.io/EK4jNKvvT4vo6nSGRy4GtW/analytics";
-  let currentData = { views: 0, visitors: 0 };
+  let currentData = { views: 0, visitors: 0, countries: {} };
   
   // Only track unique views per session
   const hasVisited = sessionStorage.getItem('has_visited');
@@ -3221,6 +3221,8 @@ const defaultEducation = ${education};`;
       try { currentData = JSON.parse(text); } catch(e) {}
     }
     
+    if (!currentData.countries) currentData.countries = {};
+    
     if (!hasVisited) {
       // Increment stats
       currentData.views = (currentData.views || 0) + 1;
@@ -3229,6 +3231,20 @@ const defaultEducation = ${education};`;
       if (!localStorage.getItem('unique_visitor')) {
         currentData.visitors = (currentData.visitors || 0) + 1;
         localStorage.setItem('unique_visitor', 'true');
+        
+        // Fetch location for unique visitors
+        try {
+          const locRes = await fetch('https://ipapi.co/json/');
+          if (locRes.ok) {
+            const locData = await locRes.json();
+            if (locData.country_name) {
+              const cName = locData.country_name;
+              currentData.countries[cName] = (currentData.countries[cName] || 0) + 1;
+            }
+          }
+        } catch(err) {
+          console.warn('Geolocation failed:', err);
+        }
       }
       
       // Save back to KVDB
@@ -3250,6 +3266,24 @@ const defaultEducation = ${education};`;
   }
 
   // Admin Panel Analytics Reload Logic
+  function renderCountries(countriesObj) {
+    const listEl = document.getElementById('stat-countries-list');
+    if (!listEl) return;
+    
+    if (!countriesObj || Object.keys(countriesObj).length === 0) {
+      listEl.innerHTML = '<p style="color: var(--text-muted); font-size: 14px;">No location data yet.</p>';
+      return;
+    }
+    
+    const sorted = Object.entries(countriesObj).sort((a, b) => b[1] - a[1]);
+    listEl.innerHTML = sorted.map(([country, count]) => `
+      <div style="display: flex; justify-content: space-between; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+        <span style="color: var(--text-main); font-size: 14px; font-weight: 500;">${country}</span>
+        <span style="color: var(--accent-color); font-weight: 700;">${count}</span>
+      </div>
+    `).join('');
+  }
+
   const btnReloadAnalytics = document.getElementById('btn-reload-analytics');
   if (btnReloadAnalytics) {
     btnReloadAnalytics.addEventListener('click', async () => {
@@ -3257,39 +3291,27 @@ const defaultEducation = ${education};`;
       try {
         const res = await fetch(kvdbUrl, { cache: 'no-store' });
         const text = await res.text();
-        let data = { views: 0, visitors: 0 };
+        let data = { views: 0, visitors: 0, countries: {} };
         if (res.ok && text) {
           try { data = JSON.parse(text); } catch(e) {}
         }
         const elVisitors = document.getElementById('stat-unique-visitors');
         if (elVisitors) elVisitors.textContent = data.visitors || 0;
+        
+        renderCountries(data.countries);
       } catch (err) {
         console.warn(err);
       } finally {
         btnReloadAnalytics.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
       }
     });
+    
+    // Initial fetch on admin load can trigger this manually
+    const adminFloatBtn = document.querySelector('.admin-float-btn');
+    if(adminFloatBtn) {
+      adminFloatBtn.addEventListener('click', () => {
+        setTimeout(() => btnReloadAnalytics.click(), 500);
+      });
+    }
   }
 })();
-
-// ===== VCARD QR CODE GENERATOR =====
-(function initQR() {
-  const qrImg = document.getElementById('qr-code-img');
-  const qrLoading = document.getElementById('qr-loading');
-  if (!qrImg || !qrLoading) return;
-
-  // Build VCard String
-  const vcard = `BEGIN:VCARD\nVERSION:3.0\nN:Phaneendra;J.N.V;;;\nFN:J.N.V Phaneendra\nTITLE:Full Stack Developer & AI/ML Engineer\nEMAIL:Phanee2005@gmail.com\nTEL;TYPE=CELL:9390672337\nURL:https://phaneendra1228.github.io/Portfolio/\nURL:https://www.linkedin.com/in/jujjavarapu-naga-venkata-phaneendra-7416a232a/\nEND:VCARD`;
-
-  const encodedVcard = encodeURIComponent(vcard);
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodedVcard}&margin=0`;
-
-  qrImg.onload = () => {
-    qrLoading.style.display = 'none';
-    qrImg.style.display = 'block';
-  };
-  qrImg.src = qrUrl;
-})();
-
-
-
