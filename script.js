@@ -3242,9 +3242,7 @@ const defaultEducation = ${education};`;
     }
 
     // Populate DOM initially
-    const elViews = document.getElementById('stat-total-views');
     const elVisitors = document.getElementById('stat-unique-visitors');
-    if (elViews) elViews.textContent = currentData.views || 0;
     if (elVisitors) elVisitors.textContent = currentData.visitors || 0;
 
   } catch (err) {
@@ -3263,8 +3261,8 @@ const defaultEducation = ${education};`;
         if (res.ok && text) {
           try { data = JSON.parse(text); } catch(e) {}
         }
-        document.getElementById('stat-total-views').textContent = data.views || 0;
-        document.getElementById('stat-unique-visitors').textContent = data.visitors || 0;
+        const elVisitors = document.getElementById('stat-unique-visitors');
+        if (elVisitors) elVisitors.textContent = data.visitors || 0;
       } catch (err) {
         console.warn(err);
       } finally {
