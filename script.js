@@ -2877,41 +2877,41 @@ const defaultEducation = ${education};`;
     
     // Greeting
     if (query === '' || ['hi', 'hello', 'hey', 'greetings', 'sup', 'yo'].some(w => query.startsWith(w)) || ['who are you', 'purpose', 'about', 'assistant'].some(w => query.includes(w))) {
-      return `Hello! 👋 I'm Phaneendra's AI Assistant, built specifically to guide you through his work and tech profile. <br><br>You can ask me about his **projects**, **skills**, **certificates**, **resume**, or how to **contact** him. What are you interested in?`;
+      return `Hello! 👋 I'm Phaneendra's AI Assistant, built specifically to guide you through his work and tech profile. <br><br>You can ask me about his projects, skills, certificates, resume, or how to contact him. What are you interested in?`;
     }
     
     // Resume download / CV
     if (['resume', 'cv', 'pdf', 'biodata'].some(w => query.includes(w))) {
-      return `Phaneendra's professional resume is fully loaded and ready to download! <br><br>👉 Click the **"GET MY RESUME"** button in the **About Me** section to preview and download the PDF directly in a new tab.`;
+      return `Phaneendra's professional resume is fully loaded and ready to download! <br><br>👉 Click the "GET MY RESUME" button in the About Me section to preview and download the PDF directly in a new tab.`;
     }
 
     // Hobbies / Interests
     if (['hobby', 'interest', 'music', 'ride', 'game', 'motorcycle', 'coding', 'learn'].some(w => query.includes(w))) {
       return `Phaneendra has dynamic interests both inside and outside of tech! <br><br>
-        💻 **Coding & Learning**: Constant focus on advanced full-stack systems and neural network architectures.<br>
-        🏍️ **Riding**: Loves exploring the streets and scenic routes on motorbikes.<br>
-        🎮 **Gaming**: Enjoys immersive digital environments and competitive gameplay.<br>
-        🎵 **Music**: Relaxes and stays inspired by tuning into premium background beats.<br><br>
-        You can see his interests highlighted with beautiful interactive cards under the **About Me** section!`;
+        💻 Coding & Learning: Constant focus on advanced full-stack systems and neural network architectures.<br>
+        🏍️ Riding: Loves exploring the streets and scenic routes on motorbikes.<br>
+        🎮 Gaming: Enjoys immersive digital environments and competitive gameplay.<br>
+        🎵 Music: Relaxes and stays inspired by tuning into premium background beats.<br><br>
+        You can see his interests highlighted with beautiful interactive cards under the About Me section!`;
     }
 
     // Location
     if (['location', 'live', 'city', 'address', 'where', 'india', 'hyderabad'].some(w => query.includes(w))) {
-      return `Phaneendra lives in **Hyderabad, India**! 🇮🇳 <br><br>It's one of India's major high-tech hubs, providing a great ecosystem for tech innovation and software engineering.`;
+      return `Phaneendra lives in Hyderabad, India! 🇮🇳 <br><br>It's one of India's major high-tech hubs, providing a great ecosystem for tech innovation and software engineering.`;
     }
 
     // Hackathons
     if (['avinya', 'anurag', 'codestorm', 'techknow', 'hackathon'].some(w => query.includes(w))) {
       return `Phaneendra is highly passionate about hackathons! Here are the ones he has excelled in:<br><br>
-        🏆 **AVINYA 2K25 (Anurag University)**: A national-level 24-hour hackathon where he engineered AI-driven solutions on **18th - 19th September 2025**.<br>
-        🥇 **Fresher's CodeStorm 2K25 (Narsimha Reddy Engineering College)**: Secured **Second Prize** in this intense 8-hour hackathon with team CTRL FREAKS.<br>
-        🚀 **Techknow 2.0 (Knowvation Learnings)**: A comprehensive 24-hour hackathon and tech summit in March 2025.`;
+        🏆 AVINYA 2K25 (Anurag University): A national-level 24-hour hackathon where he engineered AI-driven solutions on 18th - 19th September 2025.<br>
+        🥇 Fresher's CodeStorm 2K25 (Narsimha Reddy Engineering College): Secured Second Prize in this intense 8-hour hackathon with team CTRL FREAKS.<br>
+        🚀 Techknow 2.0 (Knowvation Learnings): A comprehensive 24-hour hackathon and tech summit in March 2025.`;
     }
     
     // Projects
     if (['project', 'work', 'build', 'app', 'website', 'github', 'demo', 'code'].some(w => query.includes(w))) {
       if (projects.length === 0) {
-        return `Phaneendra has built several premium full-stack and AI projects! You can check his live GitHub repositories directly in the **Recent Works** section of this page.`;
+        return `Phaneendra has built several premium full-stack and AI projects! You can check his live GitHub repositories directly in the Recent Works section of this page.`;
       }
       const projectList = projects.slice(0, 3).map(p => `
         <li style="margin-bottom: 12px; list-style-type: none; border-left: 2px solid var(--accent-color); padding-left: 10px;">
@@ -2924,23 +2924,23 @@ const defaultEducation = ${education};`;
       
       return `Phaneendra has designed and engineered several state-of-the-art applications. Here are some of his top projects:<br><br>
         <ul style="padding-left: 0;">${projectList}</ul>
-        You can view all of them in detail in the **Recent Works** section!`;
+        You can view all of them in detail in the Recent Works section!`;
     }
     
     // Skills
     if (['skill', 'stack', 'language', 'python', 'javascript', 'react', 'html', 'css', 'java', 'ml', 'ai', 'deep', 'tensor', 'fastapi'].some(w => query.includes(w))) {
       return `Phaneendra is a highly skilled full-stack developer and AI/ML enthusiast. His key technologies include:<br><br>
-        💻 **Core Languages**: Python, JavaScript (ES6+), HTML5, CSS3, C++, SQL<br>
-        🚀 **Web Libraries**: React.js, Next.js, Node.js, FastAPI, Express.js<br>
-        🧠 **AI/ML Engine**: TensorFlow, Keras, Scikit-Learn, Pandas, NumPy<br>
-        🛠️ **Platforms**: GitHub, Vercel, Supabase, Render, Git<br><br>
-        He specializes in building intelligent web apps that seamlessly fuse deep learning algorithms with sleek UI designs. Try scrolling to his **Skills** section to see them react interactively!`;
+        💻 Core Languages: Python, JavaScript (ES6+), HTML5, CSS3, C++, SQL<br>
+        🚀 Web Libraries: React.js, Next.js, Node.js, FastAPI, Express.js<br>
+        🧠 AI/ML Engine: TensorFlow, Keras, Scikit-Learn, Pandas, NumPy<br>
+        🛠️ Platforms: GitHub, Vercel, Supabase, Render, Git<br><br>
+        He specializes in building intelligent web apps that seamlessly fuse deep learning algorithms with sleek UI designs. Try scrolling to his Skills section to see them react interactively!`;
     }
     
     // Certificates
     if (['cert', 'award', 'win', 'trophy', 'achieve'].some(w => query.includes(w))) {
       if (certs.length === 0) {
-        return `Phaneendra holds multiple achievements and has participated in multiple developer hackathons! You can explore and download his certification documents in the **Certificates** section below.`;
+        return `Phaneendra holds multiple achievements and has participated in multiple developer hackathons! You can explore and download his certification documents in the Certificates section below.`;
       }
       const certList = certs.slice(0, 3).map(c => `
         <li style="margin-bottom: 8px; list-style-type: none; border-left: 2px solid #10b981; padding-left: 10px;">
@@ -2951,21 +2951,21 @@ const defaultEducation = ${education};`;
       
       return `Phaneendra is highly active in tech challenges. Here are some of his notable certifications:<br><br>
         <ul style="padding-left: 0;">${certList}</ul>
-        You can download and verify the official PDFs directly in the **Certificates** panel!`;
+        You can download and verify the official PDFs directly in the Certificates panel!`;
     }
     
     // Education
     if (['study', 'college', 'school', 'degree', 'edu', 'university', 'btech', 'cse'].some(w => query.includes(w))) {
-      return `Phaneendra is currently pursuing his **Bachelor of Technology (B.Tech) in Computer Science and Engineering (CSE)** with a core focus on **Artificial Intelligence & Machine Learning**. <br><br>He has built a strong theoretical foundation in algorithms and neural networks, translating them directly into his full-stack coding portfolio.`;
+      return `Phaneendra is currently pursuing his Bachelor of Technology (B.Tech) in Computer Science and Engineering (CSE) with a core focus on Artificial Intelligence & Machine Learning. <br><br>He has built a strong theoretical foundation in algorithms and neural networks, translating them directly into his full-stack coding portfolio.`;
     }
     
     // Contact / Hiring
     if (['contact', 'hire', 'email', 'phone', 'job', 'reach', 'linkedin', 'insta', 'mail'].some(w => query.includes(w))) {
       return `You can connect with Phaneendra directly! He is always open to exciting new collaborations and full-time opportunities:<br><br>
-        📧 **Email**: <a href="mailto:${profile.email}" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">${profile.email}</a><br>
-        💼 **LinkedIn**: <a href="${profile.linkedin}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">J.N.V. Phaneendra</a><br>
-        🐙 **GitHub**: <a href="${profile.github}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">@Phaneendra1228</a><br><br>
-        You can also type your message in the **Contact Form** on the homepage to send an instant message straight to his dashboard!`;
+        📧 Email: <a href="mailto:${profile.email}" style="color: var(--accent-color); font-weight: 600; text-decoration: none;">${profile.email}</a><br>
+        💼 LinkedIn: <a href="${profile.linkedin}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">J.N.V. Phaneendra</a><br>
+        🐙 GitHub: <a href="${profile.github}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">@Phaneendra1228</a><br><br>
+        You can also type your message in the Contact Form on the homepage to send an instant message straight to his dashboard!`;
     }
     
     // Jokes / Easter Egg
@@ -2981,11 +2981,11 @@ const defaultEducation = ${education};`;
     
     // General fallback
     return `I'm not fully sure how to answer that specific question. 🤖<br><br>However, as Phaneendra's personal assistant, I can easily help you with:<br>
-      👉 **Projects** (ask me *'what projects did he build?'*)<br>
-      👉 **Tech Stack** (ask me *'what are his skills?'*)<br>
-      👉 **Certifications** (ask me *'show me his achievements'*)<br>
-      👉 **Resume** (ask me *'can I see his resume?'*)<br>
-      👉 **Contact** (ask me *'how do I email him?'*)`;
+      👉 Projects (ask me *'what projects did he build?'*)<br>
+      👉 Tech Stack (ask me *'what are his skills?'*)<br>
+      👉 Certifications (ask me *'show me his achievements'*)<br>
+      👉 Resume (ask me *'can I see his resume?'*)<br>
+      👉 Contact (ask me *'how do I email him?'*)`;
   };
 
   // Scroll Viewport matching user query keywords to spotlight relevant sections
